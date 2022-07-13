@@ -33,7 +33,7 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="#" class="nav-link @if($urlName[1] == 'users') active @endif">
+                            <a href="{{ route('users.index') }}" class="nav-link @if($urlName[1] == 'users') active @endif">
                                 <i class="fas fa-users nav-icon"></i>
                                 <p>User</p>
                             </a>

@@ -14,10 +14,7 @@ class SkuCodeAction
         int $start,
         int $length
     ) {
-        $skuCodes = SkuCode::search($searchValue)
-            ->order($order)
-            ->limitBy($start, $length)
-            ->get();
+        $skuCodes = SkuCode::search($searchValue);
         // Modifying total record count and filtered row count as data is manually filtered
         $numberOfTotalRows = SkuCode::count('*');
         if (empty($searchValue)) {
@@ -26,6 +23,7 @@ class SkuCodeAction
             $numberOfFilteredRows = SkuCode::search($searchValue)
                 ->count('*');
         }
+        $skuCodes = $skuCodes->order($order)->limitBy($start, $length)->get();
         return $this->yajraData($skuCodes, $numberOfFilteredRows, $numberOfTotalRows);
     }
 

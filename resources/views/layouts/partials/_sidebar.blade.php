@@ -44,7 +44,12 @@
                                 <p>Skus</p>
                             </a>
                         </li>
-
+                        <li class="nav-item">
+                            <a href="{{ route('variants.index') }}" class="nav-link @if($urlName[1] == 'variants') active @endif">
+                                <i class="fa fa-sitemap nav-icon"></i>
+                                <p>Variants</p>
+                            </a>
+                        </li>
                     </ul>
                 </li>
             </ul>

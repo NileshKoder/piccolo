@@ -20,5 +20,10 @@ Route::post('users/change-user-state/{user}/ajax', '\App\Features\Masters\Users\
 Route::post('users/get-users/ajax', '\App\Features\Masters\Users\Http\v1\Controllers\UserController@getUsers')->name('users.getUsers');
 Route::resource('users', '\App\Features\Masters\Users\Http\v1\Controllers\UserController');
 
+// sku code routes
 Route::post('sku-codes/get-sku-codes/ajax', '\App\Features\Masters\SkuCodes\Http\v1\Controllers\SkuCodeController@getSkuCodes')->name('sku-codes.getSkuCodes');
 Route::resource('sku-codes', '\App\Features\Masters\SkuCodes\Http\v1\Controllers\SkuCodeController');
+
+// variants routes
+Route::post('variants/get-variants/ajax', 'App\Features\Masters\Variants\Http\v1\Controllers\VariantController@getVariants')->name('variants.getVariants');
+Route::resource('variants', 'App\Features\Masters\Variants\Http\v1\Controllers\VariantController');

@@ -6,6 +6,11 @@ use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
+    // Add your migrations directory here.
+    private const MIGRATIONS_DIR = [
+        __DIR__ . "/../Features/Masters/Migrations",
+    ];
+
     /**
      * Register any application services.
      *
@@ -23,6 +28,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        $this->loadMigrationsFrom(self::MIGRATIONS_DIR);
     }
 }

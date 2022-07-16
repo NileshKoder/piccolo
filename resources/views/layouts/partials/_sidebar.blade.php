@@ -34,8 +34,14 @@
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
                             <a href="{{ route('users.index') }}" class="nav-link @if($urlName[1] == 'users') active @endif">
-                                <i class="fas fa-users nav-icon"></i>
+                                <i class="fa fa-dollar-sign nav-icon"></i>
                                 <p>User</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('sku-codes.index') }}" class="nav-link @if($urlName[1] == 'sku-codes') active @endif">
+                                <i class="fas fa-users nav-icon"></i>
+                                <p>Skus</p>
                             </a>
                         </li>
 

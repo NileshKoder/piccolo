@@ -16,6 +16,9 @@ namespace App\Features\Masters\Routes;
 use Illuminate\Support\Facades\Route;
 
 // User Routes
-Route::post('users/change-user-state/{user}/ajax', 'App\Features\Masters\Users\Http\v1\Controllers\UserController@changeUserState');
-Route::post('users/get-users/ajax', 'App\Features\Masters\Users\Http\v1\Controllers\UserController@getUsers')->name('users.getUsers');
-Route::resource('users', 'App\Features\Masters\Users\Http\v1\Controllers\UserController');
+Route::post('users/change-user-state/{user}/ajax', '\App\Features\Masters\Users\Http\v1\Controllers\UserController@changeUserState');
+Route::post('users/get-users/ajax', '\App\Features\Masters\Users\Http\v1\Controllers\UserController@getUsers')->name('users.getUsers');
+Route::resource('users', '\App\Features\Masters\Users\Http\v1\Controllers\UserController');
+
+Route::post('sku-codes/get-sku-codes/ajax', '\App\Features\Masters\SkuCodes\Http\v1\Controllers\SkuCodeController@getSkuCodes')->name('sku-codes.getSkuCodes');
+Route::resource('sku-codes', '\App\Features\Masters\SkuCodes\Http\v1\Controllers\SkuCodeController');

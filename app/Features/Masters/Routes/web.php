@@ -35,3 +35,7 @@ Route::resource('boxes', 'App\Features\Masters\Boxes\Http\v1\Controllers\BoxCont
 // master pallet routes
 Route::post('master-pallets/get-pallets/ajax', 'App\Features\Masters\MasterPallet\Http\v1\Controllers\MasterPalletController@getMasterPallets')->name('master-pallets.getMasterPallets');
 Route::resource('master-pallets', 'App\Features\Masters\MasterPallet\Http\v1\Controllers\MasterPalletController');
+
+// warehouse routes
+Route::post('warehouses/get-warehouses/ajax', 'App\Features\Masters\Warehouses\Http\v1\Controllers\WarehouseController@getWarehouses')->name('warehouses.getWarehouses');
+Route::resource('warehouses', 'App\Features\Masters\Warehouses\Http\v1\Controllers\WarehouseController');

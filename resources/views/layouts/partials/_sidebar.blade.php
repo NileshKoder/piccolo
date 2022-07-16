@@ -62,6 +62,12 @@
                                 <p>Master Pallet</p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="{{ route('warehouses.index') }}" class="nav-link @if($urlName[1] == 'warehouses') active @endif">
+                                <i class="fa fa-building nav-icon"></i>
+                                <p>Warehouse</p>
+                            </a>
+                        </li>
                     </ul>
                 </li>
             </ul>

@@ -74,7 +74,7 @@ $(document).ready(function () {
                             toastr.error(response.error);
                         } else {
                             toastr.success('Crate Code has been deleted');
-                            initWareHouseDataTable("crate-codes/get-crate-codes/ajax");
+                            initWareHouseDataTable("boxes/get-boxes/ajax");
                         }
                     },
                     error: function(data) {

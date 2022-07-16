@@ -38,7 +38,7 @@ class BoxAction
                             <i class='fas fa-edit text-success'></i>
                         </a>";
                 if ($box->checkIsEmpty()) {
-                    $action .= "<a href='javascript:void(0)' title='Delete Box Code' data-id='{$box->id}' class='deletebox ml-2'>
+                    $action .= "<a href='javascript:void(0)' title='Delete Box Code' data-id='{$box->id}' class='deleteBox ml-2'>
                                 <i class='fas fa-trash text-danger'></i>
                             </a>";
                 }

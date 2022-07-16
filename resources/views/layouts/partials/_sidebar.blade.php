@@ -50,6 +50,12 @@
                                 <p>Variants</p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="{{ route('boxes.index') }}" class="nav-link @if($urlName[1] == 'boxes') active @endif">
+                                <i class="fas fa-boxes nav-icon"></i>
+                                <p>Box Codes</p>
+                            </a>
+                        </li>
                     </ul>
                 </li>
             </ul>

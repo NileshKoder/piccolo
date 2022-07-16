@@ -27,3 +27,7 @@ Route::resource('sku-codes', '\App\Features\Masters\SkuCodes\Http\v1\Controllers
 // variants routes
 Route::post('variants/get-variants/ajax', 'App\Features\Masters\Variants\Http\v1\Controllers\VariantController@getVariants')->name('variants.getVariants');
 Route::resource('variants', 'App\Features\Masters\Variants\Http\v1\Controllers\VariantController');
+
+// box routes
+Route::post('boxes/get-boxes/ajax', 'App\Features\Masters\Boxes\Http\v1\Controllers\BoxController@getBoxes')->name('boxes.getBoxes');
+Route::resource('boxes', 'App\Features\Masters\Boxes\Http\v1\Controllers\BoxController');

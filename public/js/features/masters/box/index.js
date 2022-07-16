@@ -1,5 +1,5 @@
 var initWareHouseDataTable = function(route) {
-    $('#crateCodesDatatble').DataTable({
+    $('#boxesDatatble').DataTable({
         processing: true,
         serverSide: true,
         responsive: true,
@@ -14,7 +14,7 @@ var initWareHouseDataTable = function(route) {
             },
             type: "POST",
             data: function (d) {
-                d.type = $('#type').val()
+
             },
             error: function (e){
                 console.log(e)
@@ -38,14 +38,6 @@ var initWareHouseDataTable = function(route) {
                 data: 'is_empty',
                 name: 'is_empty'
             },
-            // {
-            //     data: 'type',
-            //     name: 'type'
-            // },
-            {
-                data: 'state',
-                name: 'state'
-            }
         ],
         columnDefs: [{
             "defaultContent": "-",
@@ -57,7 +49,7 @@ var initWareHouseDataTable = function(route) {
 };
 
 $(document).ready(function () {
-    $(document).on('click', '.deleteCrateCode', function(){
+    $(document).on('click', '.deleteBox', function(){
         let id = $(this).data('id');
         swal({
             title: "Are you sure?",
@@ -70,7 +62,7 @@ $(document).ready(function () {
             if (changeStatus) {
                 $.ajax({
                     type: "post",
-                    url: "crate-codes/"+id,
+                    url: "boxes/"+id,
                     data: {
                         "_method": 'DELETE',
                     },
@@ -92,45 +84,6 @@ $(document).ready(function () {
                 });
             } else {
                 toastr.warning('Crate code is safe');;
-            }
-          });
-    })
-
-    $(document).on('click', '.changeCrateCodeState', function(){
-        let id = $(this).data('id');
-        swal({
-            title: "Are you sure?",
-            text: "You want to change status of this crate?",
-            icon: "warning",
-            buttons: true,
-            dangerMode: true,
-          })
-          .then((changeStatus) => {
-            if (changeStatus) {
-                $.ajax({
-                    type: "post",
-                    url: `/masters/crate-codes/change-crate-codes-state/${id}/ajax`,
-                    data: {
-                        "state": $(this).data('state'),
-                    },
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    success: function (response) {
-                        if(response.status == 500) {
-                            toastr.error(response.error);
-                        } else {
-                            toastr.success('Crate Code statis has been changed successfully');
-                            initWareHouseDataTable("crate-codes/get-crate-codes/ajax");
-                        }
-                    },
-                    error: function(data) {
-                        console.log(data)
-                        toastr.error('something went wrong');
-                    }
-                });
-            } else {
-                toastr.warning('Crate code status is not updated');
             }
           });
     })

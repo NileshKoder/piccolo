@@ -1,5 +1,5 @@
 var initWareHouseDataTable = function(route) {
-    $('#PalletsDatatble').DataTable({
+    $('#masterPalletsDatatble').DataTable({
         processing: true,
         serverSide: true,
         responsive: true,
@@ -46,7 +46,7 @@ var initWareHouseDataTable = function(route) {
 };
 
 $(document).ready(function () {
-    $(document).on('click', '.deletePallet', function(){
+    $(document).on('click', '.deleteMasterPallet', function(){
         let id = $(this).data('id');
         swal({
             title: "Are you sure?",
@@ -59,7 +59,7 @@ $(document).ready(function () {
             if (changeStatus) {
                 $.ajax({
                     type: "post",
-                    url: "pallets/"+id,
+                    url: "master-pallets/"+id,
                     data: {
                         "_method": 'DELETE',
                     },
@@ -70,8 +70,8 @@ $(document).ready(function () {
                         if(response.status == 500) {
                             toastr.error(response.error);
                         } else {
-                            toastr.success('Pallet has been deleted');
-                            initWareHouseDataTable("pallets/get-pallets/ajax");
+                            toastr.success('Master pallet has been deleted');
+                            initWareHouseDataTable("master-pallets/get-pallets/ajax");
                         }
                     },
                     error: function(data) {
@@ -80,7 +80,7 @@ $(document).ready(function () {
                     }
                 });
             } else {
-                toastr.warning('Pallet is safe');;
+                toastr.warning('Master pallet is safe');;
             }
           });
     })

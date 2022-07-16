@@ -31,3 +31,7 @@ Route::resource('variants', 'App\Features\Masters\Variants\Http\v1\Controllers\V
 // box routes
 Route::post('boxes/get-boxes/ajax', 'App\Features\Masters\Boxes\Http\v1\Controllers\BoxController@getBoxes')->name('boxes.getBoxes');
 Route::resource('boxes', 'App\Features\Masters\Boxes\Http\v1\Controllers\BoxController');
+
+// master pallet routes
+Route::post('master-pallets/get-pallets/ajax', 'App\Features\Masters\MasterPallet\Http\v1\Controllers\MasterPalletController@getMasterPallets')->name('master-pallets.getMasterPallets');
+Route::resource('master-pallets', 'App\Features\Masters\MasterPallet\Http\v1\Controllers\MasterPalletController');

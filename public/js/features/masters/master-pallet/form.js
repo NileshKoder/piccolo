@@ -7,7 +7,7 @@ $(function () {
         "Please check your input."
     );
 
-    $("#createPalletForm").validate({
+    $("#createMasterPalletForm").validate({
         rules: {
             name: {
                 required: true,
@@ -31,7 +31,7 @@ $(function () {
         },
     });
 
-    $("#editPalletForm").validate({
+    $("#editMasterPalletForm").validate({
         rules: {
             name: {
                 required: true,
@@ -61,8 +61,8 @@ $(function () {
         },
     });
 
-    $(document).on('click','.editPallet', function () {
-        $('#editPalletForm').attr('action', 'pallets/'+$(this).data('id'))
+    $(document).on('click','.editMasterPallet', function () {
+        $('#editMasterPalletForm').attr('action', 'master-pallets/'+$(this).data('id'))
         $('#id').val($(this).data('id'))
         $('#editName').val($(this).data('name'))
         $('select#editType').val($(this).data('type'))
@@ -75,7 +75,7 @@ $(function () {
     $(document).mouseup(function (e) {
         var container = $("#editDiv");
         if(!container.is(e.target) && container.has(e.target).length === 0) {
-            $('#editPalletForm').attr('action', '#')
+            $('#editMasterPalletForm').attr('action', '#')
             $('#id').val('')
             $('#editName').val('')
             $('#createDiv').fadeIn();

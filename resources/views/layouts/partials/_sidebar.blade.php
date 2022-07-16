@@ -56,6 +56,12 @@
                                 <p>Box Codes</p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="{{ route('master-pallets.index') }}" class="nav-link @if($urlName[1] == 'master-pallets') active @endif">
+                                <i class="fa fa-pallet nav-icon"></i>
+                                <p>Master Pallet</p>
+                            </a>
+                        </li>
                     </ul>
                 </li>
             </ul>

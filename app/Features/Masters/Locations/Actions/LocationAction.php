@@ -6,7 +6,7 @@ use Yajra\DataTables\DataTables;
 use Illuminate\Support\Collection;
 use App\Features\Masters\SkuCodes\Domains\Models\SkuCode;
 
-class SkuCodeAction
+class LocationAction
 {
     public function getSkuCodes(
         ?string $searchValue,

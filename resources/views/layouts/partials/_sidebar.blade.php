@@ -70,6 +70,23 @@
                         </li>
                     </ul>
                 </li>
+                <li class="nav-item @if($urlName[0] == 'process') menu-open @endif">
+                    <a href="#" class="nav-link @if($urlName[0] == 'process') active @endif">
+                        <i class="nav-icon fas fa-asterisk"></i>
+                        <p>
+                            Process
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ route('pallets.index') }}" class="nav-link @if($urlName[1] == 'pallets') active @endif">
+                                <i class="fa fa-dollar-sign nav-icon"></i>
+                                <p>Manage Pallet</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
             </ul>
         </nav>
         <!-- /.sidebar-menu -->

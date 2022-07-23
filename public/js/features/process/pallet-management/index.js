@@ -1,5 +1,5 @@
 var initWareHouseDataTable = function(route) {
-    var table =$('#OrderDatatble').DataTable({
+    $('#palletDatatble').DataTable({
         processing: true,
         serverSide: true,
         responsive: true,
@@ -13,53 +13,39 @@ var initWareHouseDataTable = function(route) {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             type: "POST",
-            data: function (d) {},
             error: function (e){
                 console.log(e)
+                toastr.error('something went wrong');
             }
         },
         columns: [
             {
                 data: 'action',
                 name: 'action',
-                width: 10
+                width: '8%'
             },
             {
                 data: 'id',
                 name: 'id',
+                width: '8%'
             },
             {
-                data: 'order_number',
-                name: 'order_number',
+                data: 'master_pallet.name',
+                name: 'master_pallet.name',
             },
             {
-                data: 'creator.name',
-                name: 'creator.name'
-            },
-            {
-                data: 'updator.name',
-                name: 'updator.name'
+                data: 'updater.name',
+                name: 'updater.name',
             },
             {
                 data: 'updated_at',
-                name: 'updated_at'
-            }
+                name: 'updated_at',
+            },
         ],
         columnDefs: [{
             "defaultContent": "-",
             "targets": "_all"
           }],
-        order: [[1, 'desc']],
+        order: [[1, 'asc']],
     });
-
-    // $('#searchPalletCreation').on('click', function () {
-    //     table.draw();
-    // });
-
-    // $('#clearPalletCreation').on('click', function () {
-    //     $('#pallet_id').val("").select2();
-    //     $('#crate_code_creation_id').val("").select2();
-    //     $('#location_id').val("").select2();
-    //     table.draw();
-    // });
 };

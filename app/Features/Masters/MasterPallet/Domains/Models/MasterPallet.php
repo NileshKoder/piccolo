@@ -46,7 +46,7 @@ class MasterPallet extends Model
         });
     }
 
-    public function updateAsEmpty(bool $isEmpty): MasterPallet
+    public function updateIsEmpty(bool $isEmpty): MasterPallet
     {
         $this->is_empty = $isEmpty;
         $this->update();

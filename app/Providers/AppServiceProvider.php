@@ -9,6 +9,7 @@ class AppServiceProvider extends ServiceProvider
     // Add your migrations directory here.
     private const MIGRATIONS_DIR = [
         __DIR__ . "/../Features/Masters/Migrations",
+        __DIR__ . "/../Features/Process/Migrations",
     ];
 
     /**

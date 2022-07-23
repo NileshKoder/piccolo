@@ -47,7 +47,7 @@ class PalletAction
     public function getPallets(
         array $order,
         int $start,
-        int $length,
+        int $length
     ) {
         $pallets = Pallet::with('masterPallet', 'currentPalletLocation', 'palletDetails', 'updater');
 

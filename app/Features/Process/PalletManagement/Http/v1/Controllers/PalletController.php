@@ -116,7 +116,7 @@ class PalletController extends Controller
             $data = $this->palletAction->getPallets(
                 $request->order,
                 $request->start,
-                $request->length,
+                $request->length
             );
         } catch (Exception $ex) {
             return response()->json(['message' => $ex->getMessage()], 500);

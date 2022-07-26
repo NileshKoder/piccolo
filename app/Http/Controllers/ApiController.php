@@ -13,7 +13,7 @@ class ApiController extends Controller
     {
     }
 
-    private function validation_token($token)
+    protected function validation_token($token)
     {
         // No time to implement access token. So, setting a static access token by default..
         if ($token != 'piccoloDashboard@1') {

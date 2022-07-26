@@ -2,12 +2,7 @@
 
 namespace App\Helpers\Traits;
 
-use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Pagination\LengthAwarePaginator;
 
 trait ApiResponser
 {
@@ -21,7 +16,7 @@ trait ApiResponser
         return response()->json(['error' => $message, 'code' => $code], $code);
     }
 
-    protected function showAll(Collection  $collection, $code = 200)
+    protected function showAll(mixed $collection, $code = 200)
     {
         return $this->successReponse(['data' => $collection], $code);
     }

@@ -63,7 +63,7 @@ class Pallet extends Model
     public static function updateOrCreatePalletDetails(Pallet $pallet, ?array $palletDetails)
     {
         $updatedIds = array();
-        if (!empty($palletData['pallet_details']) && count($palletData['pallet_details']) > 0) {
+        if (!empty($palletDetails) && count($palletDetails) > 0) {
             foreach ($palletDetails as $key => $palletDetail) {
                 $palletDetails = PalletDetails::persistUpdateOrCreatePalletDetails($pallet, $palletDetail);
 
@@ -127,5 +127,17 @@ class Pallet extends Model
     {
         parent::boot();
         self::observe(PalletObserver::class);
+    }
+
+    public static function getCreateValidationRules()
+    {
+        return [
+            "location_id" => 'required|exists:locations,id',
+            "master_pallet_id" => 'required|exists:master_pallets,id',
+            "pallet_details.*.sku_code_id" => 'required|exists:sku_codes,id',
+            "pallet_details.*.variant_id" => 'required|exists:variants,id',
+            "pallet_details.*.weight" => 'required',
+            "pallet_details.*.batch" => 'required',
+        ];
     }
 }

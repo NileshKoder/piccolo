@@ -22,4 +22,14 @@ trait PalletScopes
         }
         return $query;
     }
+
+    public function scopeMasterPalletName(Builder $query, string $masterPalletName)
+    {
+        if (!empty($masterPalletName)) {
+            return $query->with('masterPallet')->whereHas('masterPallet', function ($qry) use ($masterPalletName) {
+                $qry->where('name', $masterPalletName);
+            });
+        }
+        return $query;
+    }
 }

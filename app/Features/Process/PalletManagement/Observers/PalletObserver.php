@@ -36,7 +36,7 @@ class PalletObserver
      */
     public function deleted(Pallet $pallet)
     {
-        //
+        $pallet->masterPallet->updateIsEmpty(true);
     }
 
     /**

@@ -22,7 +22,7 @@ trait ApiResponser
         return $this->successReponse(['data' => $collection], $code);
     }
 
-    protected function showOne(Model $model, $code = 200)
+    protected function showOne($model, $code = 200)
     {
         return $this->successReponse(['data' => $model], 200);
     }

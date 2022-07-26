@@ -17,7 +17,7 @@ trait ApiResponser
         return response()->json(['error' => $message, 'code' => $code], $code);
     }
 
-    protected function showAll(Collection|array $collection, $code = 200)
+    protected function showAll($collection, $code = 200)
     {
         return $this->successReponse(['data' => $collection], $code);
     }

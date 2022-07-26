@@ -4,13 +4,11 @@ namespace App\Features\Masters\Users\Http\v1\Controllers\Api;
 
 use App\User;
 use Illuminate\Http\Request;
-use App\Features\Common\ApiTrait;
+use App\Http\Controllers\ApiController;
 use Illuminate\Support\Facades\Hash;
 
-class LoginAPIController
+class LoginAPIController extends ApiController
 {
-    use ApiTrait;
-
     public function login(Request $request)
     {
         $validate = $this->validation_token($request->token);
@@ -27,15 +25,15 @@ class LoginAPIController
         if (!empty($user)) {
             // Inactive check
             if ($user->status == User::INACTIVE) {
-                return ['status' => false, 'message' => "User is inactive"];
+                return $this->errorResponse("User is inactive", 500);
             }
 
             // Successfull Match...
             if (Hash::check($password, $user->password)) {
-                return ['status' => true, 'message' => "Login Successfully", 'data' => $user];
+                return $this->showOne($user, 200);
             }
         }
 
-        return ['status' => false, 'message' => "Credentials does not match our records"];
+        return $this->errorResponse("Credentials does not match our records", 500);
     }
 }

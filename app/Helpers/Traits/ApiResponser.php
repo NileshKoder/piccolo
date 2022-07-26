@@ -3,6 +3,7 @@
 namespace App\Helpers\Traits;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 trait ApiResponser
 {
@@ -16,7 +17,7 @@ trait ApiResponser
         return response()->json(['error' => $message, 'code' => $code], $code);
     }
 
-    protected function showAll(mixed $collection, $code = 200)
+    protected function showAll(Collection|array $collection, $code = 200)
     {
         return $this->successReponse(['data' => $collection], $code);
     }

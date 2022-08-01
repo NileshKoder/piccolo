@@ -58,7 +58,8 @@ class PalletApiController extends ApiController
 
             $pallet = Pallet::with(
                 'masterPallet',
-                'palletDetails'
+                'palletDetails.skuCode',
+                'palletDetails.variant'
             )->masterPalletName($request->pallet_name)->first();
 
             return $this->showOne($pallet, 200);
@@ -82,7 +83,7 @@ class PalletApiController extends ApiController
 
         try {
             $masterPallet = MasterPallet::find($request->master_pallet_id);
-            
+
             if (!$masterPallet->is_empty) {
                 throw new Exception('This pallet is filled already');
             }

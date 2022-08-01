@@ -13,7 +13,25 @@ $(document).ready(function() {
     })
 
     $('#add_sku').on('click', function() {
-        checkTillWeight();
+        if(parseInt($('#weight').val()) < 10 || parseInt($('#weight').val()) > 900) {
+            swal({
+                title: "Weight should be greater than 10KG and less than 900 KG",
+                icon: "warning"
+            })
+
+            return false;
+        }
+
+        let checkWeight = checkTillWeight();
+
+        if(!checkWeight) {
+            swal({
+                title: "You can not add more than 900 KG",
+                icon: "warning"
+            })
+
+            return false;
+        }
 
         let locationId = $('#location_id').val();
         let masterPalletId = $('#master_pallet_id').val();
@@ -113,10 +131,8 @@ function checkTillWeight() {
     let weight = $('#weight').val();
     let checkMaxWeight = parseFloat(tilltotalWeight) + parseFloat(weight);
     if (checkMaxWeight > 900) {
-        swal({
-            title: "You can not add more than 900 KG",
-            icon: "warning"
-        })
         return false;
     }
+
+    return true;
 }

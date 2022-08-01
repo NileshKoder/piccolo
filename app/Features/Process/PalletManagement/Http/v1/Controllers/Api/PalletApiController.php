@@ -2,14 +2,14 @@
 
 namespace App\Features\Process\PalletManagement\Http\v1\Controllers\Api;
 
-use Exception;
-use Illuminate\Http\Request;
-use App\Http\Controllers\ApiController;
-use Illuminate\Support\Facades\Validator;
 use App\Features\Masters\Locations\Domains\Models\Location;
+use App\Features\Masters\MasterPallet\Domains\Models\MasterPallet;
 use App\Features\Process\PalletManagement\Actions\PalletAction;
 use App\Features\Process\PalletManagement\Domains\Models\Pallet;
-use App\Features\Masters\MasterPallet\Domains\Models\MasterPallet;
+use App\Http\Controllers\ApiController;
+use Exception;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class PalletApiController extends ApiController
 {
@@ -81,17 +81,19 @@ class PalletApiController extends ApiController
         }
 
         try {
-            $masterPallet = MasterPallet::find($request->pallet_id);
-
+            $masterPallet = MasterPallet::find($request->master_pallet_id);
+            
             if (!$masterPallet->is_empty) {
                 throw new Exception('This pallet is filled already');
             }
 
             $data = $this->prepareData($request);
-            $this->palletAction->createPallet($data);
+            $pallet = $this->palletAction->createPallet($data);
         } catch (Exception $ex) {
             return $this->errorResponse($ex->getMessage(), 500);
         }
+
+        return $this->showOne($pallet, 200);
     }
 
     public function update(Pallet $pallet, Request $request)
@@ -120,7 +122,7 @@ class PalletApiController extends ApiController
         $requestData = [];
         $requestData['pallet']['master_pallet_id'] = $request->master_pallet_id;
         $requestData['pallet']['created_by'] = $request->created_by;
-        $requestData['pallet']['updated_by'] = $request->updated_by;
+        $requestData['pallet']['updated_by'] = $request->updated_by ?? $request->created_by;
 
         $requestData['pallet_details'] = $request->pallet_details;
 

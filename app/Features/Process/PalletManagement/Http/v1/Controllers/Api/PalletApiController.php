@@ -58,7 +58,8 @@ class PalletApiController extends ApiController
 
             $pallet = Pallet::with(
                 'masterPallet',
-                'palletDetails'
+                'palletDetails.skuCode',
+                'palletDetails.variant'
             )->masterPalletName($request->pallet_name)->first();
 
             return $this->showOne($pallet, 200);

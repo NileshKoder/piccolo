@@ -37,4 +37,13 @@ trait MasterPalletScopes
     {
         return $query->where('is_empty', $isEmpty);
     }
+
+    public function scopeId(Builder $query, ?int $id): Builder
+    {
+        if (!empty($id)) {
+            return $query->where('id', $id);
+        }
+
+        return $query;
+    }
 }

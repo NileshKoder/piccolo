@@ -71,6 +71,11 @@ class RouteServiceProvider extends ServiceProvider
             ->namespace($this->namespace)
             ->prefix('process')
             ->group(base_path('app/Features/Process/Routes/web.php'));
+
+        Route::middleware(['web', 'auth'])
+            ->namespace($this->namespace)
+            ->prefix('reports')
+            ->group(base_path('app/Features/Reports/Routes/web.php'));
     }
 
     /**

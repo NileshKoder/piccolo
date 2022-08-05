@@ -87,6 +87,23 @@
                         </li>
                     </ul>
                 </li>
+                <li class="nav-item @if($urlName[0] == 'reports') menu-open @endif">
+                    <a href="#" class="nav-link @if($urlName[0] == 'process') active @endif">
+                        <i class="nav-icon fas fa-asterisk"></i>
+                        <p>
+                            Reports
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{{ route('pallet-report.index') }}" class="nav-link @if($urlName[1] == 'pallet-report') active @endif">
+                                <i class="fa fa-dollar-sign nav-icon"></i>
+                                <p>Pallet </p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
             </ul>
         </nav>
         <!-- /.sidebar-menu -->

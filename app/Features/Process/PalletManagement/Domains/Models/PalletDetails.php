@@ -6,9 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 use App\Features\Masters\SkuCodes\Domains\Models\SkuCode;
 use App\Features\Masters\Variants\Domains\Models\Variant;
 use App\Features\Process\PalletManagement\Domains\Models\Pallet;
+use App\Features\Process\PalletManagement\Domains\Query\PalletDetailsScopes;
 
 class PalletDetails extends Model
 {
+    use PalletDetailsScopes;
     protected $fillable = ['pallet_id', 'sku_code_id', 'variant_id', 'weight', 'batch'];
 
     public static function persistUpdateOrCreatePalletDetails(Pallet $pallet, array $palletDetails)

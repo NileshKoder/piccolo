@@ -26,7 +26,8 @@
         <div class="col-lg-3 col-6">
             <div class="small-box bg-success">
                 <div class="inner">
-                    <h3>{{ $data['most_sku_used']->skuCode->name }} - {{ $data['most_sku_used']->count }}</h3>
+                    <h6>{{ $data['most_sku_used']->skuCode->name }}</h6>
+                    <h6> {{ $data['most_sku_used']->count }}</h6>
                     <p>Most Sku Used</p>
                 </div>
                 <div class="icon">

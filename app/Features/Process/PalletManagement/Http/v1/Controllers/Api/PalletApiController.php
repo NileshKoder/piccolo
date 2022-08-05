@@ -83,7 +83,7 @@ class PalletApiController extends ApiController
 
         try {
             $masterPallet = MasterPallet::find($request->master_pallet_id);
-            
+
             if (!$masterPallet->is_empty) {
                 throw new Exception('This pallet is filled already');
             }

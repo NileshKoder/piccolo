@@ -85,6 +85,12 @@
                                 <p>Manage Pallet</p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="{{ route('reach-trucks.index') }}" class="nav-link @if($urlName[1] == 'reach-truck') active @endif">
+                                <i class="fa fa-truck nav-icon"></i>
+                                <p>Reach Truck</p>
+                            </a>
+                        </li>
                     </ul>
                 </li>
                 <li class="nav-item @if($urlName[0] == 'reports') menu-open @endif">

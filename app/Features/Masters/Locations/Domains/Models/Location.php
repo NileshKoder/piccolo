@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Features\Masters\Locations\Constants\LocationConstants;
 use App\Features\Masters\Locations\Domains\Query\LocationScopes;
 use App\Features\Process\PalletCreations\Domains\Models\PalletCreation;
+use App\Features\Process\ReachTruck\Domains\Models\ReachTruck;
 
 class Location extends Model implements LocationConstants
 {
@@ -17,8 +18,13 @@ class Location extends Model implements LocationConstants
 
     protected $hidden = ['created_at', 'updated_at'];
 
-    public function currentLocation()
+    public function fromLocationable()
     {
-        return $this->hasMany(PalletCreation::class, 'current_location_id');
+        return $this->morphMany(ReachTruck::class, 'from_locationable');
+    }
+
+    public function toLocationable()
+    {
+        return $this->morphMany(ReachTruck::class, 'to_locationable');
     }
 }

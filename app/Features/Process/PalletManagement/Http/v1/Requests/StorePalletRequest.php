@@ -47,6 +47,8 @@ class StorePalletRequest extends FormRequest
         $requestData['pallet_location']['locationable_id'] = $this->location_id;
         $requestData['pallet_location']['created_by'] = auth()->check() ? auth()->user()->id : 1;
 
+        $requestData['is_request_for_warehouse'] = !empty($this->request_for_warehouse) ? true : false;
+
         return $requestData;
     }
 }

@@ -11,6 +11,8 @@ use App\Features\Process\PalletManagement\Domains\Query\PalletScopes;
 use App\Features\Process\PalletManagement\Domains\Models\PalletDetails;
 use App\Features\Process\PalletManagement\Domains\Models\PalletBoxDetails;
 use App\Features\Process\PalletManagement\Domains\Models\PalletLocationLogs;
+use App\Features\Process\ReachTruck\Actions\ReachTruckAction;
+use App\Features\Process\ReachTruck\Domains\Models\ReachTruck;
 
 class Pallet extends Model
 {
@@ -32,6 +34,11 @@ class Pallet extends Model
             // }
 
             self::createPalletLocation($pallet, $palletData['pallet_location']);
+
+            if ($palletData['is_request_for_warehouse']) {
+                $reachTruckAction = new ReachTruckAction();
+                $reachTruckAction->createReachTruckFromPallet($pallet);
+            }
 
             return $pallet;
         });
@@ -121,6 +128,11 @@ class Pallet extends Model
     public function currentPalletLocation()
     {
         return $this->hasOne(PalletLocationLogs::class)->orderBy('id', 'DESC')->latest('created_at');
+    }
+
+    public function reachTruck()
+    {
+        return $this->hasOne(ReachTruck::class);
     }
 
     public static function boot()

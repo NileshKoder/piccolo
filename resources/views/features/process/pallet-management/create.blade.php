@@ -38,6 +38,7 @@
                     </div>
                     <div class="card-footer clearfix">
                         <button type="sumbit" class="btn btn-primary"><i class="fas fa-disk"></i> Submit</button>
+                        <button type="sumbit" name="request_for_warehouse" value="true" class="btn btn-warning"><i class="fas fa-disk"></i> Request for Warehouse</button>
                     </div>
                 </form>
             </div>

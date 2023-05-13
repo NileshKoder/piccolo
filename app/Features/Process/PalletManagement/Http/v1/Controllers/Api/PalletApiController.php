@@ -126,6 +126,7 @@ class PalletApiController extends ApiController
         $requestData['pallet']['updated_by'] = $request->updated_by ?? $request->created_by;
 
         $requestData['pallet_details'] = $request->pallet_details;
+        $requestData['is_request_for_warehouse'] = $request->is_request_for_warehouse;
 
         $requestData['pallet_location']['locationable_type'] = Location::class;
         $requestData['pallet_location']['locationable_id'] = $request->location_id;

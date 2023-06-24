@@ -17,7 +17,7 @@
             <div class="form-group">
                 <input type="hidden" name="from_locationable_type" id="from_locationable_type" value="{{ $data['fromLocationType'] }}">
                 <label for="name">From Location </label>
-                <select name="from_locationable_id" id="from_locationable_id" class="form-control select2">
+                <select name="from_locationable_id" id="from_locationable_id" class="form-control select2" @if(!empty($reachTruck)) disabled @endif>
                     <option value="">Select Location</option>
                     @foreach ($data['fromLocations'] as $fromLocation)
                     <option value="{{ $fromLocation->id }}" @if(!empty($reachTruck) && $reachTruck->from_locationable_id == $fromLocation->id) selected @endif>{{ $fromLocation->abbr ?? $fromLocation->name  }}</option>
@@ -28,8 +28,11 @@
         <div class="col-md-4">
             <div class="form-group">
                 <label for="name">Pallet</label>
-                <select name="reach_truck_id" id="reach_truck_id" class="form-control select2">
+                <select name="reach_truck_id" id="reach_truck_id" class="form-control select2" @if(!empty($reachTruck)) disabled @endif>
                     <option value="">Select Pallet</option>
+                    @foreach ($data['reachTrucks'] as $nonTransferredReachTruck)
+                    <option value="{{ $nonTransferredReachTruck->id }}" @if($nonTransferredReachTruck->id == $reachTruck->id) selected @endif>{{ $nonTransferredReachTruck->pallet->masterPallet->name }}</option>
+                    @endforeach
                 </select>
             </div>
         </div>

@@ -2,11 +2,13 @@
 
 namespace App\Features\Process\ReachTruck\Http\Controllers;
 
-use App\Features\Process\ReachTruck\Actions\ReachTruckAction;
 use Exception;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Features\Process\ReachTruck\Actions\ReachTruckAction;
 use App\Features\Process\ReachTruck\Domains\Models\ReachTruck;
+use App\Features\Process\ReachTruck\Http\Requests\StoreReachTruchRequest;
+use App\Features\Process\ReachTruck\Http\Requests\UpdateReachTruchRequest;
 
 class ReachTruckController extends Controller
 {
@@ -40,7 +42,6 @@ class ReachTruckController extends Controller
         }
 
         $data = $this->reachTruckAction->getCreateData($request->type);
-
         return view('features.process.reach-truck.create', compact('data'));
     }
 
@@ -50,15 +51,22 @@ class ReachTruckController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreReachTruchRequest $request)
     {
-        //
+        try {
+            $requestData = $request->toFormData();
+            $this->reachTruckAction->processTransferPallet($requestData);
+        } catch (Exception $ex) {
+            return redirect()->back()->with('error', "Something Went Wrong!");
+        }
+
+        return redirect()->route('reach-trucks.index')->with('success', "Pallet Transfered Successfully");
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\ReachTruck  $reachTruck
+     * @param  \App\Features\Process\ReachTruck\Domains\Models\ReachTruck  $reachTruck
      * @return \Illuminate\Http\Response
      */
     public function show(ReachTruck $reachTruck)
@@ -69,30 +77,40 @@ class ReachTruckController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\ReachTruck  $reachTruck
+     * @param  \App\Features\Process\ReachTruck\Domains\Models\ReachTruck  $reachTruck
      * @return \Illuminate\Http\Response
      */
     public function edit(ReachTruck $reachTruck)
     {
-        //
+        $reachTruck = ReachTruck::with('fromLocationable')->find($reachTruck->id);
+        $data = $this->reachTruckAction->getEditData($reachTruck);
+
+        return view('features.process.reach-truck.edit', compact('data', 'reachTruck'));
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\ReachTruck  $reachTruck
+     * @param  \App\Features\Process\ReachTruck\Domains\Models\ReachTruck  $reachTruck
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, ReachTruck $reachTruck)
+    public function update(UpdateReachTruchRequest $request, ReachTruck $reachTruck)
     {
-        //
+        try {
+            $requestData = $request->toFormData();
+            $this->reachTruckAction->processUpdateTransferPalletDetails($requestData, $reachTruck);
+        } catch (Exception $ex) {
+            return redirect()->back()->with('error', "Something Went Wrong!");
+        }
+
+        return redirect()->route('reach-trucks.index')->with('success', "Pallet Transfered Details Updatd Successfully");
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\ReachTruck  $reachTruck
+     * @param  \App\Features\Process\ReachTruck\Domains\Models\ReachTruck  $reachTruck
      * @return \Illuminate\Http\Response
      */
     public function destroy(ReachTruck $reachTruck)

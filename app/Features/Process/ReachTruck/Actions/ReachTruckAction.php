@@ -86,6 +86,7 @@ class ReachTruckAction
         )
             ->leftJoin('reach_trucks', function ($rtQuery) {
                 $rtQuery->where('from_locationable_type', '=', "App\\Features\\Masters\\Locations\\Domains\\Models\\Location");
+                $rtQuery->where('is_transfered', false);
                 $rtQuery->on('from_locationable_id', '=', 'locations.id');
             })
             ->groupBy('locations.type')->get();
@@ -98,6 +99,26 @@ class ReachTruckAction
         $data['fromLocationType'] = Location::class;
         $data['toLocationType'] = Warehouse::class;
         $data['toLocations'] = Warehouse::isEmpty()->get();
+        $data['reachTrucks'] = $this->getNonTransferedPalletsFromReachTruckFromLocationableType($locationType);
+
+        return $data;
+    }
+
+    public function getEditData(ReachTruck $reachTruck)
+    {
+        if ($reachTruck->from_locationable_type == Location::class) {
+            $data['reachTrucks'] = $this->getNonTransferedPalletsFromReachTruckFromLocationableType($reachTruck->fromLocationable->type);
+            $data['reachTrucks']->push($reachTruck);
+
+            $data['fromLocations'] = Location::type($reachTruck->fromLocationable->type)->get();
+            $data['fromLocationType'] = Location::class;
+
+            $data['toLocationType'] = Warehouse::class;
+            $data['toLocations'] = Warehouse::isEmpty()->get();
+            $data['toLocations']->push($reachTruck->toLocationable);
+        }
+
+        $data['reachTruckUsers'] = User::role(User::REACH_TRUCK)->get();
 
         return $data;
     }
@@ -113,5 +134,31 @@ class ReachTruckAction
                 ->nonTransfered()
                 ->get();
         }
+    }
+
+    public function getNonTransferedPalletsFromLocationable(string $locationType)
+    {
+        return Pallet::with('masterPallet')
+            ->currentLocationType($locationType)
+            ->nonTransfered()
+            ->get();
+    }
+
+    public function getNonTransferedPalletsFromReachTruckFromLocationableType(string $locationType)
+    {
+        return ReachTruck::with('pallet.masterPallet')
+            ->fromLocationAbleType($locationType)
+            ->nonTransfered()
+            ->get();
+    }
+
+    public function processTransferPallet(array $reachTruckData)
+    {
+        return ReachTruck::persitProcessPalletTransfer($reachTruckData);
+    }
+
+    public function processUpdateTransferPalletDetails(array $reachTruckData, ReachTruck $reachTruck)
+    {
+        return ReachTruck::persitUpdatePalletTransferDeatils($reachTruckData, $reachTruck);
     }
 }

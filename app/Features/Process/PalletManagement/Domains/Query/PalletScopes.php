@@ -42,4 +42,22 @@ trait PalletScopes
         }
         return $query;
     }
+
+    public function scopecurrentLocationType(Builder $query, string $locationType)
+    {
+        if (!empty($locationType)) {
+            return $query->with('currentPalletLocation')->whereHas('currentPalletLocation', function ($currentPalletLocationQry) use ($locationType) {
+                $currentPalletLocationQry->locationableType($locationType);
+            });
+        }
+
+        return $query;
+    }
+
+    public function scopeNonTransfered(Builder $query)
+    {
+        return $query->with('reachTruck')->whereHas('reachTruck', function ($reachTruckQry) {
+            $reachTruckQry->NonTransfered();
+        });
+    }
 }

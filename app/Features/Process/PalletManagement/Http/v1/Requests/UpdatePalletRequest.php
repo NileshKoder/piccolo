@@ -38,7 +38,6 @@ class UpdatePalletRequest extends FormRequest
     {
         $requestData = [];
         $requestData['pallet']['master_pallet_id'] = $this->master_pallet_id;
-        $requestData['pallet']['created_by'] = auth()->check() ? auth()->user()->id : 1;
         $requestData['pallet']['updated_by'] = auth()->check() ? auth()->user()->id : 1;
 
         $requestData['pallet_details'] = $this->pallet_details;
@@ -46,6 +45,8 @@ class UpdatePalletRequest extends FormRequest
         $requestData['pallet_location']['locationable_type'] = Location::class;
         $requestData['pallet_location']['locationable_id'] = $this->location_id;
         $requestData['pallet_location']['created_by'] = auth()->check() ? auth()->user()->id : 1;
+
+        $requestData['is_request_for_warehouse'] = !empty($this->request_for_warehouse) ? true : false;
 
         return $requestData;
     }

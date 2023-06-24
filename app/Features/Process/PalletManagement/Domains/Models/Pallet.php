@@ -62,6 +62,11 @@ class Pallet extends Model
                 self::persistDeletePallet($pallet);
             }
 
+            if ($palletData['is_request_for_warehouse']) {
+                $reachTruckAction = new ReachTruckAction();
+                $reachTruckAction->createReachTruckFromPallet($pallet);
+            }
+
             return $pallet;
         });
         return $pallet;

@@ -4,10 +4,12 @@ namespace App\Features\Process\PalletManagement\Domains\Models;
 
 use App\Helpers\Traits\BelongsTo;
 use Illuminate\Database\Eloquent\Model;
+use App\Features\Process\PalletManagement\Domains\Query\PalletLocationLogsScopes;
 
 class PalletLocationLogs extends Model
 {
     use BelongsTo;
+    use PalletLocationLogsScopes;
 
     protected $fillable = ['pallet_id', 'locationable_type', 'locationable_id', 'created_by'];
 

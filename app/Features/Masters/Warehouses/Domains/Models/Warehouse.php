@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use App\Features\Masters\Warehouses\Constants\WarehouseConstants;
 use App\Features\Masters\Warehouses\Domains\Query\WarehouseScopes;
+use App\Features\Process\ReachTruck\Domains\Models\ReachTruck;
 
 class Warehouse extends Model implements WarehouseConstants
 {
@@ -59,5 +60,23 @@ class Warehouse extends Model implements WarehouseConstants
         $warehouse->update();
 
         return $warehouse;
+    }
+
+    public function updateIsEmpty(bool $isEmpty): Warehouse
+    {
+        $this->is_empty = $isEmpty;
+        $this->update();
+
+        return $this;
+    }
+
+    public function toReachTrucks()
+    {
+        return $this->morphMany(ReachTruck::class, 'toLocationable');
+    }
+
+    public function fromReachTrucks()
+    {
+        return $this->morphMany(ReachTruck::class, 'fromLocationable');
     }
 }

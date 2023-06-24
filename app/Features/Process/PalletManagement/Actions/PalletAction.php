@@ -69,9 +69,12 @@ class PalletAction
         return DataTables::of($pallets)
             ->skipPaging()
             ->addColumn('action', function ($pallet) {
+                $action = "";
+                // if ($pallet->reachTruck && !$pallet->reachTruck->is_transfered) {
                 $action = "<a href='" . route('pallets.edit', $pallet->id) . "' class='editPallet' title='Edit Pallet'>
                             <i class='fas fa-edit text-success'></i>
                         </a>";
+                // }
                 return $action;
             })
             ->editColumn('updated_at', function ($pallet) {

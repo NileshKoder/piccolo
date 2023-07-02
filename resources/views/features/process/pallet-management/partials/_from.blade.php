@@ -13,6 +13,7 @@
     </div>
     <div class="col-md-4">
         <div class="form-group">
+            <input type="hidden" id="max_weight">
             <label>Pallet</label>
             <select name="master_pallet_id" id="master_pallet_id" class="form-control select2">
                 <option value="">Select Master Pallet</option>

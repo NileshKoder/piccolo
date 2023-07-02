@@ -7,26 +7,34 @@ $(document).ready(function() {
 
     getLocationShortName();
     calculateTotalWeight();
+    updateMaxWight();
 
     $('#location_id').on('change', function() {
         getLocationShortName();
     })
 
+    $('#master_pallet_id').on('change', function() {
+        updateMaxWight();
+    })
+
     $('#add_sku').on('click', function() {
-        if(parseInt($('#weight').val()) < 10 || parseInt($('#weight').val()) > 900) {
+        let masterPalletId = $('#master_pallet_id').val();
+        let maxWeight = $('#max_weight').val();
+        if(parseInt($('#weight').val()) < 10 || parseInt($('#weight').val()) > maxWeight) {
             swal({
-                title: "Weight should be greater than 10KG and less than 900 KG",
+                title: `Weight should be greater than 10KG and less than ${maxWeight} KG`,
                 icon: "warning"
             })
 
             return false;
         }
 
+
         let checkWeight = checkTillWeight();
 
         if(!checkWeight) {
             swal({
-                title: "You can not add more than 900 KG",
+                title: `You can not add more than ${maxWeight} KG`,
                 icon: "warning"
             })
 
@@ -34,7 +42,6 @@ $(document).ready(function() {
         }
 
         let locationId = $('#location_id').val();
-        let masterPalletId = $('#master_pallet_id').val();
 
         let skuCodeId = $('#sku_code_id').val();
         let skuCodeName = $('#sku_code_id').find(':selected').text();
@@ -130,9 +137,33 @@ function checkTillWeight() {
     let tilltotalWeight = $('#total_weight').val()
     let weight = $('#weight').val();
     let checkMaxWeight = parseFloat(tilltotalWeight) + parseFloat(weight);
-    if (checkMaxWeight > 900) {
+    let maxWeight = $('#max_weight').val()
+
+    if (checkMaxWeight > maxWeight) {
         return false;
     }
 
     return true;
+}
+
+function updateMaxWight() {
+    let selectedPallet = $('#master_pallet_id option:selected').text();
+    let maxWeight = 0;
+    if(selectedPallet.charAt(0) == 'P') {
+        maxWeight = 900;
+    } else if(selectedPallet.charAt(0) == 'C') {
+        maxWeight = 1500;
+    } else {
+        maxWeight = 900;
+    }
+    $('#max_weight').val(maxWeight);
+
+    if(!checkTillWeight()) {
+        swal({
+            title: `You can not add more than ${maxWeight} KG`,
+            icon: "warning"
+        })
+
+        return false;
+    }
 }

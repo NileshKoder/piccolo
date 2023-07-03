@@ -6,6 +6,7 @@ use App\Helpers\Traits\BelongsTo;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use App\Features\Masters\MasterPallet\Domains\Models\MasterPallet;
+use App\Features\Process\PalletManagement\Constants\PalletContants;
 use App\Features\Process\PalletManagement\Observers\PalletObserver;
 use App\Features\Process\PalletManagement\Domains\Query\PalletScopes;
 use App\Features\Process\PalletManagement\Domains\Models\PalletDetails;
@@ -14,7 +15,7 @@ use App\Features\Process\PalletManagement\Domains\Models\PalletLocationLogs;
 use App\Features\Process\ReachTruck\Actions\ReachTruckAction;
 use App\Features\Process\ReachTruck\Domains\Models\ReachTruck;
 
-class Pallet extends Model
+class Pallet extends Model implements PalletContants
 {
     use PalletScopes, BelongsTo;
 

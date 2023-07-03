@@ -19,6 +19,8 @@ class PalletAction
         $data['skuCodes'] = SkuCode::all();
         $data['variants'] = Variant::all();
         $data['locations'] = Location::all();
+        $data['maxWeightForPallet'] = Pallet::MAX_WEIGHT_FOR_PALLET;
+        $data['maxWeightForContainer'] = Pallet::MAX_WEIGHT_FOR_CONTAINER;
 
         return $data;
     }
@@ -30,6 +32,8 @@ class PalletAction
         $data['skuCodes'] = SkuCode::all();
         $data['variants'] = Variant::all();
         $data['locations'] = Location::all();
+        $data['maxWeightForPallet'] = Pallet::MAX_WEIGHT_FOR_PALLET;
+        $data['maxWeightForContainer'] = Pallet::MAX_WEIGHT_FOR_CONTAINER;
 
         return $data;
     }

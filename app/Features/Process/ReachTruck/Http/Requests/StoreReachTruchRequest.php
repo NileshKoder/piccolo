@@ -2,6 +2,7 @@
 
 namespace App\Features\Process\ReachTruck\Http\Requests;
 
+use App\Features\Process\ReachTruck\Domains\Models\ReachTruck;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreReachTruchRequest extends FormRequest
@@ -23,14 +24,7 @@ class StoreReachTruchRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            "transfered_by" => 'required|exists:users,id',
-            "reach_truck_id" => 'required|exists:reach_trucks,id',
-            "from_locationable_type" => 'required',
-            "from_locationable_id" => 'required',
-            "to_locationable_type" => 'required',
-            "to_locationable_id" => 'required',
-        ];
+        return ReachTruck::CREATE_RULES;
     }
 
     public function toFormData()

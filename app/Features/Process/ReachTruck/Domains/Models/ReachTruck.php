@@ -6,10 +6,11 @@ use App\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use App\Features\Process\PalletManagement\Domains\Models\Pallet;
+use App\Features\Process\ReachTruck\Constants\ReachTruckConstants;
 use App\Features\Process\ReachTruck\Observers\ReachTruckObserver;
 use App\Features\Process\ReachTruck\Domains\Query\ReachTruckScopes;
 
-class ReachTruck extends Model
+class ReachTruck extends Model implements ReachTruckConstants
 {
     use ReachTruckScopes;
 

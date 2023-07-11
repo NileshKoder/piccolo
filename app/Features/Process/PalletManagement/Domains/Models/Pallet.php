@@ -6,6 +6,7 @@ use App\Helpers\Traits\BelongsTo;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use App\Features\Masters\MasterPallet\Domains\Models\MasterPallet;
+use App\Features\OrderManagement\Domains\Models\OrderItemPallet;
 use App\Features\Process\PalletManagement\Constants\PalletContants;
 use App\Features\Process\PalletManagement\Observers\PalletObserver;
 use App\Features\Process\PalletManagement\Domains\Query\PalletScopes;
@@ -139,6 +140,11 @@ class Pallet extends Model implements PalletContants
     public function reachTruck()
     {
         return $this->hasOne(ReachTruck::class);
+    }
+
+    public function orderItemPallets()
+    {
+        return $this->hasMany(OrderItemPallet::class);
     }
 
     public static function boot()

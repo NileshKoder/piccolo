@@ -7,8 +7,8 @@ use App\Features\OrderManagement\Domains\Models\Order;
 use App\Features\Masters\SkuCodes\Domains\Models\SkuCode;
 use App\Features\Masters\Variants\Domains\Models\Variant;
 use App\Features\Masters\Locations\Domains\Models\Location;
-use App\Features\OrderManagement\Helpers\OrderMappingHelper;
 use App\Features\OrderManagement\Constants\OrderItemConstants;
+use App\Features\OrderManagement\Domains\Models\OrderItemPallet;
 
 class OrderItem extends Model implements OrderItemConstants
 {
@@ -36,22 +36,31 @@ class OrderItem extends Model implements OrderItemConstants
         return $this->belongsTo(Location::class);
     }
 
-    public static function persistCreateOrderItemDetail(Order $order, array $data): ?OrderItem
+    public function orderItemPallet()
+    {
+        return $this->hasMany(OrderItemPallet::class);
+    }
+
+    public static function persistCreateOrderItem(Order $order, array $data): ?OrderItem
     {
         $data['pick_up_date'] = date('Y-m-d', strtotime($data['pick_up_date']));
-        $orderItem = $order->ordeItemDetails()->create($data);
+        $orderItem = $order->ordeItems()->create($data);
+        self::createOrderItemPallet($orderItem);
 
-        $orderMappingHelper = new OrderMappingHelper();
-        $orderMappingHelper->mapPalletsVaiOrder($orderItem);
         return $orderItem;
     }
 
     public static function persistDeleteOrderItemDetail(Order $order, array $ids)
     {
-        return $order->ordeItemDetails()->whereNotIn('id', $ids)->delete();
+        return $order->ordeItems()->whereNotIn('id', $ids)->delete();
     }
 
-    public static function persistUpdateOrderItemDetail(Order $order, array $data): ?OrderItem
+    public static function createOrderItemPallet(OrderItem $orderItem)
+    {
+        return OrderItemPallet::persistOrderItemPallet($orderItem);
+    }
+
+    public static function persistUpdateOrderItem(Order $order, array $data): ?OrderItem
     {
         $data['pick_up_date'] = date('Y-m-d', strtotime($data['pick_up_date']));
         $orderItem = OrderItem::find($data['order_item_detail_id']);
@@ -69,6 +78,6 @@ class OrderItem extends Model implements OrderItemConstants
     public static function boot()
     {
         parent::boot();
-        self::observe(OrderItemObserver::class);
+        // self::observe(OrderItemObserver::class);
     }
 }

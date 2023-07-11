@@ -46,10 +46,10 @@ class Order extends Model implements OrderConstants
     public static function createOrderItems(Order $order, array $data)
     {
         foreach ($data['order_item_details'] as $key => $orderItem) {
-            OrderItem::persistCreateOrderItemDetail($order, $orderItem);
+            OrderItem::persistCreateOrderItem($order, $orderItem);
         }
 
-        return $order->ordeItemDetails;
+        return $order->ordeItems;
     }
 
     public static function persristUpdateOrder(Order $order, array $data)
@@ -69,9 +69,9 @@ class Order extends Model implements OrderConstants
         foreach ($data['order_item_details'] as $key => $orderItem) {
             if ($orderItem['order_item_detail_id']) {
                 array_push($updateIds, $orderItem['order_item_detail_id']);
-                OrderItem::persistUpdateOrderItemDetail($order, $orderItem);
+                OrderItem::persistUpdateOrderItem($order, $orderItem);
             } else {
-                $orderItem = OrderItem::persistCreateOrderItemDetail($order, $orderItem);
+                $orderItem = OrderItem::persistCreateOrderItem($order, $orderItem);
                 array_push($updateIds, $orderItem->id);
             }
         }

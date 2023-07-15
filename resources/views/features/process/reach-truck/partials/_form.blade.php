@@ -37,7 +37,7 @@
             </div>
         </div>
 
-        <div class="col-md-4">
+        <div class="col-md-4 to_locationable_id_div">
             <div class="form-group">
                 <input type="hidden" name="to_locationable_type" value="{{ $data['toLocationType'] }}">
                 <label for="name">To Location </label>

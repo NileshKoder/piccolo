@@ -27,6 +27,11 @@ class OrderItemPallet extends Model
                 if ($maxWeight > $weightInPallet) {
                     $orderItem->orderItemPallet()->create(['pallet_id' => $pallet->id]);
                     $maxWeight = $maxWeight - $weightInPallet;
+                    $orderItem->updateState(OrderItem::PARTIAL_MAPPED);
+                }
+
+                if ($maxWeight <= $weightInPallet) {
+                    $orderItem->updateState(OrderItem::MAPPED);
                 }
             }
         }

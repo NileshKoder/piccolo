@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Features\OrderManagement\Actions\OrderAction;
 use App\Features\OrderManagement\Domains\Models\Order;
 use App\Features\OrderManagement\Http\Requests\StoreOrderRequest;
+use App\Features\OrderManagement\Http\Requests\UpdateOrderRequest;
 
 class OrderController extends Controller
 {
@@ -60,7 +61,7 @@ class OrderController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Order  $order
+     * @param  \App\Features\OrderManagement\Domains\Models\Order  $order
      * @return \Illuminate\Http\Response
      */
     public function show(Order $order)
@@ -71,13 +72,13 @@ class OrderController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Order  $order
+     * @param  \App\Features\OrderManagement\Domains\Models\Order  $order
      * @return \Illuminate\Http\Response
      */
     public function edit(Order $order)
     {
         $masterData = $this->orderAction->getMasterData();
-        $order = Order::with('ordeItemDetails')->find($order->id);
+        $order->load('ordeItems');
 
         return view('features.orders.edit', compact('masterData', 'order'));
     }
@@ -86,18 +87,25 @@ class OrderController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Order  $order
+     * @param  \App\Features\OrderManagement\Domains\Models\Order  $order
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Order $order)
+    public function update(UpdateOrderRequest $request, Order $order)
     {
-        //
+        try {
+            $data = $request->toFormData();
+            $this->orderAction->updateOrder($order, $data);
+        } catch (Exception $ex) {
+            return back()->with('error', $ex->getMessage());
+        }
+
+        return redirect()->route('orders.index')->with('success', 'Order Updated Successfully');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Order  $order
+     * @param  \App\Features\OrderManagement\Domains\Models\Order  $order
      * @return \Illuminate\Http\Response
      */
     public function destroy(Order $order)

@@ -9,6 +9,7 @@ use App\Features\OrderManagement\Domains\Models\Order;
 use App\Features\Masters\SkuCodes\Domains\Models\SkuCode;
 use App\Features\Masters\Variants\Domains\Models\Variant;
 use App\Features\Masters\Locations\Domains\Models\Location;
+use App\Features\OrderManagement\Domains\Models\OrderItem;
 
 class OrderAction
 {
@@ -17,6 +18,7 @@ class OrderAction
         $data['skuCodes'] = SkuCode::get();
         $data['variants'] = Variant::get();
         $data['locations'] = Location::type(Location::LINES)->get();
+        $data['orderItemStates'] = OrderItem::STATES;
 
         return $data;
     }
@@ -26,12 +28,17 @@ class OrderAction
         return Order::persristCreateOrder($data);
     }
 
+    public function updateOrder(Order $order, array $data)
+    {
+        return Order::persristUpdateOrder($order, $data);
+    }
+
     public function getOrders(
         array $order,
         int $start,
         int $length
     ) {
-        $orders = Order::with('ordeItemDetails', 'creator', 'updator');
+        $orders = Order::with('ordeItems', 'creator', 'updator');
 
         // Modifying total record count and filtered row count as data is manually filtered
         $numberOfTotalRows = Order::count('*');

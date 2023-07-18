@@ -14,7 +14,7 @@ class OrderItem extends Model implements OrderItemConstants
 {
     protected $fillable = ['order_id', 'sku_code_id', 'variant_id', 'location_id', 'required_weight', 'pick_up_date', 'state'];
 
-    public $appends = ['mapped_required_weight'];
+    public $appends = [];
 
     public function order()
     {
@@ -63,8 +63,11 @@ class OrderItem extends Model implements OrderItemConstants
     public static function persistUpdateOrderItem(Order $order, array $data): ?OrderItem
     {
         $data['pick_up_date'] = date('Y-m-d', strtotime($data['pick_up_date']));
+        $data['state'] = self::CREATED;
         $orderItem = OrderItem::find($data['order_item_detail_id']);
         $orderItem->update($data);
+        $orderItem->orderItemPallet()->delete();
+        self::createOrderItemPallet($orderItem);
 
         return $orderItem;
     }

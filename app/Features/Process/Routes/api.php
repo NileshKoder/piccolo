@@ -2,11 +2,12 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Features\Process\ReachTruck\Http\Controllers\Api\ReachTruckApiController;
+use App\Features\Process\PalletManagement\Http\v1\Controllers\Api\PalletApiController;
 
-Route::post('pallets/create', 'App\Features\Process\PalletManagement\Http\v1\Controllers\Api\PalletApiController@create');
-Route::post('pallets/get-pallet-details', 'App\Features\Process\PalletManagement\Http\v1\Controllers\Api\PalletApiController@getPalletDetails');
-Route::post('pallets/store', 'App\Features\Process\PalletManagement\Http\v1\Controllers\Api\PalletApiController@store');
-Route::put('pallets/update/{pallet}', 'App\Features\Process\PalletManagement\Http\v1\Controllers\Api\PalletApiController@update');
+Route::post('pallets/create', [PalletApiController::class, 'create']);
+Route::post('pallets/get-pallet-details', [PalletApiController::class, 'getPalletDetails']);
+Route::post('pallets/store', [PalletApiController::class, 'store']);
+Route::put('pallets/update/{pallet}', [PalletApiController::class, 'update']);
 
 Route::post('reach-truck/home', [ReachTruckApiController::class, 'home']);
 Route::post('reach-truck/create', [ReachTruckApiController::class, 'getCreateData']);

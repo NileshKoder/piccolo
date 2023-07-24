@@ -58,8 +58,10 @@ class ReachTruckApiController extends ApiController
             throw new Exception("Location Type is required");
         }
 
+        $locationType = $this->getLocationType($request->location_type);
+
         try {
-            $createData = $this->reachTruckAction->getCreateData($request->location_type);
+            $createData = $this->reachTruckAction->getCreateData($locationType);
             unset($createData['reachTruckUsers']);
 
             return $this->showAll($createData, 200);
@@ -68,6 +70,18 @@ class ReachTruckApiController extends ApiController
         }
 
         return $this->showOne("Pallet Transfer Successfully");
+    }
+
+    public function getLocationType(string $locationType)
+    {
+        if (
+            $locationType == Location::GLASS || $locationType == Location::GLASS ||
+            $locationType == Location::CURING || $locationType == Location::RECYCLE
+        ) {
+            return Location::class;
+        }
+
+        return "";
     }
 
     public function store(Request $request)

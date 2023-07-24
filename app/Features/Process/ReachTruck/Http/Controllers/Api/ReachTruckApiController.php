@@ -6,6 +6,7 @@ use Exception;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ApiController;
 use Illuminate\Support\Facades\Validator;
+use App\Features\Masters\Locations\Domains\Models\Location;
 use App\Features\Process\ReachTruck\Actions\ReachTruckAction;
 use App\Features\Process\ReachTruck\Domains\Models\ReachTruck;
 
@@ -28,6 +29,16 @@ class ReachTruckApiController extends ApiController
 
         try {
             $locationCount = $this->reachTruckAction->getLocationCount();
+
+            foreach ($locationCount as $key => $location) {
+                if ($location->type == Location::LINES) {
+                    $location->type = "WH TO ASSEMBLY LINE";
+                }
+
+                if ($location->type == Location::LOADING) {
+                    $location->type = "WH TO LOADING";
+                }
+            }
 
             return $this->showAll($locationCount, 200);
         } catch (Exception $ex) {

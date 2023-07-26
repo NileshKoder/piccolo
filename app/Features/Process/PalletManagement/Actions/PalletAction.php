@@ -10,6 +10,7 @@ use App\Features\Masters\Variants\Domains\Models\Variant;
 use App\Features\Masters\Locations\Domains\Models\Location;
 use App\Features\Process\PalletManagement\Domains\Models\Pallet;
 use App\Features\Masters\MasterPallet\Domains\Models\MasterPallet;
+use App\Features\Masters\Warehouses\Domains\Models\Warehouse;
 
 class PalletAction
 {
@@ -74,11 +75,11 @@ class PalletAction
             ->skipPaging()
             ->addColumn('action', function ($pallet) {
                 $action = "";
-                // if ($pallet->reachTruck && !$pallet->reachTruck->is_transfered) {
-                $action = "<a href='" . route('pallets.edit', $pallet->id) . "' class='editPallet' title='Edit Pallet'>
+                if ($pallet->currentPalletLocation->locationable_type != Warehouse::class) {
+                    $action = "<a href='" . route('pallets.edit', $pallet->id) . "' class='editPallet' title='Edit Pallet'>
                             <i class='fas fa-edit text-success'></i>
                         </a>";
-                // }
+                }
                 return $action;
             })
             ->editColumn('updated_at', function ($pallet) {

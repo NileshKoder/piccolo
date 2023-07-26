@@ -17,11 +17,11 @@
                 <tr>
                     <input type="hidden" name="pallet_details[{{ $key }}][id]" value="{{ $palletDetail->id }}">
                     <td>
-                        <input type="hidden" name="pallet_details[{{ $key }}][sku_code_id]" value="{{ $palletDetail->sku_code_id }}">
+                        <input type="hidden" class="selected_sku_id" name="pallet_details[{{ $key }}][sku_code_id]" value="{{ $palletDetail->sku_code_id }}">
                         <input type="text" class="form-control" value="{{ $palletDetail->skuCode->name }}" disabled>
                     </td>
                     <td>
-                        <input type="hidden" name="pallet_details[{{ $key }}][variant_id]" value="{{ $palletDetail->variant_id }}">
+                        <input type="hidden" class="selected_variant_id" name="pallet_details[{{ $key }}][variant_id]" value="{{ $palletDetail->variant_id }}">
                         <input type="text" class="form-control" value="{{ $palletDetail->variant->name }}" disabled>
                     </td>
                     <td>

@@ -66,16 +66,36 @@ $(document).ready(function() {
             })
             return false;
         }
+
+        let isAlreadyExists = false
+        $('#skuTableBody tr').each(function (index, value) {
+            let selectedSkuId = $(this).find('.selected_sku_id').val();
+            let selectedVariantId = $(this).find('.selected_variant_id').val();
+
+            if(skuCodeId == selectedSkuId && varinatId == selectedVariantId) {
+                isAlreadyExists = true;
+                return;
+            }
+        });
+
+        if(isAlreadyExists) {
+            swal({
+                title: "Sku and varinat already exists!",
+                icon: "error"
+            })
+            return false;
+        }
+
         let time = $.now();
         let tbodyHtml = `
             <tr>
                 <input type="hidden" name="pallet_details[` + time + `][id]" value="">
                 <td>
-                    <input type="hidden" name="pallet_details[` + time + `][sku_code_id]" value="` + skuCodeId + `">
+                    <input type="hidden" class="selected_sku_id" name="pallet_details[` + time + `][sku_code_id]" value="` + skuCodeId + `">
                     <input type="text" class="form-control" value="` + skuCodeName + `" disabled>
                 </td>
                 <td>
-                    <input type="hidden" name="pallet_details[` + time + `][variant_id]" value="` + varinatId + `">
+                    <input type="hidden" class="selected_variant_id" name="pallet_details[` + time + `][variant_id]" value="` + varinatId + `">
                     <input type="text" class="form-control" value="` + varinatName + `" disabled>
                 </td>
                 <td>

@@ -64,7 +64,7 @@ class OrderItem extends Model implements OrderItemConstants
     {
         $data['pick_up_date'] = date('Y-m-d', strtotime($data['pick_up_date']));
         $data['state'] = self::CREATED;
-        $orderItem = OrderItem::find($data['order_item_detail_id']);
+        $orderItem = OrderItem::find($data['order_item_id']);
         $orderItem->update($data);
         $orderItem->orderItemPallet()->delete();
         self::createOrderItemPallet($orderItem);

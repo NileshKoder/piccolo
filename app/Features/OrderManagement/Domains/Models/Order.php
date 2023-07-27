@@ -67,8 +67,8 @@ class Order extends Model implements OrderConstants
         $updateIds = [];
 
         foreach ($data['order_item_details'] as $key => $orderItem) {
-            if ($orderItem['order_item_detail_id']) {
-                array_push($updateIds, $orderItem['order_item_detail_id']);
+            if ($orderItem['order_item_id']) {
+                array_push($updateIds, $orderItem['order_item_id']);
                 OrderItem::persistUpdateOrderItem($order, $orderItem);
             } else {
                 $orderItem = OrderItem::persistCreateOrderItem($order, $orderItem);

@@ -34,7 +34,7 @@
 @endsection
 
 @section('scripts')
-<script src="{{asset('js/features/process/order/form.js')}}"></script>
+<script src="{{asset('js/features/orders/form.js')}}"></script>
 <script src="{{asset('js/sweetalert.min.js')}}"></script>
 
 <script>

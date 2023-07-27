@@ -19,7 +19,7 @@ class OrderAction
         $data['variants'] = Variant::get();
         $data['locations'] = Location::type(Location::LINES)->get();
         $data['orderItemStates'] = OrderItem::STATES;
-
+        $data['orderItemCreate'] = OrderItem::CREATED;
         return $data;
     }
 

@@ -10,6 +10,7 @@ use App\Features\Masters\SkuCodes\Domains\Models\SkuCode;
 use App\Features\Masters\Variants\Domains\Models\Variant;
 use App\Features\Masters\Locations\Domains\Models\Location;
 use App\Features\OrderManagement\Domains\Models\OrderItem;
+use App\Features\OrderManagement\Domains\Models\OrderItemPallet;
 
 class OrderAction
 {
@@ -76,5 +77,11 @@ class OrderAction
             ->setFilteredRecords($numberOfFilteredRows)
             ->setTotalRecords($numberOfTotalRows)
             ->make(true);
+    }
+
+    public function unMappedPallet(int $orderItemPalletId)
+    {
+        $orderItemPallet = OrderItemPallet::find($orderItemPalletId);
+        return $orderItemPallet->unMappedPallet();
     }
 }

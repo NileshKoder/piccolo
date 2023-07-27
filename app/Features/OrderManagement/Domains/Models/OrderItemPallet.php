@@ -10,7 +10,7 @@ class OrderItemPallet extends Model
 {
     protected $fillable = ['pallet_id', 'is_transfered'];
 
-    public static function persistOrderItemPallet(OrderItem $orderItem)
+    public static function persistOrderItemPallets(OrderItem $orderItem)
     {
         $pallets = Pallet::doesntHave('orderItemPallets')
             ->whereHas('currentPalletLocation', function ($q) {
@@ -25,7 +25,7 @@ class OrderItemPallet extends Model
             foreach ($pallets as $key => $pallet) {
                 $weightInPallet = $pallet->palletDetails->where('sku_code_id', $orderItem->sku_code_id)->where('variant_id', $orderItem->variant_id)->sum('weight');
                 if ($maxWeight > $weightInPallet) {
-                    $orderItem->orderItemPallet()->create(['pallet_id' => $pallet->id]);
+                    $orderItem->orderItemPallets()->create(['pallet_id' => $pallet->id]);
                     $maxWeight = $maxWeight - $weightInPallet;
                     $orderItem->updateState(OrderItem::PARTIAL_MAPPED);
                 }
@@ -35,5 +35,22 @@ class OrderItemPallet extends Model
                 }
             }
         }
+    }
+
+    public function unMappedPallet()
+    {
+        $this->delete();
+        $this->orderItem->reCalculateOrderItemState();
+        return;
+    }
+
+    public function pallet()
+    {
+        return $this->belongsTo(Pallet::class);
+    }
+
+    public function orderItem()
+    {
+        return $this->belongsTo(OrderItem::class);
     }
 }

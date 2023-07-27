@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Features\OrderManagement\Actions\OrderAction;
 use App\Features\OrderManagement\Domains\Models\Order;
+use App\Features\OrderManagement\Domains\Models\OrderItem;
 use App\Features\OrderManagement\Http\Requests\StoreOrderRequest;
 use App\Features\OrderManagement\Http\Requests\UpdateOrderRequest;
 
@@ -125,5 +126,31 @@ class OrderController extends Controller
             return response()->json(['message' => $ex->getMessage()], 500);
         }
         return $data;
+    }
+
+    public function getOrderIteMappedDetails(Order $order, OrderItem $orderItem)
+    {
+        if ($orderItem->state == OrderItem::TRANSFERED) {
+            abort(403, 'This Item Is Already Transfered');
+        }
+
+        $orderItem->load([
+            'skuCode', 'variant', 'location',
+            'orderItemPallets.pallet' => function ($q) {
+                $q->with('palletDetails', 'masterPallet');
+            }
+        ]);
+        return view('features.orders.order-item-mapped-details', compact('order', 'orderItem'));
+    }
+
+    public function unmappedPallet(Request $request)
+    {
+        try {
+            $this->orderAction->unMappedPallet($request->order_item_pallet_id);
+        } catch (Exception $ex) {
+            return response()->json(['message' => $ex->getMessage(), "code" => 500], 500);
+        }
+
+        return response()->json(['message' => "Unmapped successfully", "code" => 200], 200);
     }
 }

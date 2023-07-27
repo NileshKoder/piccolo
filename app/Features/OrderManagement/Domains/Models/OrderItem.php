@@ -36,16 +36,16 @@ class OrderItem extends Model implements OrderItemConstants
         return $this->belongsTo(Location::class);
     }
 
-    public function orderItemPallet()
+    public function orderItemPallets()
     {
-        return $this->hasMany(OrderItemPallet::class);
+        return $this->hasMany(OrderItemPallet::class, 'order_item_id');
     }
 
     public static function persistCreateOrderItem(Order $order, array $data): ?OrderItem
     {
         $data['pick_up_date'] = date('Y-m-d', strtotime($data['pick_up_date']));
         $orderItem = $order->ordeItems()->create($data);
-        self::createOrderItemPallet($orderItem);
+        self::createOrderItemPallets($orderItem);
 
         return $orderItem;
     }
@@ -55,9 +55,9 @@ class OrderItem extends Model implements OrderItemConstants
         return $order->ordeItems()->whereNotIn('id', $ids)->delete();
     }
 
-    public static function createOrderItemPallet(OrderItem $orderItem)
+    public static function createOrderItemPallets(OrderItem $orderItem)
     {
-        return OrderItemPallet::persistOrderItemPallet($orderItem);
+        return OrderItemPallet::persistOrderItemPallets($orderItem);
     }
 
     public static function persistUpdateOrderItem(Order $order, array $data): ?OrderItem
@@ -66,10 +66,30 @@ class OrderItem extends Model implements OrderItemConstants
         $data['state'] = self::CREATED;
         $orderItem = OrderItem::find($data['order_item_id']);
         $orderItem->update($data);
-        $orderItem->orderItemPallet()->delete();
-        self::createOrderItemPallet($orderItem);
+        $orderItem->orderItemPallets()->delete();
+        self::createOrderItemPallets($orderItem);
 
         return $orderItem;
+    }
+
+    public function reCalculateOrderItemState()
+    {
+        if ($this->orderItemPallets->count() > 0) {
+            $mappedWeight = 0;
+            foreach ($this->orderItemPallets as $key => $orderItemPallet) {
+                $mappedWeight += $orderItemPallet->pallet->palletDetails->where('sku_code_id', $this->sku_code_id)->where('variant_id', $this->variant_id)->sum('weight');
+            }
+
+            if ($mappedWeight == 0) {
+                $this->updateState(OrderItem::CREATED);
+            } elseif ($mappedWeight >= $this->required_weight) {
+                $this->updateState(OrderItem::MAPPED);
+            } elseif ($mappedWeight <= $this->required_weight) {
+                $this->updateState(OrderItem::PARTIAL_MAPPED);
+            }
+        } else {
+            $this->updateState(OrderItem::CREATED);
+        }
     }
 
     public function updateState(string $state)

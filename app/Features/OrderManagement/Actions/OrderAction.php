@@ -20,6 +20,9 @@ class OrderAction
         $data['locations'] = Location::type(Location::LINES)->get();
         $data['orderItemStates'] = OrderItem::STATES;
         $data['orderItemCreate'] = OrderItem::CREATED;
+        $data['orderItemPartialMapped'] = OrderItem::PARTIAL_MAPPED;
+        $data['orderItemMapped'] = OrderItem::MAPPED;
+
         return $data;
     }
 

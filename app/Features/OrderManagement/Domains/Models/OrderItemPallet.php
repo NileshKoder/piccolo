@@ -22,16 +22,18 @@ class OrderItemPallet extends Model
 
         if ($pallets->count() > 0) {
             $maxWeight = $orderItem->required_weight;
+            $mappedQty = 0;
             foreach ($pallets as $key => $pallet) {
-                $weightInPallet = $pallet->palletDetails->where('sku_code_id', $orderItem->sku_code_id)->where('variant_id', $orderItem->variant_id)->sum('weight');
-                if ($maxWeight > $weightInPallet) {
-                    $orderItem->orderItemPallets()->create(['pallet_id' => $pallet->id]);
-                    $maxWeight = $maxWeight - $weightInPallet;
-                    $orderItem->updateState(OrderItem::PARTIAL_MAPPED);
-                }
+                $orderItem->orderItemPallets()->create(['pallet_id' => $pallet->id]);
 
-                if ($maxWeight <= $weightInPallet) {
+                $weightInPallet = $pallet->palletDetails->where('sku_code_id', $orderItem->sku_code_id)->where('variant_id', $orderItem->variant_id)->sum('weight');
+                $mappedQty += $weightInPallet;
+
+                if ($mappedQty >= $maxWeight) {
                     $orderItem->updateState(OrderItem::MAPPED);
+                    break;
+                } else if ($mappedQty < $maxWeight) {
+                    $orderItem->updateState(OrderItem::PARTIAL_MAPPED);
                 }
             }
         }

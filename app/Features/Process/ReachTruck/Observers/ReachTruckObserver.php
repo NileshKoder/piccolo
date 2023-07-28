@@ -50,7 +50,8 @@ class ReachTruckObserver
             if ($reachTruck->to_locationable_type == Warehouse::class && $reachTruck->to_locationable_id != Warehouse::GENERAL_ID) {
                 $reachTruck->toLocationable->updateIsEmpty(false);
             }
-            Pallet::createPalletLocation($reachTruck->pallet, $this->createPalletLocationData($reachTruck));
+
+            $reachTruck->pallet->masterPallet->updateLastLocationable($reachTruck->to_locationable_type, $reachTruck->to_locationable_id);
         }
     }
 

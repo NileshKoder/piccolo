@@ -8,19 +8,16 @@ use App\Http\Controllers\Controller;
 use App\Features\Process\PalletManagement\Domains\Models\Pallet;
 use App\Features\Process\PalletManagement\Http\v1\Requests\StorePalletRequest;
 use App\Features\Process\PalletManagement\Http\v1\Requests\UpdatePalletRequest;
-use App\Features\Process\ReachTruck\Actions\ReachTruckAction;
 use Exception;
 
 class PalletController extends Controller
 {
     public $palletAction;
-    public $reachTruckAction;
+
     public function __construct(
         PalletAction $palletAction,
-        ReachTruckAction $reachTruckAction
     ) {
         $this->palletAction = $palletAction;
-        $this->reachTruckAction = $reachTruckAction;
     }
 
     /**

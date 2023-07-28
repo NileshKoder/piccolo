@@ -54,7 +54,7 @@ class Pallet extends Model implements PalletContants
         DB::transaction(function () use ($pallet, $palletData) {
             $pallet->update($palletData['pallet']);
 
-            self::updateMasterPalletLastLocation($pallet, $palletData['location_id']);
+            self::updateMasterPalletLastLocation($pallet, $palletData['pallet']['location_id']);
 
             if (array_key_exists('pallet_details', $palletData)) {
                 self::updateOrCreatePalletDetails($pallet, $palletData['pallet_details']);
@@ -70,7 +70,7 @@ class Pallet extends Model implements PalletContants
 
             if ($palletData['is_request_for_warehouse']) {
                 $reachTruckAction = new ReachTruckAction();
-                $reachTruckAction->createReachTruckFromPallet($pallet);
+                $reachTruckAction->createReachTruckFromPallet($pallet, Warehouse::class);
             }
 
             return $pallet;

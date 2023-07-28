@@ -7,14 +7,16 @@ use App\Features\Masters\SkuCodes\Domains\Models\SkuCode;
 use App\Features\Masters\Variants\Domains\Models\Variant;
 use App\Features\Process\PalletManagement\Domains\Models\Pallet;
 use App\Features\Process\PalletManagement\Domains\Query\PalletDetailsScopes;
+use Carbon\Carbon;
 
 class PalletDetails extends Model
 {
     use PalletDetailsScopes;
-    protected $fillable = ['pallet_id', 'sku_code_id', 'variant_id', 'weight', 'batch'];
+    protected $fillable = ['pallet_id', 'sku_code_id', 'variant_id', 'weight', 'batch', 'batch_date'];
 
     public static function persistUpdateOrCreatePalletDetails(Pallet $pallet, array $palletDetails)
     {
+        $palletDetails['batch_date'] = Carbon::parse($palletDetails['batch_date'])->format('Y-m-d');
         return $pallet->palletDetails()->updateOrcreate(
             [
                 'id' => $palletDetails['id']

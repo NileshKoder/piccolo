@@ -30,7 +30,7 @@
                         <input type="text" class="form-control" value="{{ $ordeItem->required_weight }}" disabled>
                     </td>
                     <td>
-                        <input type="hidden" name="order_item_details[{{ $key }}][pick_up_date]" value="{{ date('d/m/Y', strtotime($ordeItem->pick_up_date)) }}">
+                        <input type="hidden" name="order_item_details[{{ $key }}][pick_up_date]" value="{{ $ordeItem->pick_up_date }}">
                         <input type="text" class="form-control" value="{{ date('d/m/Y', strtotime($ordeItem->pick_up_date)) }}" disabled>
                     </td>
                     <td>

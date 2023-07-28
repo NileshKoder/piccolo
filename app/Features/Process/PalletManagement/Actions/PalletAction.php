@@ -16,7 +16,7 @@ class PalletAction
 {
     public function getMasterData(): array
     {
-        $data['masterPallets'] = MasterPallet::isEmpty(true)->get();
+        $data['masterPallets'] = MasterPallet::select('id', 'name')->isEmpty(true)->get();
         $data['skuCodes'] = SkuCode::all();
         $data['variants'] = Variant::all();
         $data['locations'] = Location::all();
@@ -28,7 +28,7 @@ class PalletAction
 
     public function getMasterDataForEdit(Pallet $pallet): array
     {
-        $data['masterPallets'] = MasterPallet::isEmpty(true)->get();
+        $data['masterPallets'] = MasterPallet::select('id', 'name')->isEmpty(true)->get();
         $data['masterPallets']->push($pallet->masterPallet);
         $data['skuCodes'] = SkuCode::all();
         $data['variants'] = Variant::all();

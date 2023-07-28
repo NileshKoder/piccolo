@@ -6,7 +6,6 @@ use App\Helpers\Traits\BelongsTo;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use App\Features\Masters\MasterPallet\Domains\Models\MasterPallet;
-use App\Features\OrderManagement\Domains\Models\OrderItemPallet;
 use App\Features\Process\PalletManagement\Constants\PalletContants;
 use App\Features\Process\PalletManagement\Observers\PalletObserver;
 use App\Features\Process\PalletManagement\Domains\Query\PalletScopes;
@@ -35,8 +34,6 @@ class Pallet extends Model implements PalletContants
             //     self::createPalletDetails($pallet, $palletData['pallet_box_details']);
             // }
 
-            self::createPalletLocation($pallet, $palletData['pallet_location']);
-
             if ($palletData['is_request_for_warehouse']) {
                 $reachTruckAction = new ReachTruckAction();
                 $reachTruckAction->createReachTruckFromPallet($pallet);
@@ -58,7 +55,6 @@ class Pallet extends Model implements PalletContants
             // if (array_key_exists('pallet_box_details', $palletData)) {
             //     self::createPalletDetails($pallet, $palletData['pallet_box_details']);
             // }
-            self::createPalletLocation($pallet, $palletData['pallet_location']);
 
             if ($pallet->palletDetails->count() == 0 && $pallet->palletBoxDetails->count() == 0) {
                 self::persistDeletePallet($pallet);
@@ -101,14 +97,9 @@ class Pallet extends Model implements PalletContants
         }
     }
 
-    public static function createPalletLocation(Pallet $pallet, $palletLocationDetails)
-    {
-        return PalletLocationLogs::persistPalletLocation($pallet, $palletLocationDetails);
-    }
-
     public static function persistDeletePallet(Pallet $pallet)
     {
-        $pallet->palletLocationLogs()->delete();
+        // TODO delete reach truck and items as well
         return $pallet->delete();
     }
 
@@ -127,25 +118,11 @@ class Pallet extends Model implements PalletContants
         return $this->hasMany(PalletBoxDetails::class);
     }
 
-    public function palletLocationLogs()
-    {
-        return $this->hasMany(PalletLocationLogs::class);
-    }
-
-    public function currentPalletLocation()
-    {
-        return $this->hasOne(PalletLocationLogs::class)->orderBy('id', 'DESC')->latest('created_at');
-    }
-
     public function reachTruck()
     {
         return $this->hasOne(ReachTruck::class);
     }
 
-    public function orderItemPallets()
-    {
-        return $this->hasMany(OrderItemPallet::class);
-    }
 
     public static function boot()
     {
@@ -162,6 +139,7 @@ class Pallet extends Model implements PalletContants
             "pallet_details.*.variant_id" => 'required|exists:variants,id',
             "pallet_details.*.weight" => 'required',
             "pallet_details.*.batch" => 'required',
+            "pallet_details.*.batch_date" => 'required',
         ];
     }
 }

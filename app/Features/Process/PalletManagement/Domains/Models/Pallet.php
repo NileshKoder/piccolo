@@ -2,10 +2,12 @@
 
 namespace App\Features\Process\PalletManagement\Domains\Models;
 
+use App\Features\Masters\Locations\Domains\Models\Location;
 use App\Helpers\Traits\BelongsTo;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use App\Features\Masters\MasterPallet\Domains\Models\MasterPallet;
+use App\Features\Masters\Warehouses\Domains\Models\Warehouse;
 use App\Features\Process\PalletManagement\Constants\PalletContants;
 use App\Features\Process\PalletManagement\Observers\PalletObserver;
 use App\Features\Process\PalletManagement\Domains\Query\PalletScopes;
@@ -26,6 +28,9 @@ class Pallet extends Model implements PalletContants
         $pallet = null;
         $pallet = DB::transaction(function () use ($palletData) {
             $pallet = Pallet::create($palletData['pallet']);
+
+            self::updateMasterPalletLastLocation($pallet, $palletData['pallet']['location_id']);
+
             if (array_key_exists('pallet_details', $palletData)) {
                 self::updateOrCreatePalletDetails($pallet, $palletData['pallet_details']);
             }
@@ -36,7 +41,7 @@ class Pallet extends Model implements PalletContants
 
             if ($palletData['is_request_for_warehouse']) {
                 $reachTruckAction = new ReachTruckAction();
-                $reachTruckAction->createReachTruckFromPallet($pallet);
+                $reachTruckAction->createReachTruckFromPallet($pallet, Warehouse::class);
             }
 
             return $pallet;
@@ -48,6 +53,9 @@ class Pallet extends Model implements PalletContants
     {
         DB::transaction(function () use ($pallet, $palletData) {
             $pallet->update($palletData['pallet']);
+
+            self::updateMasterPalletLastLocation($pallet, $palletData['location_id']);
+
             if (array_key_exists('pallet_details', $palletData)) {
                 self::updateOrCreatePalletDetails($pallet, $palletData['pallet_details']);
             }
@@ -68,6 +76,11 @@ class Pallet extends Model implements PalletContants
             return $pallet;
         });
         return $pallet;
+    }
+
+    public static function updateMasterPalletLastLocation(Pallet $pallet, int $locationId)
+    {
+        return $pallet->masterPallet->updateLastLocationable(Location::class, $locationId);
     }
 
     public static function updateOrCreatePalletDetails(Pallet $pallet, ?array $palletDetails)

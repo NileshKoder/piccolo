@@ -20,7 +20,7 @@ class CreatePalletDetailsTable extends Migration
             $table->foreignId('variant_id');
             $table->double('weight', 5, 2);
             $table->string('batch', 25);
-
+            $table->date('batch_date');
 
             $table->foreign('pallet_id')->on('pallets')->references('id');
             $table->foreign('sku_code_id')->on('sku_codes')->references('id');

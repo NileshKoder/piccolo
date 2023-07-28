@@ -17,6 +17,7 @@ class CreateMasterPalletsTable extends Migration
             $table->id();
             $table->string('name', 10)->unique();
             $table->boolean('is_empty')->default(true);
+            $table->nullableMorphs('last_locationable');
             $table->timestamps();
         });
     }

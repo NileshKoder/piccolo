@@ -34,7 +34,7 @@ class UserAction
         $users = User::search($searchValue)
             ->order($order)
             ->limitBy($start, $length)
-            ->where('id', '!=', User::DEFAULT_USER)
+            ->whereNotIn('id', '!=', [User::DEFAULT_USER, User::SYSTEM_USER])
             ->get();
         // Modifying total record count and filtered row count as data is manually filtered
         $numberOfTotalRows = User::where('id', '!=', User::DEFAULT_USER)->count('*');

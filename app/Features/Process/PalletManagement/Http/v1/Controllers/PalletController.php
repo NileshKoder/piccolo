@@ -53,7 +53,6 @@ class PalletController extends Controller
             $requestData = $request->requestData();
             $this->palletAction->createPallet($requestData);
         } catch (Exception $ex) {
-            dd($ex);
             return back()->with('error', $ex->getMessage());
         }
 

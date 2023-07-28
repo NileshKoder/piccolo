@@ -14,19 +14,19 @@ use App\Features\Process\PalletManagement\Domains\Models\Pallet;
 
 class ReachTruckAction
 {
-    public function createReachTruckFromPallet(Pallet $pallet): ?ReachTruck
+    public function createReachTruckFromPallet(Pallet $pallet, string $toLocationType, int $toLocationId = null): ?ReachTruck
     {
-        $reachTruckData = $this->prepareReachTruckData($pallet);
+        $reachTruckData = $this->prepareReachTruckData($pallet, $toLocationType, $toLocationId);
         return ReachTruck::persistReachTruck($reachTruckData, $pallet);
     }
 
-    public function prepareReachTruckData(Pallet $pallet): array
+    public function prepareReachTruckData(Pallet $pallet, string $toLocationType, int $toLocationId = null): array
     {
         $reachTruckData = [];
-        $reachTruckData['from_locationable_type'] = $pallet->currentPalletLocation->locationable_type;
-        $reachTruckData['from_locationable_id'] = $pallet->currentPalletLocation->locationable_id;
-        $reachTruckData['to_locationable_type'] = Warehouse::class;
-        $reachTruckData['to_locationable_id'] = null;
+        $reachTruckData['from_locationable_type'] = $pallet->masterPallet->last_locationable_type;
+        $reachTruckData['from_locationable_id'] = $pallet->masterPallet->last_locationable_id;
+        $reachTruckData['to_locationable_type'] = $toLocationType;
+        $reachTruckData['to_locationable_id'] = $toLocationId;
         $reachTruckData['is_transfered'] = false;
         $reachTruckData['created_by'] = auth()->user()->id;
 

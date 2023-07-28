@@ -2,7 +2,7 @@ $(document).ready(function() {
     $('.select2').select2();
 
     $('#reservationdate').datetimepicker({
-        format: 'DDMMYYYY'
+        format: 'DD-MM-YYYY'
     });
 
     getLocationShortName();
@@ -50,7 +50,8 @@ $(document).ready(function() {
         let varinatName = $('#variant_id').find(':selected').text();
 
         let weight = $('#weight').val();
-        let batch = $('#batch_prefix').text() + $('#batch_date').val();
+        let batchDate = $('#batch_date').val();
+        let batch = $('#batch_prefix').text() + batchDate.replaceAll('-', '')
 
         if (
             locationId == '' || locationId == undefined ||
@@ -100,6 +101,7 @@ $(document).ready(function() {
                 </td>
                 <td>
                     <input type="hidden" name="pallet_details[` + time + `][batch]" value="` + batch + `">
+                    <input type="hidden" name="pallet_details[` + time + `][batch_date]" value="` + batchDate + `">
                     <input type="text" class="form-control" value="` + batch + `" disabled>
                 </td>
                 <td>

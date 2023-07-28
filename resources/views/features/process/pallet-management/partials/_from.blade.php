@@ -5,8 +5,7 @@
             <select name="location_id" id="location_id" class="form-control select2">
                 <option value="">Select Locations</option>
                 @foreach ($data['locations'] as $location)
-
-                <option value="{{ $location->id }}" data-abbr="{{ $location->abbr }}" @if(!empty($pallet) && $pallet->currentPalletLocation->locationable_type == "App\Features\Masters\Locations\Domains\Models\Location" && $pallet->currentPalletLocation->locationable_id == $location->id) selected @endif>{{ $location->name }}</option>
+                <option value="{{ $location->id }}" data-abbr="{{ $location->abbr }}" @if(!empty($pallet) && $pallet->masterPallet->last_locationable_type == "App\Features\Masters\Locations\Domains\Models\Location" && $pallet->masterPallet->last_locationable_id == $location->id) selected @endif>{{ $location->name }}</option>
                 @endforeach
             </select>
         </div>

@@ -5,20 +5,16 @@ namespace App\Features\Masters\MasterPallet\Domains\Models;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use App\Features\Masters\MasterPallet\Domains\Query\MasterPalletScopes;
+use App\Features\Process\PalletManagement\Domains\Models\Pallet;
 
 class MasterPallet extends Model
 {
     use MasterPalletScopes;
 
     // set fillable
-    protected $fillable = ['name', 'is_empty'];
+    protected $fillable = ['name', 'is_empty', 'last_locationable_type', 'last_locationable_id'];
 
     protected $hidden = ['created_at', 'updated_at'];
-
-    public function checkIsEmpty()
-    {
-        return ($this->is_empty) ? true : false;
-    }
 
     public static function persistCreateMasterPallet(array $masterPalletData): ?MasterPallet
     {
@@ -52,5 +48,15 @@ class MasterPallet extends Model
         $this->update();
 
         return $this;
+    }
+
+    public function checkIsEmpty()
+    {
+        return ($this->is_empty) ? true : false;
+    }
+
+    public function pallet()
+    {
+        return $this->belongsTo(Pallet::class);
     }
 }

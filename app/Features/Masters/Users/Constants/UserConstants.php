@@ -19,5 +19,6 @@ interface UserConstants
         self::FG_PALLET_CREATION,
     ];
 
-    public const DEFAULT_USER = 1;
+    public const SYSTEM_USER = 1;
+    public const DEFAULT_USER = 2;
 }

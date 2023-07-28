@@ -44,15 +44,16 @@ class PalletController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Features\Process\PalletManagement\Http\v1\Requests\StorePalletRequest  $request
      * @return \Illuminate\Http\Response
      */
     public function store(StorePalletRequest $request)
     {
         try {
             $requestData = $request->requestData();
-            $pallet = $this->palletAction->createPallet($requestData);
+            $this->palletAction->createPallet($requestData);
         } catch (Exception $ex) {
+            dd($ex);
             return back()->with('error', $ex->getMessage());
         }
 

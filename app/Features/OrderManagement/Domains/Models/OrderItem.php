@@ -54,15 +54,10 @@ class OrderItem extends Model implements OrderItemConstants
         return $order->ordeItems()->whereNotIn('id', $ids)->delete();
     }
 
-    public static function createOrderItemPallets(OrderItem $orderItem)
-    {
-        return OrderItemPallet::persistOrderItemPallets($orderItem);
-    }
-
     public static function persistUpdateOrderItem(Order $order, array $data): ?OrderItem
     {
         $data['pick_up_date'] = date('Y-m-d', strtotime($data['pick_up_date']));
-        $data['state'] = self::CREATED;
+        // $data['state'] = self::CREATED;
         $orderItem = OrderItem::find($data['order_item_id']);
         $orderItem->update($data);
         $orderItem->orderItemPallets()->delete();

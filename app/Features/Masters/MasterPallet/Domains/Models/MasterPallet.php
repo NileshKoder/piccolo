@@ -55,6 +55,15 @@ class MasterPallet extends Model
         return ($this->is_empty) ? true : false;
     }
 
+    public function updateLastLocationable(string $lastLocationType, int $lastLocationId)
+    {
+        $this->last_locationable_type = $lastLocationType;
+        $this->last_locationable_id = $lastLocationId;
+        $this->update();
+
+        return $this;
+    }
+
     public function pallet()
     {
         return $this->hasOne(Pallet::class);

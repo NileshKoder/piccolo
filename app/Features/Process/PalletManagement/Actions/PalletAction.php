@@ -8,18 +8,19 @@ use Illuminate\Support\Collection;
 use App\Features\Masters\SkuCodes\Domains\Models\SkuCode;
 use App\Features\Masters\Variants\Domains\Models\Variant;
 use App\Features\Masters\Locations\Domains\Models\Location;
+use App\Features\Masters\Warehouses\Domains\Models\Warehouse;
+use App\Features\Process\ReachTruck\Actions\ReachTruckAction;
 use App\Features\Process\PalletManagement\Domains\Models\Pallet;
 use App\Features\Masters\MasterPallet\Domains\Models\MasterPallet;
-use App\Features\Masters\Warehouses\Domains\Models\Warehouse;
 
 class PalletAction
 {
     public function getMasterData(): array
     {
         $data['masterPallets'] = MasterPallet::select('id', 'name')->isEmpty(true)->get();
-        $data['skuCodes'] = SkuCode::all();
-        $data['variants'] = Variant::all();
-        $data['locations'] = Location::all();
+        $data['skuCodes'] = SkuCode::select('id', 'name')->get();
+        $data['variants'] = Variant::select('id', 'name')->get();
+        $data['locations'] = Location::select('id', 'name', 'abbr')->orderBy('id', 'ASC')->get();
         $data['maxWeightForPallet'] = Pallet::MAX_WEIGHT_FOR_PALLET;
         $data['maxWeightForContainer'] = Pallet::MAX_WEIGHT_FOR_CONTAINER;
 
@@ -30,9 +31,9 @@ class PalletAction
     {
         $data['masterPallets'] = MasterPallet::select('id', 'name')->isEmpty(true)->get();
         $data['masterPallets']->push($pallet->masterPallet);
-        $data['skuCodes'] = SkuCode::all();
-        $data['variants'] = Variant::all();
-        $data['locations'] = Location::all();
+        $data['skuCodes'] = SkuCode::select('id', 'name')->get();
+        $data['variants'] = Variant::select('id', 'name')->get();
+        $data['locations'] = Location::select('id', 'name', 'abbr')->orderBy('id', 'ASC')->get();
         $data['maxWeightForPallet'] = Pallet::MAX_WEIGHT_FOR_PALLET;
         $data['maxWeightForContainer'] = Pallet::MAX_WEIGHT_FOR_CONTAINER;
 
@@ -54,7 +55,7 @@ class PalletAction
         int $start,
         int $length
     ) {
-        $pallets = Pallet::with('masterPallet', 'currentPalletLocation', 'palletDetails', 'updater');
+        $pallets = Pallet::with('masterPallet', 'palletDetails', 'updater');
 
         // Modifying total record count and filtered row count as data is manually filtered
         $numberOfTotalRows = Pallet::count('*');
@@ -75,7 +76,7 @@ class PalletAction
             ->skipPaging()
             ->addColumn('action', function ($pallet) {
                 $action = "";
-                if ($pallet->currentPalletLocation->locationable_type != Warehouse::class) {
+                if ($pallet->masterPallet->last_locationable_type != Warehouse::class) {
                     $action = "<a href='" . route('pallets.edit', $pallet->id) . "' class='editPallet' title='Edit Pallet'>
                             <i class='fas fa-edit text-success'></i>
                         </a>";

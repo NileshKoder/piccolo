@@ -26,6 +26,7 @@
                     </td>
                     <td>
                         <input type="hidden" name="pallet_details[{{ $key }}][batch]" value="{{ $palletDetail->batch }}">
+                        <input type="hidden" name="pallet_details[{{ $key }}][batch_date]" value="{{ $palletDetail->batch_date }}">
                         <input type="text" class="form-control" value="{{ $palletDetail->batch }}" disabled>
                     </td>
                     <td>

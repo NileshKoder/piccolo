@@ -57,6 +57,6 @@ class MasterPallet extends Model
 
     public function pallet()
     {
-        return $this->belongsTo(Pallet::class);
+        return $this->hasOne(Pallet::class);
     }
 }

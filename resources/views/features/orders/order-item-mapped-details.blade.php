@@ -94,7 +94,7 @@
                             <tr>
                                 <th>Pallet</th>
                                 <th>Weight</th>
-                                <th>Action</th>
+                                <!-- <th>Action</th> -->
                             </tr>
                         </thead>
                         <tbody>
@@ -104,13 +104,13 @@
                                 <td>
                                     {{ $orderItemPallet->pallet->palletDetails->where('sku_code_id', $orderItem->sku_code_id)->where('variant_id',  $orderItem->variant_id)->sum('weight') }}
                                 </td>
-                                <td>
+                                <!-- <td>
                                     @if(!$orderItemPallet->is_transfered)
                                     <a href="javascript:void(0);" data-order_item_pallet_id="{{ $orderItemPallet->id }}" class="text-danger remove-mapped-pallet">
                                         <i class="fa fa-trash"></i>
                                     </a>
                                     @endif
-                                </td>
+                                </td> -->
                             </tr>
                             @endforeach
                         </tbody>

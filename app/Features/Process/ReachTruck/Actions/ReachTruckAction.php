@@ -28,6 +28,7 @@ class ReachTruckAction
         $reachTruckData['to_locationable_type'] = $toLocationType;
         $reachTruckData['to_locationable_id'] = $toLocationId;
         $reachTruckData['is_transfered'] = false;
+        $reachTruckData['transfered_by'] = null;
         $reachTruckData['created_by'] = auth()->user()->id ?? 1;
 
         return $reachTruckData;
@@ -55,7 +56,7 @@ class ReachTruckAction
             ->skipPaging()
             ->addColumn('action', function ($reachTruck) {
                 $action = '';
-                if (($reachTruck->is_transfered)) {
+                if ($reachTruck->is_transfered) {
                     $action = "<a href='" . route('reach-trucks.edit', $reachTruck->id) . "' class='editReachTruck' title='Edit Reach Truck'>
                                     <i class='fas fa-edit text-success'></i>
                                 </a>";
@@ -70,9 +71,17 @@ class ReachTruckAction
                 return Carbon::parse($reachTruck->updated_at)->format('d-m-Y h:i A');
             })
             ->editColumn('is_transfer', function ($reachTruck) {
-                return ($reachTruck->is_transfered) ? "Yes" : "No";
+                if ($reachTruck->is_transfered) {
+                    return '<span style="width: 120px;">
+                            <span class="badge badge-success font-weight-bold label-lg label-inline">Yes</span>
+                        </span>';
+                } else {
+                    return '<span style="width: 120px;">
+                                <span class="badge badge-danger font-weight-bold label-lg label-inline">No</span>
+                            </span>';
+                }
             })
-            ->rawColumns(['action'])
+            ->rawColumns(['action', 'is_transfer'])
             ->setFilteredRecords($numberOfFilteredRows)
             ->setTotalRecords($numberOfTotalRows)
             ->make(true);

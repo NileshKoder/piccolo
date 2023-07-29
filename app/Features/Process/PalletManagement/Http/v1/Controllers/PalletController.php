@@ -14,9 +14,8 @@ class PalletController extends Controller
 {
     public $palletAction;
 
-    public function __construct(
-        PalletAction $palletAction,
-    ) {
+    public function __construct(PalletAction $palletAction)
+    {
         $this->palletAction = $palletAction;
     }
 

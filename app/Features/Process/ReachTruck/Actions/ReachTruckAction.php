@@ -123,11 +123,22 @@ class ReachTruckAction
     public function getCreateData(string $locationType)
     {
         $data['reachTruckUsers'] = User::role(User::REACH_TRUCK)->get();
-        $data['fromLocations'] = Location::type($locationType)->get();
-        $data['fromLocationType'] = Location::class;
-        $data['toLocationType'] = Warehouse::class;
-        $data['toLocations'] = Warehouse::isEmpty()->get();
+
+
         $data['reachTrucks'] = $this->getNonTransferedPalletsFromReachTruckFromLocationableType($locationType);
+
+        if ($locationType == "WH TO ASSEMBLY LINE") {
+            $warehouseIds = ReachTruck::fromLocationableType(Warehouse::class)->nonTransfered()->pluck('from_locationable_id')->toArray();
+            $data['fromLocations'] = Warehouse::idIn($warehouseIds)->get();
+            $data['fromLocationType'] = Warehouse::class;
+            $data['toLocationType'] = Location::class;
+            $data['toLocations'] = Location::type(Location::LINES)->get();
+        } else {
+            $data['fromLocations'] = Location::type($locationType)->get();
+            $data['fromLocationType'] = Location::class;
+            $data['toLocationType'] = Warehouse::class;
+            $data['toLocations'] = Warehouse::isEmpty()->get();
+        }
 
         return $data;
     }
@@ -153,15 +164,11 @@ class ReachTruckAction
 
     public function getPalletForReachTruck(array $requestData)
     {
-        if ($requestData['from_locationable_type'] == Warehouse::class) {
-            //
-        } else {
-            return ReachTruck::with('pallet.masterPallet')
-                ->fromLocationAbleType($requestData['from_locationable_type'])
-                ->fromLocationAbleId($requestData['from_locationable_id'])
-                ->nonTransfered()
-                ->get();
-        }
+        return ReachTruck::with('pallet.masterPallet')
+            ->fromLocationAbleType($requestData['from_locationable_type'])
+            ->fromLocationAbleId($requestData['from_locationable_id'])
+            ->nonTransfered()
+            ->get();
     }
 
     public function getNonTransferedPalletsFromLocationable(string $locationType)

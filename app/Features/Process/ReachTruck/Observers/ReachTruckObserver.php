@@ -51,16 +51,24 @@ class ReachTruckObserver
                 $reachTruck->toLocationable->updateIsEmpty(false);
             }
 
-            if ($reachTruck->is_transfered) {
-                $locationableType = $reachTruck->to_locationable_type;
-                $locationableId = $reachTruck->to_locationable_id;
-            } else {
-                $locationableType = $reachTruck->from_locationable_type;
-                $locationableId = $reachTruck->from_locationable_id;
-            }
-
-            $reachTruck->pallet->masterPallet->updateLastLocationable($locationableType, $locationableId);
+            $this->updateMasterPalletlastLocation($reachTruck);
         }
+
+        if ($reachTruck->isDirty('is_transfered')) {
+            $this->updateMasterPalletlastLocation($reachTruck);
+        }
+    }
+
+    public function updateMasterPalletlastLocation($reachTruck)
+    {
+        if ($reachTruck->is_transfered) {
+            $locationableType = $reachTruck->to_locationable_type;
+            $locationableId = $reachTruck->to_locationable_id;
+        } else {
+            $locationableType = $reachTruck->from_locationable_type;
+            $locationableId = $reachTruck->from_locationable_id;
+        }
+        $reachTruck->pallet->masterPallet->updateLastLocationable($locationableType, $locationableId);
     }
 
     /**

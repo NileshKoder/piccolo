@@ -89,7 +89,8 @@ class ReachTruckAction
 
     public function getLocationCount()
     {
-        return Location::select(
+
+        $locations = Location::select(
             'type',
             DB::raw('count(reach_trucks.id) as total')
         )
@@ -99,6 +100,24 @@ class ReachTruckAction
                 $rtQuery->on('from_locationable_id', '=', 'locations.id');
             })
             ->groupBy('locations.type')->get();
+
+        $fromWarhouseToLineCount = ReachTruck::where('from_locationable_type', Warehouse::class)
+            ->where('to_locationable_type', Location::class)
+            ->where('is_transfered', false)
+            ->count();
+
+        foreach ($locations as $key => $location) {
+            if ($location->type == Location::LINES) {
+                $location->type = "WH TO ASSEMBLY LINE";
+                $location->total = $fromWarhouseToLineCount;
+            }
+
+            if ($location->type == Location::LOADING) {
+                $location->type = "WH TO LOADING";
+            }
+        }
+        // dd($locations);
+        return $locations;
     }
 
     public function getCreateData(string $locationType)

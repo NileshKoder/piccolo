@@ -28,13 +28,11 @@ class PalletDetails extends Model
 
     public static function persistdeletePalletDetailsWhereNotInIds(Pallet $pallet, array $ids)
     {
-        foreach ($ids as $key => $id) {
-            $palletDetail = PalletDetails::with('orderItemPallet')->find($id);
-            if ($palletDetail) {
-                $palletDetail->orderItemPallet()->delete();
-                $palletDetail->delete();
-            }
-        }
+        $pallet->palletDetails()->whereNotIn('id', $ids)->get()->each(function ($palletDetail) {
+            $palletDetail->orderItemPallet()->delete();
+            $palletDetail->delete();
+        });
+
         return;
     }
 

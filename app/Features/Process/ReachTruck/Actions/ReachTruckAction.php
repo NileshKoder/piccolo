@@ -106,12 +106,13 @@ class ReachTruckAction
             ->where('is_transfered', false)
             ->count();
 
-        foreach ($locations as $key => $location) {
-            if ($location->type == Location::LINES) {
-                $location->type = "WH TO ASSEMBLY LINE";
-                $location->total = $fromWarhouseToLineCount;
-            }
+        $newLocation = new Location();
+        $newLocation->type = "WH TO ASSEMBLY LINE";
+        $newLocation->total = $fromWarhouseToLineCount;
 
+        $locations->push($newLocation);
+
+        foreach ($locations as $key => $location) {
             if ($location->type == Location::LOADING) {
                 $location->type = "WH TO LOADING";
             }

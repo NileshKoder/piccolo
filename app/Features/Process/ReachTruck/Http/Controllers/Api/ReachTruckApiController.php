@@ -30,16 +30,6 @@ class ReachTruckApiController extends ApiController
         try {
             $locationCount = $this->reachTruckAction->getLocationCount();
 
-            foreach ($locationCount as $key => $location) {
-                if ($location->type == Location::LINES) {
-                    $location->type = "WH TO ASSEMBLY LINE";
-                }
-
-                if ($location->type == Location::LOADING) {
-                    $location->type = "WH TO LOADING";
-                }
-            }
-
             return $this->showAll($locationCount, 200);
         } catch (Exception $ex) {
             return $this->errorResponse($ex->getMessage(), 500);

@@ -74,6 +74,9 @@ class Pallet extends Model implements PalletContants
                 $reachTruckAction->createReachTruckFromPallet($pallet, Warehouse::class);
             }
 
+            if ($pallet->palletBoxDetails->count() == 0) {
+                self::persistDeletePallet($pallet);
+            }
             return $pallet;
         });
         return $pallet;
@@ -113,7 +116,7 @@ class Pallet extends Model implements PalletContants
 
     public static function persistDeletePallet(Pallet $pallet)
     {
-        // TODO delete reach truck and items as well
+        $pallet->reachTruck()->delete();
         return $pallet->delete();
     }
 

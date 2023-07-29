@@ -79,6 +79,15 @@ class PalletController extends Controller
     public function edit(Pallet $pallet)
     {
         $data = $this->palletAction->getMasterDataForEdit($pallet);
+        $pallet->load([
+            'palletDetails' => function ($q) {
+                $q->with([
+                    'orderItemPallet',
+                    'skuCode',
+                    'variant',
+                ]);
+            }
+        ]);
         return view("features.process.pallet-management.edit", compact('data', 'pallet'));
     }
 

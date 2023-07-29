@@ -26,7 +26,7 @@
         <div class="col-lg-3 col-6">
             <div class="small-box bg-success">
                 <div class="inner">
-                    <h6>{{ $data['most_sku_used']->skuCode?->name ?? '' }}</h6>
+                    <h6>{{ $data['most_sku_used']->skuCode->name ?? '' }}</h6>
                     <h6> {{ $data['most_sku_used']->count ?? 0 }}</h6>
                     <p>Most Sku Used</p>
                 </div>

@@ -47,7 +47,8 @@ class ReachTruckObserver
             }
 
             $reachTruck->refresh();
-            if ($reachTruck->to_locationable_type == Warehouse::class && $reachTruck->to_locationable_id != Warehouse::GENERAL_ID) {
+
+            if ($reachTruck->to_locationable_type == Warehouse::class && $reachTruck->to_locationable_id != Warehouse::GENERAL_ID && !empty($reachTruck->to_locationable_id)) {
                 $reachTruck->toLocationable->updateIsEmpty(false);
             }
 

@@ -8,10 +8,13 @@ use App\Features\Masters\SkuCodes\Domains\Models\SkuCode;
 use App\Features\Masters\Variants\Domains\Models\Variant;
 use App\Features\Masters\Locations\Domains\Models\Location;
 use App\Features\OrderManagement\Constants\OrderItemConstants;
+use App\Features\OrderManagement\Domains\Query\OrderItemScopes;
 use App\Features\OrderManagement\Domains\Models\OrderItemPallet;
 
 class OrderItem extends Model implements OrderItemConstants
 {
+    use OrderItemScopes;
+
     protected $fillable = ['order_id', 'sku_code_id', 'variant_id', 'location_id', 'required_weight', 'pick_up_date', 'state'];
 
     public $appends = [];

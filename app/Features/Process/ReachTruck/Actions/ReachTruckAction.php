@@ -28,7 +28,7 @@ class ReachTruckAction
         $reachTruckData['to_locationable_type'] = $toLocationType;
         $reachTruckData['to_locationable_id'] = $toLocationId;
         $reachTruckData['is_transfered'] = false;
-        $reachTruckData['created_by'] = auth()->user()->id;
+        $reachTruckData['created_by'] = auth()->user()->id ?? 1;
 
         return $reachTruckData;
     }

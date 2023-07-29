@@ -68,10 +68,35 @@ class OrderItem extends Model implements OrderItemConstants
         return $orderItem;
     }
 
+    public function mapPallets()
+    {
+        return OrderItemPallet::persistMapPallets($this);
+    }
+
     public function updateState(string $state)
     {
         $this->state = $state;
         $this->update();
+    }
+
+    public function reCalculateOrderItemState()
+    {
+        if ($this->orderItemPallets->count() > 0) {
+            $mappedWeight = 0;
+            foreach ($this->orderItemPallets as $key => $orderItemPallet) {
+                $mappedWeight += $orderItemPallet->sum('weight');
+            }
+
+            if ($mappedWeight == 0) {
+                $this->updateState(OrderItem::CREATED);
+            } elseif ($mappedWeight >= $this->required_weight) {
+                $this->updateState(OrderItem::MAPPED);
+            } elseif ($mappedWeight <= $this->required_weight) {
+                $this->updateState(OrderItem::PARTIAL_MAPPED);
+            }
+        } else {
+            $this->updateState(OrderItem::CREATED);
+        }
     }
 
     public static function boot()

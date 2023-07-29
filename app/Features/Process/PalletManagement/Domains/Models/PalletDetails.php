@@ -2,12 +2,13 @@
 
 namespace App\Features\Process\PalletManagement\Domains\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use App\Features\Masters\SkuCodes\Domains\Models\SkuCode;
 use App\Features\Masters\Variants\Domains\Models\Variant;
+use App\Features\OrderManagement\Domains\Models\OrderItemPallet;
 use App\Features\Process\PalletManagement\Domains\Models\Pallet;
 use App\Features\Process\PalletManagement\Domains\Query\PalletDetailsScopes;
-use Carbon\Carbon;
 
 class PalletDetails extends Model
 {
@@ -43,5 +44,10 @@ class PalletDetails extends Model
     public function variant()
     {
         return $this->belongsTo(Variant::class);
+    }
+
+    public function orderItemPallet()
+    {
+        return $this->hasOne(OrderItemPallet::class, 'pallet_detail_id');
     }
 }

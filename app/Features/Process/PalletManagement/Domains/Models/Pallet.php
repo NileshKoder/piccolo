@@ -2,20 +2,21 @@
 
 namespace App\Features\Process\PalletManagement\Domains\Models;
 
-use App\Features\Masters\Locations\Domains\Models\Location;
 use App\Helpers\Traits\BelongsTo;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
-use App\Features\Masters\MasterPallet\Domains\Models\MasterPallet;
+use App\Features\Masters\Locations\Domains\Models\Location;
 use App\Features\Masters\Warehouses\Domains\Models\Warehouse;
+use App\Features\Process\ReachTruck\Actions\ReachTruckAction;
+use App\Features\Process\ReachTruck\Domains\Models\ReachTruck;
+use App\Features\OrderManagement\Domains\Models\OrderItemPallet;
+use App\Features\Masters\MasterPallet\Domains\Models\MasterPallet;
 use App\Features\Process\PalletManagement\Constants\PalletContants;
 use App\Features\Process\PalletManagement\Observers\PalletObserver;
 use App\Features\Process\PalletManagement\Domains\Query\PalletScopes;
 use App\Features\Process\PalletManagement\Domains\Models\PalletDetails;
 use App\Features\Process\PalletManagement\Domains\Models\PalletBoxDetails;
 use App\Features\Process\PalletManagement\Domains\Models\PalletLocationLogs;
-use App\Features\Process\ReachTruck\Actions\ReachTruckAction;
-use App\Features\Process\ReachTruck\Domains\Models\ReachTruck;
 
 class Pallet extends Model implements PalletContants
 {
@@ -136,6 +137,10 @@ class Pallet extends Model implements PalletContants
         return $this->hasOne(ReachTruck::class);
     }
 
+    public function orderItemPallet()
+    {
+        return $this->hasOne(OrderItemPallet::class);
+    }
 
     public static function boot()
     {

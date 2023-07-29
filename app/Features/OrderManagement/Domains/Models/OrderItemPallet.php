@@ -2,32 +2,59 @@
 
 namespace App\Features\OrderManagement\Domains\Models;
 
-use App\Features\Masters\Warehouses\Domains\Models\Warehouse;
+use App\Features\Masters\Locations\Domains\Models\Location;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
+use App\Features\Masters\Warehouses\Domains\Models\Warehouse;
+use App\Features\OrderManagement\Domains\Query\OrderItemPalletScopes;
+use App\Features\Process\ReachTruck\Actions\ReachTruckAction;
 use App\Features\Process\PalletManagement\Domains\Models\Pallet;
+use App\Features\Process\PalletManagement\Domains\Models\PalletDetails;
 
 class OrderItemPallet extends Model
 {
-    protected $fillable = ['pallet_id', 'is_transfered'];
+    use OrderItemPalletScopes;
 
-    public static function persistOrderItemPallets(OrderItem $orderItem)
+    protected $fillable = ['order_item_id', 'pallet_id', 'pallet_detail_id', 'weight'];
+
+    public static function persistMapPallets(OrderItem $orderItem)
     {
-        $pallets = Pallet::doesntHave('orderItemPallets')
-            ->whereHas('currentPalletLocation', function ($q) {
-                $q->where('locationable_type', Warehouse::class);
+        $palletDetails = PalletDetails::with('pallet.masterPallet')
+            ->doesntHave('orderItemPallet')
+            ->whereHas('pallet', function ($palletQry) {
+                $palletQry->doesntHave('orderItemPallet')
+                    ->whereHas('masterPallet', function ($masterPalletQry) {
+                        $masterPalletQry->where('last_locationable_type', Warehouse::class);
+                    });
             })
-            ->whereHas('palletDetails', function ($q) use ($orderItem) {
-                $q->skuCodeId($orderItem->sku_code_id)->variantId($orderItem->variant_id);
-            })->get();
+            ->skuCodeId($orderItem->sku_code_id)
+            ->variantId($orderItem->variant_id)
+            ->orderBy('batch_date', 'ASC')
+            ->get();
 
-        if ($pallets->count() > 0) {
+        if ($palletDetails->count() > 0) {
             $maxWeight = $orderItem->required_weight;
-            $mappedQty = 0;
-            foreach ($pallets as $key => $pallet) {
-                $orderItem->orderItemPallets()->create(['pallet_id' => $pallet->id]);
+            $mappedQty = $orderItem?->orderItemPallets?->sum('weight') ?? 0;
 
-                $weightInPallet = $pallet->palletDetails->where('sku_code_id', $orderItem->sku_code_id)->where('variant_id', $orderItem->variant_id)->sum('weight');
-                $mappedQty += $weightInPallet;
+            $reachTruckAction = new ReachTruckAction();
+
+            DB::beginTransaction();
+            foreach ($palletDetails as $key => $palletDetail) {
+                $orderItemPallet = OrderItemPallet::palletId($palletDetail->pallet_id)->palletDetailId($palletDetail->od)->first();
+
+                if ($orderItemPallet) {
+                    continue;
+                }
+
+                $orderItem->orderItemPallets()->create([
+                    'pallet_id' => $palletDetail->pallet_id,
+                    'pallet_detail_id' => $palletDetail->id,
+                    'weight' => $palletDetail->weight
+                ]);
+
+                $reachTruckAction->createReachTruckFromPallet($palletDetail->pallet, Location::class, $orderItem->location_id);
+
+                $mappedQty += $palletDetail->weight;
 
                 if ($mappedQty >= $maxWeight) {
                     $orderItem->updateState(OrderItem::MAPPED);
@@ -36,6 +63,7 @@ class OrderItemPallet extends Model
                     $orderItem->updateState(OrderItem::PARTIAL_MAPPED);
                 }
             }
+            DB::commit();
         }
     }
 
@@ -49,6 +77,11 @@ class OrderItemPallet extends Model
     public function pallet()
     {
         return $this->belongsTo(Pallet::class);
+    }
+
+    public function palletDetail()
+    {
+        return $this->belongsTo(PalletDetails::class, 'pallet_detail_id');
     }
 
     public function orderItem()

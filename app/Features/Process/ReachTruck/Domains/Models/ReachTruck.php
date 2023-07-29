@@ -21,7 +21,12 @@ class ReachTruck extends Model implements ReachTruckConstants
 
     public static function persistReachTruck(array $reachTruckData, Pallet $pallet)
     {
-        return $pallet->reachTruck()->updateOrCreate($reachTruckData);
+        return ReachTruck::updateOrCreate(
+            [
+                'pallet_id' => $pallet->id
+            ],
+            $reachTruckData
+        );
     }
 
     public static function persitProcessPalletTransfer(array $requestData)

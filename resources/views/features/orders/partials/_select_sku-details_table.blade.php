@@ -38,12 +38,13 @@
                         <input type="text" class="form-control" value="{{ $ordeItem->location->abbr }}" disabled>
                     </td>
                     <td>
-                        <select name="order_item_details[{{ $key }}][state]" class="form-control state">
+                        <input type="text" name="order_item_details[{{ $key }}][state]" class="form-control" value="{{ $ordeItem->state }}" readonly>
+                        <!-- <select name="order_item_details[{{ $key }}][state]" class="form-control state">
                             <option value="">Select State</option>
                             @foreach ($masterData['orderItemStates'] as $orderItemState)
                             <option value="{{ $orderItemState }}" @if($ordeItem->state == $orderItemState) selected @endif>{{ $orderItemState }}</option>
                             @endforeach
-                        </select>
+                        </select> -->
                     </td>
                     <td class="text-center">
                         @if($ordeItem->state == $masterData['orderItemCreate'])

@@ -34,32 +34,41 @@ class OrderItemPallet extends Model
 
         if ($palletDetails->count() > 0) {
             $maxWeight = $orderItem->required_weight;
-            $mappedQty = ($orderItem->orderItemPallets->count() > 0) ? $orderItem->orderItemPallets->sum('weight') : 0;
-
+            $mappedWeight = ($orderItem->orderItemPallets->count() > 0) ? $orderItem->orderItemPallets->sum('weight') : 0;
+            $remainingWeight = $maxWeight - $mappedWeight;
             $reachTruckAction = new ReachTruckAction();
 
             DB::beginTransaction();
             foreach ($palletDetails as $key => $palletDetail) {
-                $orderItemPallet = OrderItemPallet::palletId($palletDetail->pallet_id)->palletDetailId($palletDetail->od)->first();
+                $orderItemPallet = OrderItemPallet::palletId($palletDetail->pallet_id)->palletDetailId($palletDetail->id)->first();
 
                 if ($orderItemPallet) {
                     continue;
                 }
 
+                if ($remainingWeight >= $palletDetail->weight) {
+                    $mappingWeight = $palletDetail->weight;
+                } else if ($remainingWeight <= $palletDetail->weight) {
+                    $mappingWeight = $remainingWeight;
+                } else {
+                    $mappingWeight = $palletDetail->weight;
+                }
+
                 $orderItem->orderItemPallets()->create([
                     'pallet_id' => $palletDetail->pallet_id,
                     'pallet_detail_id' => $palletDetail->id,
-                    'weight' => $palletDetail->weight
+                    'weight' => $mappingWeight
                 ]);
 
                 $reachTruckAction->createReachTruckFromPallet($palletDetail->pallet, Location::class, $orderItem->location_id);
 
-                $mappedQty += $palletDetail->weight;
+                $mappedWeight += $mappingWeight;
+                $remainingWeight -= $mappingWeight;
 
-                if ($mappedQty >= $maxWeight) {
+                if ($mappedWeight >= $maxWeight) {
                     $orderItem->updateState(OrderItem::MAPPED);
                     break;
-                } else if ($mappedQty < $maxWeight) {
+                } else if ($mappedWeight < $maxWeight) {
                     $orderItem->updateState(OrderItem::PARTIAL_MAPPED);
                 }
             }

@@ -94,6 +94,7 @@
                             <tr>
                                 <th>Pallet</th>
                                 <th>Weight</th>
+                                <th>Mapped Weight</th>
                                 <!-- <th>Action</th> -->
                             </tr>
                         </thead>
@@ -103,6 +104,9 @@
                                 <td>{{ $orderItemPallet->pallet->masterPallet->name }}</td>
                                 <td>
                                     {{ $orderItemPallet->pallet->palletDetails->where('sku_code_id', $orderItem->sku_code_id)->where('variant_id',  $orderItem->variant_id)->sum('weight') }}
+                                </td>
+                                <td>
+                                    {{ $orderItemPallet->weight }}
                                 </td>
                                 <!-- <td>
                                     @if(!$orderItemPallet->is_transfered)

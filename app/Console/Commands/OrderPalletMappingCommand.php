@@ -48,7 +48,7 @@ class OrderPalletMappingCommand extends Command
                 $orderItem->mapPallets();
             }
         } catch (Exception $ex) {
-            dd($ex);
+            info($ex);
         }
 
         return;

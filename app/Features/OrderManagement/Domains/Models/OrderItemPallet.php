@@ -34,7 +34,7 @@ class OrderItemPallet extends Model
 
         if ($palletDetails->count() > 0) {
             $maxWeight = $orderItem->required_weight;
-            $mappedQty = $orderItem?->orderItemPallets?->sum('weight') ?? 0;
+            $mappedQty = ($orderItem->orderItemPallets->count() > 0) ? $orderItem->orderItemPallets->sum('weight') : 0;
 
             $reachTruckAction = new ReachTruckAction();
 

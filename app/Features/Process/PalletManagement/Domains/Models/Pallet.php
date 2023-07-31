@@ -65,9 +65,9 @@ class Pallet extends Model implements PalletContants
             //     self::createPalletDetails($pallet, $palletData['pallet_box_details']);
             // }
 
-            if ($pallet->palletDetails->count() == 0 && $pallet->palletBoxDetails->count() == 0) {
-                self::persistDeletePallet($pallet);
-            }
+            // if ($pallet->palletDetails->count() == 0 && $pallet->palletBoxDetails->count() == 0) {
+            //     self::persistDeletePallet($pallet);
+            // }
 
             if ($palletData['is_request_for_warehouse']) {
                 $reachTruckAction = new ReachTruckAction();

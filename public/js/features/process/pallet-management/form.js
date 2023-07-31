@@ -8,6 +8,7 @@ $(document).ready(function() {
     getLocationShortName();
     calculateTotalWeight();
     updateMaxWight();
+    changeStatusOfIsRequestWarehouse();
 
     $('#location_id').on('change', function() {
         getLocationShortName();
@@ -119,6 +120,7 @@ $(document).ready(function() {
         $('#skuTableBody').append(tbodyHtml);
 
         calculateTotalWeight();
+        changeStatusOfIsRequestWarehouse();
     })
 
     $(document).on('click', '.deleteSku', function() {
@@ -136,6 +138,8 @@ $(document).ready(function() {
                 } else {
                     toastr.warning('Sku code is safe');
                 }
+
+                changeStatusOfIsRequestWarehouse();
             });
     })
 });
@@ -187,5 +191,15 @@ function updateMaxWight() {
         })
 
         return false;
+    }
+}
+
+function changeStatusOfIsRequestWarehouse()
+{
+    if($('#skuTableBody').find('tr').length > 0)
+    {
+        $('#request_for_warehouse_btn').prop('disabled', false)
+    } else {
+        $('#request_for_warehouse_btn').prop('disabled', true)
     }
 }

@@ -2,7 +2,9 @@
 
 namespace App\Features\Process\ReachTruck\Observers;
 
+use App\Features\Masters\Locations\Domains\Models\Location;
 use App\Features\Masters\Warehouses\Domains\Models\Warehouse;
+use App\Features\OrderManagement\Domains\Models\OrderItemPalletDetails;
 use App\Features\Process\ReachTruck\Domains\Models\ReachTruck;
 use App\Features\Process\PalletManagement\Domains\Models\Pallet;
 
@@ -57,6 +59,9 @@ class ReachTruckObserver
 
         if ($reachTruck->isDirty('is_transfered')) {
             $this->updateMasterPalletlastLocation($reachTruck);
+            if ($reachTruck->to_locationable_type == Location::class) {
+                $this->processUpdateOrderItemPalletDetails($reachTruck);
+            }
         }
     }
 
@@ -72,37 +77,19 @@ class ReachTruckObserver
         $reachTruck->pallet->masterPallet->updateLastLocationable($locationableType, $locationableId);
     }
 
-    /**
-     * Handle the reach truck "deleted" event.
-     *
-     * @param  \App\Features\Process\ReachTruck\Domains\Models\ReachTruck  $reachTruck
-     * @return void
-     */
-    public function deleted(ReachTruck $reachTruck)
+    public function processUpdateOrderItemPalletDetails(ReachTruck $reachTruck)
     {
-        //
-    }
+        foreach ($reachTruck->pallet->palletDetails as $key => $palletDetail) {
+            if (!empty($palletDetail->orderItemPallet)) {
+                $orderItemPalletDetail = OrderItemPalletDetails::where('order_item_id', $palletDetail->orderItemPallet->order_item_id)
+                    ->where('pallet_name', $reachTruck->pallet->masterPallet->name)
+                    ->first();
 
-    /**
-     * Handle the reach truck "restored" event.
-     *
-     * @param  \App\Features\Process\ReachTruck\Domains\Models\ReachTruck  $reachTruck
-     * @return void
-     */
-    public function restored(ReachTruck $reachTruck)
-    {
-        //
-    }
-
-    /**
-     * Handle the reach truck "force deleted" event.
-     *
-     * @param  \App\Features\Process\ReachTruck\Domains\Models\ReachTruck  $reachTruck
-     * @return void
-     */
-    public function forceDeleted(ReachTruck $reachTruck)
-    {
-        //
+                if ($orderItemPalletDetail) {
+                    $orderItemPalletDetail->updateTransferDetails($reachTruck->transferBy->name);
+                }
+            }
+        }
     }
 
     public function createPalletLocationData(ReachTruck $reachTruck)

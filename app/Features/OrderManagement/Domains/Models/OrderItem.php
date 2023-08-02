@@ -44,6 +44,11 @@ class OrderItem extends Model implements OrderItemConstants
         return $this->hasMany(OrderItemPallet::class, 'order_item_id');
     }
 
+    public function orderItemPalletDetails()
+    {
+        return $this->hasMany(OrderItemPalletDetails::class, 'order_item_id');
+    }
+
     public static function persistCreateOrderItem(Order $order, array $data): ?OrderItem
     {
         $data['pick_up_date'] = date('Y-m-d', strtotime($data['pick_up_date']));

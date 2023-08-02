@@ -54,14 +54,14 @@ class OrderItemPallet extends Model
                     $mappingWeight = $palletDetail->weight;
                 }
 
-                $orderItem->orderItemPallets()->create([
+                $orderItemPallet = $orderItem->orderItemPallets()->create([
                     'pallet_id' => $palletDetail->pallet_id,
                     'pallet_detail_id' => $palletDetail->id,
                     'weight' => $mappingWeight
                 ]);
 
                 $reachTruckAction->createReachTruckFromPallet($palletDetail->pallet, Location::class, $orderItem->location_id);
-
+                OrderItemPalletDetails::procressOrderItemPalletDetails($orderItemPallet, $mappingWeight);
                 $mappedWeight += $mappingWeight;
                 $remainingWeight -= $mappingWeight;
 

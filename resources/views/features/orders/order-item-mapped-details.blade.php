@@ -95,26 +95,18 @@
                                 <th>Pallet</th>
                                 <th>Weight</th>
                                 <th>Mapped Weight</th>
-                                <!-- <th>Action</th> -->
+                                <th>Transfer By</th>
+                                <th>Transfer At</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($orderItem->orderItemPallets as $orderItemPallet)
+                            @foreach ($orderItem->orderItemPalletDetails as $orderItemPalletDetail)
                             <tr>
-                                <td>{{ $orderItemPallet->pallet->masterPallet->name }}</td>
-                                <td>
-                                    {{ $orderItemPallet->pallet->palletDetails->where('sku_code_id', $orderItem->sku_code_id)->where('variant_id',  $orderItem->variant_id)->sum('weight') }}
-                                </td>
-                                <td>
-                                    {{ $orderItemPallet->weight }}
-                                </td>
-                                <!-- <td>
-                                    @if(!$orderItemPallet->is_transfered)
-                                    <a href="javascript:void(0);" data-order_item_pallet_id="{{ $orderItemPallet->id }}" class="text-danger remove-mapped-pallet">
-                                        <i class="fa fa-trash"></i>
-                                    </a>
-                                    @endif
-                                </td> -->
+                                <td>{{ $orderItemPalletDetail->pallet_name }}</td>
+                                <td>{{ $orderItemPalletDetail->weight_in_pallet }}</td>
+                                <td>{{ $orderItemPalletDetail->mapped_weight }}</td>
+                                <td>{{ $orderItemPalletDetail->transfered_by ?? '' }}</td>
+                                <td>{{ date('d-m-Y h:i A', strtotime($orderItemPalletDetail->mapped_weight)) }}</td>
                             </tr>
                             @endforeach
                         </tbody>

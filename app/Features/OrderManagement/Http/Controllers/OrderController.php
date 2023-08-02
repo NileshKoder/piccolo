@@ -135,7 +135,7 @@ class OrderController extends Controller
         }
 
         $orderItem->load([
-            'skuCode', 'variant', 'location',
+            'skuCode', 'variant', 'location', 'orderItemPalletDetails',
             'orderItemPallets.pallet' => function ($q) {
                 $q->with('palletDetails', 'masterPallet');
             }

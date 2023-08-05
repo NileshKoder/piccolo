@@ -22,6 +22,7 @@ var initWareHouseDataTable = function(route) {
             { data: 'action', name: 'action', width: 10},
             { data: 'id', name: 'id'},
             { data: 'order_number', name: 'order_number'},
+            { data: 'state', name: 'state'},
             { data: 'creator.name', name: 'creator.name'},
             { data: 'updator.name', name: 'updator.name'},
             { data: 'updated_at', name: 'updated_at'}

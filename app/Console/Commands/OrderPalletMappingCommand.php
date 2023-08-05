@@ -50,7 +50,7 @@ class OrderPalletMappingCommand extends Command
         try {
             foreach ($orderItems as $key => $orderItem) {
                 $orderItem->mapPallets();
-                $orderItem->order->updateState(Order::TRANSFERING_PALLET);
+                $orderItem->order->updateState(Order::TRANSFERING_PALLETS);
             }
         } catch (Exception $ex) {
             info($ex);

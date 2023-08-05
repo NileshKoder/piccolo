@@ -90,4 +90,9 @@ class Order extends Model implements OrderConstants
 
         return $this;
     }
+
+    public function isOrderHasAllDetails()
+    {
+        return $this->ordeItems()->whereNull('variant_id')->count() > 0 ? false : true;
+    }
 }

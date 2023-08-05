@@ -24,6 +24,7 @@
                 </div>
                 <form action="{{ route('orders.store') }}" method="post" id="createOrderCreationForm">
                     @csrf
+                    <input type="hidden" id="order_screen" value="create">
                     @include('features.orders.partials._create')
                 </form>
             </div>

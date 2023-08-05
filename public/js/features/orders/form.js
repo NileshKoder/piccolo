@@ -15,20 +15,35 @@ $(document).ready(function () {
         let requiredWeight = $('#required_weight').val();
         let pickUpDate = $('#pick_up_date').val();
 
+        let orderScreen = $('#order_screen').val();
 
-        if (
-            dropLocationId == '' || dropLocationId == undefined ||
-            skuCodeId == '' || skuCodeId == undefined ||
-            varinatId == '' || varinatId == undefined ||
-            requiredWeight == '' || requiredWeight == undefined ||
-            pickUpDate == '' || pickUpDate == undefined
-        ) {
-            swal({
-                title: "Please Select all mandetory fields!",
-                icon: "warning"
-            })
-            return false;
+        if(orderScreen == "edit") {
+            if (
+                dropLocationId == '' || dropLocationId == undefined ||
+                skuCodeId == '' || skuCodeId == undefined ||
+                varinatId == '' || varinatId == undefined ||
+                requiredWeight == '' || requiredWeight == undefined ||
+                pickUpDate == '' || pickUpDate == undefined
+            ) {
+                swal({
+                    title: "Please Select all mandetory fields!",
+                    icon: "warning"
+                })
+                return false;
+            }
+        } else {
+            if (
+                skuCodeId == '' || skuCodeId == undefined ||
+                requiredWeight == '' || requiredWeight == undefined
+            ) {
+                swal({
+                    title: "Please Select all mandetory fields!",
+                    icon: "warning"
+                })
+                return false;
+            }
         }
+
 
         let isAlreadyExists = false
         $('#tbody tr').each(function (index, value) {

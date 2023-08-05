@@ -25,6 +25,7 @@
                 <form action="{{ route('orders.update', $order->id) }}" method="post" id="editOrderCreationForm">
                     @csrf
                     @method("PUT")
+                    <input type="hidden" id="order_screen" value="edit">
                     @include('features.orders.partials._edit')
                 </form>
             </div>

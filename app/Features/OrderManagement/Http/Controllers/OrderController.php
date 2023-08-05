@@ -153,4 +153,15 @@ class OrderController extends Controller
 
         return response()->json(['message' => "Unmapped successfully", "code" => 200], 200);
     }
+
+    public function updateStateToReadyToMapping(Order $order)
+    {
+        try {
+            $this->orderAction->updateStateToReadyToMapping($order);
+        } catch (Exception $ex) {
+            return response()->json(['message' => $ex->getMessage(), "code" => 500], 500);
+        }
+
+        return response()->json(['message' => "Order state successfully", "code" => 200], 200);
+    }
 }

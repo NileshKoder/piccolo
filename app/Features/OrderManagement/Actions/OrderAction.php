@@ -67,7 +67,7 @@ class OrderAction
                 $action = "<a href='" . route('orders.edit', $order->id) . "' class='editOrder' title='Edit Order'>
                             <i class='fas fa-edit text-success'></i>
                         </a>
-                        <a href='javascript:void(0);' data-update-state-toute='" . route('orders.updateStateToReadyToDispatch', $order->id) . "' class='updateState ml-2' title='Change Status to READY TO MAPPING'>
+                        <a href='javascript:void(0);' data-update_state_route='" . route('orders.updateStateToReadyToDispatch', $order->id) . "' class='updateState ml-2' title='Change Status to READY TO MAPPING'>
                             <i class='fas fa-check text-warning'></i>
                         </a>";
 
@@ -86,5 +86,10 @@ class OrderAction
     {
         $orderItemPallet = OrderItemPallet::find($orderItemPalletId);
         return $orderItemPallet->unMappedPallet();
+    }
+
+    public function updateStateToReadyToMapping(Order $order)
+    {
+        return $order->updateState(Order::READY_TO_MAPPING);
     }
 }

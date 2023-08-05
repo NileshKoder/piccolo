@@ -2,9 +2,10 @@
 
 namespace App\Console\Commands;
 
-use App\Features\OrderManagement\Domains\Models\OrderItem;
 use Exception;
 use Illuminate\Console\Command;
+use App\Features\OrderManagement\Domains\Models\Order;
+use App\Features\OrderManagement\Domains\Models\OrderItem;
 
 class OrderPalletMappingCommand extends Command
 {
@@ -39,13 +40,17 @@ class OrderPalletMappingCommand extends Command
      */
     public function handle()
     {
-        $orderItems = OrderItem::stateIn([OrderItem::CREATED, OrderItem::PARTIAL_MAPPED])
+        $orderItems = OrderItem::with('order')->stateIn([OrderItem::CREATED, OrderItem::PARTIAL_MAPPED])
+            ->whereHas('order', function ($orderQry) {
+                return $orderQry->state(Order::READY_TO_MAPPING);
+            })
             ->pickUpDateLessThanToday()
             ->orderBy('pick_up_date', 'ASC')->get();
 
         try {
             foreach ($orderItems as $key => $orderItem) {
                 $orderItem->mapPallets();
+                $orderItem->order->updateState(Order::TRANSFERING_PALLET);
             }
         } catch (Exception $ex) {
             info($ex);

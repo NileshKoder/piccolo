@@ -29,4 +29,6 @@ interface LocationConstants
         self::LOADING => 0,
         self::FG_PALLET => 0,
     ];
+
+    public const LOADING_LOCATION_ID = 23;
 }

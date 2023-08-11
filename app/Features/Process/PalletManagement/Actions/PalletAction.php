@@ -91,4 +91,14 @@ class PalletAction
             ->setTotalRecords($numberOfTotalRows)
             ->make(true);
     }
+
+    public function getMastersForBoxDetails()
+    {
+        $data = [];
+
+        $data['locations'] = Location::select('id', 'name', 'abbr')->type(Location::LINES)->get();
+        $data['masterPallets'] = MasterPallet::select('id', 'name')->isEmpty(true)->get();
+
+        return $data;
+    }
 }

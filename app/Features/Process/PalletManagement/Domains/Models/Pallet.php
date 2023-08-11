@@ -26,8 +26,7 @@ class Pallet extends Model implements PalletContants
 
     public static function persistCreatePallet(array $palletData): ?Pallet
     {
-        $pallet = null;
-        $pallet = DB::transaction(function () use ($palletData) {
+        return DB::transaction(function () use ($palletData) {
             $pallet = Pallet::create($palletData['pallet']);
 
             self::updateMasterPalletLastLocation($pallet, $palletData['pallet']['location_id']);
@@ -36,18 +35,22 @@ class Pallet extends Model implements PalletContants
                 self::updateOrCreatePalletDetails($pallet, $palletData['pallet_details']);
             }
 
-            // if (array_key_exists('pallet_box_details', $palletData)) {
-            //     self::createPalletDetails($pallet, $palletData['pallet_box_details']);
-            // }
+             if (array_key_exists('pallet_box_details', $palletData)) {
+                 self::updateOrCreatePalletBoxDetails($pallet, $palletData['pallet_box_details']);
+             }
 
             if ($palletData['is_request_for_warehouse']) {
                 $reachTruckAction = new ReachTruckAction();
                 $reachTruckAction->createReachTruckFromPallet($pallet, Warehouse::class);
             }
+            // TODO
+            if ($palletData['is_request_for_loading']) {
+                $reachTruckAction = new ReachTruckAction();
+                $reachTruckAction->createReachTruckFromPallet($pallet, Location::class, Location::LOADING_LOCATION_ID);
+            }
 
             return $pallet;
         });
-        return $pallet;
     }
 
     public static function persistUpdatePallet(Pallet $pallet, array $palletData)
@@ -107,6 +110,26 @@ class Pallet extends Model implements PalletContants
         }
     }
 
+    public static function updateOrCreatePalletBoxDetails(Pallet $pallet, ?array $palletBoxDetails)
+    {
+        $updatedIds = [];
+        if (!empty($palletBoxDetails) && count($palletBoxDetails) > 0) {
+            foreach ($palletBoxDetails as $key => $palletBoxDetail) {
+                $palletBoxDetailModel = PalletBoxDetails::persistUpdateOrCreatePalletBoxDetails($pallet, $palletBoxDetail);
+
+                if (!empty($palletDetails)) {
+                    array_push($updatedIds, $palletBoxDetailModel->id);
+                }
+            }
+        } else {
+            $updatedIds = [0];
+        }
+
+        if (!empty($updatedIds)) {
+            PalletBoxDetails::persistDeletePalletDetailsWhereNotInIds($pallet, $updatedIds);
+        }
+    }
+
     public static function createPalletBoxDetails(Pallet $pallet, array $palletBoxDetails)
     {
         foreach ($palletBoxDetails as $key => $palletBoxDetail) {
@@ -151,6 +174,9 @@ class Pallet extends Model implements PalletContants
         self::observe(PalletObserver::class);
     }
 
+    /**
+     * @return string[]
+     */
     public static function getCreateValidationRules()
     {
         return [
@@ -161,6 +187,18 @@ class Pallet extends Model implements PalletContants
             "pallet_details.*.weight" => 'required',
             "pallet_details.*.batch" => 'required',
             "pallet_details.*.batch_date" => 'required',
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public static function getCreateValidationRulesForBoxDetails(): array
+    {
+        return [
+            "location_id" => 'required|exists:locations,id',
+            "master_pallet_id" => 'required|exists:master_pallets,id',
+            "pallet_details.*.box_name" => 'required',
         ];
     }
 }

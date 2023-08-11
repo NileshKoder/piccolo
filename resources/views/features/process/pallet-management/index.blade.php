@@ -25,7 +25,7 @@
                                 <i class="fas fa-plus"></i> Fill New Pallet With Sku Details
                             </button>
                         </a>
-                        <a href="{{ route('pallets.create.box-deatils') }}">
+                        <a href="{{ route('pallets.create.box-details') }}">
                             <button type="button" class="btn btn-primary float-right">
                                 <i class="fas fa-plus"></i> Fill New Pallet With Box Details
                             </button>

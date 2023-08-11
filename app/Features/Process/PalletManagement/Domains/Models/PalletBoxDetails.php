@@ -19,7 +19,7 @@ class PalletBoxDetails extends Model
         );
     }
 
-    public static function persistDeletePalletDetailsWhereNotInIds(Pallet $pallet, array $ids)
+    public static function persistDeletePalletBoxDetailsWhereNotInIds(Pallet $pallet, array $ids)
     {
         $pallet->palletBoxDetails()->whereNotIn('id', $ids)->get()->each(function ($palletBoxDetail) {
             $palletBoxDetail->delete();

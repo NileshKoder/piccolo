@@ -4,6 +4,7 @@ namespace App\Features\Process\PalletManagement\Http\v1\Controllers;
 
 use App\Features\Process\PalletManagement\Actions\PalletAction;
 use App\Features\Process\PalletManagement\Http\v1\Requests\StorePalletBoxDetailsRequest;
+use App\Features\Process\PalletManagement\Http\v1\Requests\UpdatePalletBoxDetailRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -142,6 +143,29 @@ class PalletController extends Controller
         try {
             $requestData = $request->requestData();
             $this->palletAction->createPallet($requestData);
+        } catch (Exception $ex) {
+            return back()->with('error', $ex->getMessage());
+        }
+
+        return redirect()->route('pallets.index')->with('success', 'Pallet Filled Successfully');
+    }
+
+    public function editWithBoxDetails(Pallet $pallet): View
+    {
+        $data = $this->palletAction->getMastersForBoxDetailsForEdit($pallet);
+        $pallet->load('palletBoxDetails');
+        return view("features.process.pallet-management.edit-box-details", compact('data', 'pallet'));
+    }
+
+    /**
+     * @param UpdatePalletBoxDetailRequest $request
+     * @return RedirectResponse
+     */
+    public function updateWithBoxDetails(UpdatePalletBoxDetailRequest $request, Pallet $pallet): RedirectResponse
+    {
+        try {
+            $requestData = $request->requestData();
+            $this->palletAction->updatePallet($pallet, $requestData);
         } catch (Exception $ex) {
             return back()->with('error', $ex->getMessage());
         }

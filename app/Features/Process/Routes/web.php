@@ -18,7 +18,9 @@ use Illuminate\Support\Facades\Route;
 // Pallet Routes
 Route::post('pallets/get-all-pallets/ajax', '\App\Features\Process\PalletManagement\Http\v1\Controllers\PalletController@getAllPallets')->name('pallets.getAllPallets');
 Route::post('pallets/store/box-details', '\App\Features\Process\PalletManagement\Http\v1\Controllers\PalletController@storeBoxDetails')->name('pallets.store.box-details');
-Route::get('pallets/create/box-details', '\App\Features\Process\PalletManagement\Http\v1\Controllers\PalletController@createWithBoxDetails')->name('pallets.create.box-deatils');
+Route::get('pallets/create/box-details', '\App\Features\Process\PalletManagement\Http\v1\Controllers\PalletController@createWithBoxDetails')->name('pallets.create.box-details');
+Route::get('pallets/edit/box-details/{pallet}', '\App\Features\Process\PalletManagement\Http\v1\Controllers\PalletController@editWithBoxDetails')->name('pallets.edit.box-details');
+Route::put('pallets/update/box-details/{pallet}', '\App\Features\Process\PalletManagement\Http\v1\Controllers\PalletController@updateWithBoxDetails')->name('pallets.update.box-details');
 Route::resource('pallets', '\App\Features\Process\PalletManagement\Http\v1\Controllers\PalletController');
 
 // Reach truck routes

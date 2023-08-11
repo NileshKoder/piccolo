@@ -77,7 +77,14 @@ class PalletAction
             ->addColumn('action', function ($pallet) {
                 $action = "";
                 if ($pallet->masterPallet->last_locationable_type != Warehouse::class) {
-                    $action = "<a href='" . route('pallets.edit', $pallet->id) . "' class='editPallet' title='Edit Pallet'>
+                    $routeName = '#';
+                    if($pallet->palletDetails->count() > 0)
+                    {
+                        $routeName = route('pallets.edit', $pallet->id);
+                    } elseif ($pallet->palletBoxDetails->count() > 0) {
+                        $routeName = route('pallets.edit.box-details', $pallet->id);
+                    }
+                    $action = "<a href='" . $routeName . "' class='editPallet' title='Edit Pallet'>
                             <i class='fas fa-edit text-success'></i>
                         </a>";
                 }
@@ -98,6 +105,16 @@ class PalletAction
 
         $data['locations'] = Location::select('id', 'name', 'abbr')->type(Location::LINES)->get();
         $data['masterPallets'] = MasterPallet::select('id', 'name')->isEmpty(true)->get();
+
+        return $data;
+    }
+
+    public function getMastersForBoxDetailsForEdit(Pallet  $pallet): array
+    {
+        $data = [];
+        $data['masterPallets'] = MasterPallet::select('id', 'name')->isEmpty(true)->get();
+        $data['masterPallets']->push($pallet->masterPallet);
+        $data['locations'] = Location::select(['id', 'name', 'abbr'])->type(Location::LINES)->get();
 
         return $data;
     }

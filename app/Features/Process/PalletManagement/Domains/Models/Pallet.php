@@ -3,6 +3,7 @@
 namespace App\Features\Process\PalletManagement\Domains\Models;
 
 use App\Helpers\Traits\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use App\Features\Masters\Locations\Domains\Models\Location;
@@ -64,20 +65,21 @@ class Pallet extends Model implements PalletContants
                 self::updateOrCreatePalletDetails($pallet, $palletData['pallet_details']);
             }
 
-            // if (array_key_exists('pallet_box_details', $palletData)) {
-            //     self::createPalletDetails($pallet, $palletData['pallet_box_details']);
-            // }
-
-            // if ($pallet->palletDetails->count() == 0 && $pallet->palletBoxDetails->count() == 0) {
-            //     self::persistDeletePallet($pallet);
-            // }
+             if (array_key_exists('pallet_box_details', $palletData)) {
+                 self::updateOrCreatePalletBoxDetails($pallet, $palletData['pallet_box_details']);
+             }
 
             if ($palletData['is_request_for_warehouse']) {
                 $reachTruckAction = new ReachTruckAction();
                 $reachTruckAction->createReachTruckFromPallet($pallet, Warehouse::class);
             }
 
-            if ($pallet->palletDetails->count() == 0) {
+            if ($palletData['is_request_for_loading']) {
+                $reachTruckAction = new ReachTruckAction();
+                $reachTruckAction->createReachTruckFromPallet($pallet, Location::class, Location::LOADING_LOCATION_ID);
+            }
+
+            if ($pallet->palletDetails->count() == 0 && $pallet->palletBoxDetails->count() == 0) {
                 self::persistDeletePallet($pallet);
             }
             return $pallet;
@@ -117,7 +119,7 @@ class Pallet extends Model implements PalletContants
             foreach ($palletBoxDetails as $key => $palletBoxDetail) {
                 $palletBoxDetailModel = PalletBoxDetails::persistUpdateOrCreatePalletBoxDetails($pallet, $palletBoxDetail);
 
-                if (!empty($palletDetails)) {
+                if (!empty($palletBoxDetailModel)) {
                     array_push($updatedIds, $palletBoxDetailModel->id);
                 }
             }
@@ -126,7 +128,7 @@ class Pallet extends Model implements PalletContants
         }
 
         if (!empty($updatedIds)) {
-            PalletBoxDetails::persistDeletePalletDetailsWhereNotInIds($pallet, $updatedIds);
+            PalletBoxDetails::persistDeletePalletBoxDetailsWhereNotInIds($pallet, $updatedIds);
         }
     }
 
@@ -148,12 +150,12 @@ class Pallet extends Model implements PalletContants
         return $this->belongsTo(MasterPallet::class);
     }
 
-    public function palletDetails()
+    public function palletDetails(): HasMany
     {
         return $this->hasMany(PalletDetails::class);
     }
 
-    public function palletBoxDetails()
+    public function palletBoxDetails(): HasMany
     {
         return $this->hasMany(PalletBoxDetails::class);
     }
@@ -199,6 +201,17 @@ class Pallet extends Model implements PalletContants
             "location_id" => 'required|exists:locations,id',
             "master_pallet_id" => 'required|exists:master_pallets,id',
             "pallet_details.*.box_name" => 'required',
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public static function getUpdateValidationRulesForBoxDetails(): array
+    {
+        return [
+            "location_id" => 'required|exists:locations,id',
+            "master_pallet_id" => 'required|exists:master_pallets,id'
         ];
     }
 }

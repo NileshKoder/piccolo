@@ -11,6 +11,7 @@ use App\Features\Process\PalletManagement\Domains\Models\Pallet;
 use App\Features\Process\PalletManagement\Http\v1\Requests\StorePalletRequest;
 use App\Features\Process\PalletManagement\Http\v1\Requests\UpdatePalletRequest;
 use Exception;
+use Illuminate\View\View;
 
 class PalletController extends Controller
 {
@@ -24,9 +25,9 @@ class PalletController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return View
      */
-    public function index()
+    public function index(): View
     {
         return view("features.process.pallet-management.index");
     }
@@ -34,9 +35,9 @@ class PalletController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return View
      */
-    public function create()
+    public function create(): View
     {
         $data = $this->palletAction->getMasterData();
         return view("features.process.pallet-management.create", compact('data'));
@@ -45,10 +46,10 @@ class PalletController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Features\Process\PalletManagement\Http\v1\Requests\StorePalletRequest  $request
-     * @return \Illuminate\Http\Response
+     * @param  StorePalletRequest  $request
+     * @return RedirectResponse
      */
-    public function store(StorePalletRequest $request)
+    public function store(StorePalletRequest $request): RedirectResponse
     {
         try {
             $requestData = $request->requestData();
@@ -63,8 +64,8 @@ class PalletController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Features\Process\PalletManagement\Domains\Models\Pallet  $pallet
-     * @return \Illuminate\Http\Response
+     * @param  Pallet  $pallet
+     * @return void
      */
     public function show(Pallet $pallet)
     {
@@ -74,10 +75,10 @@ class PalletController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Features\Process\PalletManagement\Domains\Models\Pallet  $pallet
-     * @return \Illuminate\Http\Response
+     * @param  Pallet  $pallet
+     * @return View
      */
-    public function edit(Pallet $pallet)
+    public function edit(Pallet $pallet): View
     {
         $data = $this->palletAction->getMasterDataForEdit($pallet);
         $pallet->load([
@@ -95,11 +96,11 @@ class PalletController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Features\Process\PalletManagement\Domains\Models\Pallet  $pallet
-     * @return \Illuminate\Http\Response
+     * @param  UpdatePalletRequest  $request
+     * @param  Pallet  $pallet
+     * @return RedirectResponse
      */
-    public function update(UpdatePalletRequest $request, Pallet $pallet)
+    public function update(UpdatePalletRequest $request, Pallet $pallet): RedirectResponse
     {
         try {
             $requestData = $request->requestData();
@@ -109,17 +110,6 @@ class PalletController extends Controller
         }
 
         return redirect()->route('pallets.index')->with('success', 'Pallet Updated Successfully');
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Features\Process\PalletManagement\Domains\Models\Pallet  $pallet
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Pallet $pallet)
-    {
-        //
     }
 
     public function getAllPallets(Request $request)

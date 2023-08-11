@@ -4,15 +4,28 @@ namespace App\Features\Process\PalletManagement\Domains\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Features\Masters\Boxes\Domains\Models\Box;
-use App\Features\Process\PalletManagement\Domains\Models\Pallet;
 
 class PalletBoxDetails extends Model
 {
-    protected $filleable = ['pallet_id', 'order_id', 'box_id'];
+    protected $fillable = ['pallet_id', 'box_name'];
 
-    public static function persistPalletBoxDetails(Pallet $pallet, array $palletBoxDetails)
+    public static function persistUpdateOrCreatePalletBoxDetails(Pallet $pallet, array $palletBoxDetails)
     {
-        return $pallet->palletBoxDetails()->create($palletBoxDetails);
+        return $pallet->palletBoxDetails()->updateOrcreate(
+            [
+                'id' => $palletBoxDetails['id']
+            ],
+            $palletBoxDetails
+        );
+    }
+
+    public static function persistDeletePalletDetailsWhereNotInIds(Pallet $pallet, array $ids)
+    {
+        $pallet->palletBoxDetails()->whereNotIn('id', $ids)->get()->each(function ($palletBoxDetail) {
+            $palletBoxDetail->delete();
+        });
+
+        return;
     }
 
     public function pallet()

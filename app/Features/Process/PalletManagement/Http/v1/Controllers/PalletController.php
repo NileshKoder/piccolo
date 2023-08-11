@@ -3,6 +3,8 @@
 namespace App\Features\Process\PalletManagement\Http\v1\Controllers;
 
 use App\Features\Process\PalletManagement\Actions\PalletAction;
+use App\Features\Process\PalletManagement\Http\v1\Requests\StorePalletBoxDetailsRequest;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Features\Process\PalletManagement\Domains\Models\Pallet;
@@ -132,5 +134,28 @@ class PalletController extends Controller
             return response()->json(['message' => $ex->getMessage()], 500);
         }
         return $data;
+    }
+
+    public function createWithBoxDetails()
+    {
+        $data = $this->palletAction->getMastersForBoxDetails();
+
+        return view('features.process.pallet-management.create-box-details', compact('data'));
+    }
+
+    /**
+     * @param StorePalletBoxDetailsRequest $request
+     * @return RedirectResponse
+     */
+    public function storeBoxDetails(StorePalletBoxDetailsRequest $request): RedirectResponse
+    {
+        try {
+            $requestData = $request->requestData();
+            $this->palletAction->createPallet($requestData);
+        } catch (Exception $ex) {
+            return back()->with('error', $ex->getMessage());
+        }
+
+        return redirect()->route('pallets.index')->with('success', 'Pallet Filled Successfully');
     }
 }

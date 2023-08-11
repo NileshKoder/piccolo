@@ -20,9 +20,14 @@
                         All Pallets
                     </h3>
                     <div class="card-tools">
-                        <a href="{{ route('pallets.create') }}" target="_blank">
+                        <a href="{{ route('pallets.create') }}">
+                            <button type="button" class="btn btn-primary float-right ml-2">
+                                <i class="fas fa-plus"></i> Fill New Pallet With Sku Details
+                            </button>
+                        </a>
+                        <a href="{{ route('pallets.create.box-deatils') }}">
                             <button type="button" class="btn btn-primary float-right">
-                                <i class="fas fa-plus"></i> Fill New Pallet
+                                <i class="fas fa-plus"></i> Fill New Pallet With Box Details
                             </button>
                         </a>
                     </div>

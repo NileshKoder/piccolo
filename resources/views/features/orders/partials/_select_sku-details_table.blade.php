@@ -73,7 +73,7 @@
                         <a href="javascript:void(0);" class="text-danger remove-sku">
                             <i class="fa fa-trash"></i>
                         </a>
-                        @elseif ($ordeItem->state == $masterData['orderItemMapped'] || $ordeItem->state == $masterData['orderItemPartialMapped'])
+                        @elseif ($ordeItem->state == $masterData['orderItemMapped'] || $ordeItem->state == $masterData['orderItemPartialMapped'] || $ordeItem->state == $masterData['orderItemTransffered'])
                         <a href="{{ route('orders.getOrderIteMappedDetails', [$ordeItem->order_id, $ordeItem->id]) }}" class="text-info">
                             <i class="fa fa-eye"></i>
                         </a>

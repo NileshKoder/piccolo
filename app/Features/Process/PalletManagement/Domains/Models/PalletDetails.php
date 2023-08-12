@@ -2,6 +2,7 @@
 
 namespace App\Features\Process\PalletManagement\Domains\Models;
 
+use App\Features\Process\PalletManagement\Observers\PalletDetailsObserver;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use App\Features\Masters\SkuCodes\Domains\Models\SkuCode;
@@ -29,7 +30,9 @@ class PalletDetails extends Model
     public static function persistdeletePalletDetailsWhereNotInIds(Pallet $pallet, array $ids)
     {
         $pallet->palletDetails()->whereNotIn('id', $ids)->get()->each(function ($palletDetail) {
-            $palletDetail->orderItemPallet()->delete();
+            if($palletDetail->orderItemPallet) {
+                $palletDetail->orderItemPallet->delete();
+            }
             $palletDetail->delete();
         });
 

@@ -3,6 +3,7 @@
 namespace App\Features\OrderManagement\Domains\Models;
 
 use App\Features\Masters\Locations\Domains\Models\Location;
+use App\Features\OrderManagement\Observers\OrderItemPalletObserver;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use App\Features\Masters\Warehouses\Domains\Models\Warehouse;
@@ -96,5 +97,11 @@ class OrderItemPallet extends Model
     public function orderItem()
     {
         return $this->belongsTo(OrderItem::class);
+    }
+
+    public static function boot()
+    {
+        parent::boot();
+        self::observe(OrderItemPalletObserver::class);
     }
 }

@@ -42,7 +42,7 @@ class OrderPalletMappingCommand extends Command
     {
         $orderItems = OrderItem::with('order')->stateIn([OrderItem::CREATED, OrderItem::PARTIAL_MAPPED])
             ->whereHas('order', function ($orderQry) {
-                return $orderQry->state(Order::READY_TO_MAPPING);
+                return $orderQry->stateIn([Order::READY_TO_MAPPING, Order::TRANSFERING_PALLETS]);
             })
             ->pickUpDateLessThanToday()
             ->orderBy('pick_up_date', 'ASC')->get();

@@ -2,6 +2,7 @@
 
 namespace App\Features\Process\PalletManagement\Observers;
 
+use App\Features\Masters\MasterPallet\Domains\Models\MasterPallet;
 use App\Features\Process\PalletManagement\Domains\Models\Pallet;
 
 class PalletObserver
@@ -25,7 +26,15 @@ class PalletObserver
      */
     public function updated(Pallet $pallet)
     {
-        //
+        if($pallet->isDirty('master_pallet_id'))
+        {
+            // update old pallet as empty
+            $masterPallet = MasterPallet::find($pallet->getOriginal('master_pallet_id'));
+            $masterPallet->updateIsEmpty(true);
+
+            // update new pallet as non empty
+            $pallet->masterPallet->updateIsEmpty(false);
+        }
     }
 
     /**

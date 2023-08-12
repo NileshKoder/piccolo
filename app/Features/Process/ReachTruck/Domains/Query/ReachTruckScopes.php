@@ -45,4 +45,31 @@ trait ReachTruckScopes
 
         return $query;
     }
+
+    public function scopeNotToLocationableType(Builder $query, ?string $toLocationAbleType)
+    {
+        if (!empty($toLocationAbleType)) {
+            return $query->where('to_locationable_type', '!=', $toLocationAbleType);
+        }
+
+        return $query;
+    }
+
+    public function scopeToLocationableType(Builder $query, ?string $toLocationAbleType)
+    {
+        if (!empty($toLocationAbleType)) {
+            return $query->where('to_locationable_type', $toLocationAbleType);
+        }
+
+        return $query;
+    }
+
+    public function scopeToLocationableIdIn(Builder $query, ?array $toLocationAbleIds)
+    {
+        if (!empty($toLocationAbleIds)) {
+            return $query->whereIn('to_locationable_id', $toLocationAbleIds);
+        }
+
+        return $query;
+    }
 }

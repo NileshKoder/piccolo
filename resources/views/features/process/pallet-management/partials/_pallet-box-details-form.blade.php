@@ -33,7 +33,7 @@
                 </tr>
             </thead>
             <tbody id="tbody">
-                @if($pallet->palletBoxDetails->count() > 0)
+                @if(!empty($pallet) && $pallet->palletBoxDetails->count() > 0)
                 @foreach($pallet->palletBoxDetails as $key => $palletBoxDetail)
                     <tr>
                         <input type="hidden" name="pallet_box_details[{{ $key }}][id]" value="{{ $palletBoxDetail->id }}">

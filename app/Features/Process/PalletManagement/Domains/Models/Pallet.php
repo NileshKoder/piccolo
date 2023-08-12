@@ -45,7 +45,7 @@ class Pallet extends Model implements PalletContants
                 $reachTruckAction->createReachTruckFromPallet($pallet, Warehouse::class);
             }
 
-            if ($palletData['is_request_for_loading']) {
+            if (isset($palletData['is_request_for_loading']) && $palletData['is_request_for_loading']) {
                 $reachTruckAction = new ReachTruckAction();
                 $reachTruckAction->createReachTruckFromPallet($pallet, Location::class, Location::LOADING_LOCATION_ID);
             }
@@ -74,7 +74,7 @@ class Pallet extends Model implements PalletContants
                 $reachTruckAction->createReachTruckFromPallet($pallet, Warehouse::class);
             }
 
-            if ($palletData['is_request_for_loading']) {
+            if (isset($palletData['is_request_for_loading']) && $palletData['is_request_for_loading']) {
                 $reachTruckAction = new ReachTruckAction();
                 $reachTruckAction->createReachTruckFromPallet($pallet, Location::class, Location::LOADING_LOCATION_ID);
             }

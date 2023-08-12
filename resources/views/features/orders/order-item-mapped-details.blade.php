@@ -106,7 +106,7 @@
                                 <td>{{ $orderItemPalletDetail->weight_in_pallet }}</td>
                                 <td>{{ $orderItemPalletDetail->mapped_weight }}</td>
                                 <td>{{ $orderItemPalletDetail->transfered_by ?? '' }}</td>
-                                <td>{{ date('d-m-Y h:i A', strtotime($orderItemPalletDetail->mapped_weight)) }}</td>
+                                <td>{{ date('d-m-Y h:i A', strtotime($orderItemPalletDetail->transfered_at)) }}</td>
                             </tr>
                             @endforeach
                         </tbody>

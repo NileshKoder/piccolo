@@ -31,4 +31,6 @@ interface LocationConstants
     ];
 
     public const LOADING_LOCATION_ID = 23;
+    public const LOADING_LOCATION_NAME_CHANGE = 'WH TO LOADING';
+    public const LINE_LOCATION_NAME_CHANGE = 'ASSEMBLY RETURN TO WH';
 }

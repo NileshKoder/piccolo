@@ -114,7 +114,11 @@ class ReachTruckAction
 
         foreach ($locations as $key => $location) {
             if ($location->type == Location::LOADING) {
-                $location->type = "WH TO LOADING";
+                $location->type = Location::LOADING_LOCATION_NAME_CHANGE;
+            }
+
+            if($location->type == Location::LINES) {
+                $location->type = Location::LINE_LOCATION_NAME_CHANGE;
             }
         }
         // dd($locations);
@@ -124,8 +128,6 @@ class ReachTruckAction
     public function getCreateData(string $locationType)
     {
         $data['reachTruckUsers'] = User::role(User::REACH_TRUCK)->get();
-
-
         $data['reachTrucks'] = $this->getNonTransferedPalletsFromReachTruckFromLocationableType($locationType);
 
         if ($locationType == "WH TO ASSEMBLY LINE") {
@@ -135,6 +137,11 @@ class ReachTruckAction
             $data['toLocationType'] = Location::class;
             $data['toLocations'] = Location::type(Location::LINES)->get();
         } else {
+            if($locationType == Location::LINE_LOCATION_NAME_CHANGE)
+            {
+                $locationType = Location::LINES;
+            }
+
             $data['fromLocations'] = Location::type($locationType)->get();
             $data['fromLocationType'] = Location::class;
             $data['toLocationType'] = Warehouse::class;

@@ -130,11 +130,7 @@ class OrderController extends Controller
 
     public function getOrderIteMappedDetails(Order $order, OrderItem $orderItem)
     {
-        if ($orderItem->state == OrderItem::TRANSFERED) {
-            abort(403, 'This Item Is Already Transfered');
-        }
-
-        $orderItem->load([
+         $orderItem->load([
             'skuCode', 'variant', 'location', 'orderItemPalletDetails',
             'orderItemPallets.pallet' => function ($q) {
                 $q->with('palletDetails', 'masterPallet');

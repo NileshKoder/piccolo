@@ -23,6 +23,7 @@ class OrderAction
         $data['orderItemCreate'] = OrderItem::CREATED;
         $data['orderItemPartialMapped'] = OrderItem::PARTIAL_MAPPED;
         $data['orderItemMapped'] = OrderItem::MAPPED;
+        $data['orderItemTransffered'] = OrderItem::TRANSFERED;
 
         return $data;
     }

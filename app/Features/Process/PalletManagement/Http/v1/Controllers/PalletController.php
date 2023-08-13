@@ -13,6 +13,7 @@ use App\Features\Process\PalletManagement\Http\v1\Requests\StorePalletRequest;
 use App\Features\Process\PalletManagement\Http\v1\Requests\UpdatePalletRequest;
 use Exception;
 use Illuminate\Support\Facades\Log;
+use Illuminate\View\View;
 
 class PalletController extends Controller
 {

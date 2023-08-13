@@ -21,6 +21,7 @@ Route::post('pallets/store/box-details', '\App\Features\Process\PalletManagement
 Route::get('pallets/create/box-details', '\App\Features\Process\PalletManagement\Http\v1\Controllers\PalletController@createWithBoxDetails')->name('pallets.create.box-details');
 Route::get('pallets/edit/box-details/{pallet}', '\App\Features\Process\PalletManagement\Http\v1\Controllers\PalletController@editWithBoxDetails')->name('pallets.edit.box-details');
 Route::put('pallets/update/box-details/{pallet}', '\App\Features\Process\PalletManagement\Http\v1\Controllers\PalletController@updateWithBoxDetails')->name('pallets.update.box-details');
+Route::post('pallets/set-date-for-transfer-pallet-at-loading', '\App\Features\Process\PalletManagement\Http\v1\Controllers\PalletController@setDateForTransferPalletAtLoading')->name('pallet.set-date-for-transfer-at-loading');
 Route::resource('pallets', '\App\Features\Process\PalletManagement\Http\v1\Controllers\PalletController');
 
 // Reach truck routes

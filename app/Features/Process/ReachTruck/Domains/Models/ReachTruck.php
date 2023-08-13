@@ -2,6 +2,7 @@
 
 namespace App\Features\Process\ReachTruck\Domains\Models;
 
+use App\Features\Masters\Locations\Domains\Models\Location;
 use App\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
@@ -48,6 +49,19 @@ class ReachTruck extends Model implements ReachTruckConstants
             $reachTruck->to_locationable_id = (int) $requestData['to_locationable_id'];
             $reachTruck->update();
         });
+    }
+
+    public function updateForLoadingTransfer(): ReachTruck
+    {
+        $this->from_locationable_type = $this->to_locationable_type;
+        $this->from_locationable_id = $this->to_locationable_id;
+        $this->to_locationable_type = Location::class;
+        $this->to_locationable_id = Location::LOADING_LOCATION_ID;
+        $this->is_transfered = false;
+        $this->transfered_by = null;
+        $this->update();
+
+        return $this;
     }
 
     public function pallet()

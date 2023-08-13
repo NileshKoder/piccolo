@@ -12,7 +12,7 @@ use App\Features\Process\PalletManagement\Domains\Models\Pallet;
 use App\Features\Process\PalletManagement\Http\v1\Requests\StorePalletRequest;
 use App\Features\Process\PalletManagement\Http\v1\Requests\UpdatePalletRequest;
 use Exception;
-use Illuminate\View\View;
+use Illuminate\Support\Facades\Log;
 
 class PalletController extends Controller
 {
@@ -171,5 +171,17 @@ class PalletController extends Controller
         }
 
         return redirect()->route('pallets.index')->with('success', 'Pallet Filled Successfully');
+    }
+
+    public function setDateForTransferPalletAtLoading(Request $request)
+    {
+        try {
+            $this->palletAction->setDateForPalleTransferAtLoading($request->id, $request->transfer_date);
+        } catch (Exception $exception) {
+            Log::error($exception);
+            back()->with('error', 'Something went wrong');
+        }
+
+        return back()->with('success', 'Transfer date updated successfully');
     }
 }

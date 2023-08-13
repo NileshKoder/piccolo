@@ -50,6 +50,12 @@ class PalletAction
         return Pallet::persistUpdatePallet($pallet, $palletData);
     }
 
+    public function  setDateForPalleTransferAtLoading(int $palletId, string $transferDate)
+    {
+        $pallet = Pallet::findOrFail($palletId);
+        $pallet->updateLoadingTransferDate($transferDate);
+    }
+
     public function getPallets(
         array $order,
         int $start,
@@ -84,9 +90,18 @@ class PalletAction
                     } elseif ($pallet->palletBoxDetails->count() > 0) {
                         $routeName = route('pallets.edit.box-details', $pallet->id);
                     }
-                    $action = "<a href='" . $routeName . "' class='editPallet' title='Edit Pallet'>
+
+                    $action .= "<a href='" . $routeName . "' class='editPallet' title='Edit Pallet'>
                             <i class='fas fa-edit text-success'></i>
                         </a>";
+
+
+                } else {
+                    if($pallet->isPalletIsWithBoxDetailsAndPresentAtWarehouse()) {
+                        $action .= "<a href='javascript:void(0);' class='setDateForLoading' title='Set Date For Loading' data-pallet_id='". $pallet->id ."' data-pallet-name='". $pallet->masterPallet->name ."'>
+                            <i class='fas fa-calendar-times text-danger'></i>
+                        </a>";
+                    }
                 }
                 return $action;
             })

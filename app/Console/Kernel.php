@@ -26,6 +26,7 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')->hourly();
         $schedule->command('command:orderPalletMappingCommand')->everyFiveMinutes();
+        $schedule->command('command:update-reach-truck-for-wh-loading')->everyFiveMinutes();
     }
 
     /**

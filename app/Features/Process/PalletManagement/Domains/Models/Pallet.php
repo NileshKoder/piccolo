@@ -18,12 +18,13 @@ use App\Features\Process\PalletManagement\Domains\Query\PalletScopes;
 use App\Features\Process\PalletManagement\Domains\Models\PalletDetails;
 use App\Features\Process\PalletManagement\Domains\Models\PalletBoxDetails;
 use App\Features\Process\PalletManagement\Domains\Models\PalletLocationLogs;
+use SebastianBergmann\Diff\Line;
 
 class Pallet extends Model implements PalletContants
 {
     use PalletScopes, BelongsTo;
 
-    protected $fillable = ['master_pallet_id', 'created_by', 'updated_by'];
+    protected $fillable = ['master_pallet_id', 'loading_transfer_date', 'created_by', 'updated_by'];
 
     public static function persistCreatePallet(array $palletData): ?Pallet
     {
@@ -132,6 +133,14 @@ class Pallet extends Model implements PalletContants
         }
     }
 
+    public function updateLoadingTransferDate(string $transferDate): Pallet
+    {
+        $this->loading_transfer_date = $transferDate;
+        $this->update();
+
+        return $this;
+    }
+
     public static function createPalletBoxDetails(Pallet $pallet, array $palletBoxDetails)
     {
         foreach ($palletBoxDetails as $key => $palletBoxDetail) {
@@ -174,6 +183,18 @@ class Pallet extends Model implements PalletContants
     {
         parent::boot();
         self::observe(PalletObserver::class);
+    }
+
+    public function isPalletIsWithBoxDetailsAndPresentAtWarehouse(): bool
+    {
+        if($this->reachTruck->from_locationable_type == Location::class) {
+            return $this->reachTruck->from_locationable_type == Location::class &&
+                $this->reachTruck->to_locationable_type == Warehouse::class &&
+                $this->reachTruck->is_transfered == true &&
+                $this->palletBoxDetails->count() > 0 &&
+                $this->palletDetails->count() == 0;
+        }
+        return false;
     }
 
     /**

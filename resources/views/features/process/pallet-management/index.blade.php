@@ -50,6 +50,7 @@
         </div>
     </div>
 </div>
+    @include('features.process.pallet-management.partials._set_date_for_loading_modal')
 @endsection
 
 @section('scripts')
@@ -57,5 +58,17 @@
 <script src="{{asset('js/sweetalert.min.js')}}"></script>
 <script>
     initWareHouseDataTable("{{ route('pallets.getAllPallets') }}");
+
+    $(document).ready(function () {
+        $(document).on('click', '.setDateForLoading', function () {
+            let palletId = $(this).data('pallet_id');
+            let palletName = $(this).data('pallet-name');
+alert(palletName)
+            $('#set_date_for_loading_pallet_id').val(palletId)
+            $('#set_date_for_loading_pallet_name').text(palletName)
+
+            $('#set_date_for_loading_modal').modal('show')
+        })
+    })
 </script>
 @endsection

@@ -5,6 +5,7 @@ use App\Features\Process\ReachTruck\Http\Controllers\Api\ReachTruckApiController
 use App\Features\Process\PalletManagement\Http\v1\Controllers\Api\PalletApiController;
 
 Route::post('pallets/create', [PalletApiController::class, 'create']);
+Route::post('pallets/create/box-details', [PalletApiController::class, 'createBox']);
 Route::post('pallets/get-pallet-details', [PalletApiController::class, 'getPalletDetails']);
 Route::post('pallets/store', [PalletApiController::class, 'store']);
 Route::put('pallets/update/{pallet}', [PalletApiController::class, 'update']);

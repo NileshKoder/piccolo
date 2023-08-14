@@ -6,10 +6,13 @@ use App\Features\Masters\Locations\Domains\Models\Location;
 use App\Features\Masters\MasterPallet\Domains\Models\MasterPallet;
 use App\Features\Process\PalletManagement\Actions\PalletAction;
 use App\Features\Process\PalletManagement\Domains\Models\Pallet;
+use App\Features\Process\PalletManagement\Domains\Models\PalletBoxDetails;
+use App\Features\Process\PalletManagement\Domains\Models\PalletDetails;
 use App\Http\Controllers\ApiController;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use function collect;
 
 class PalletApiController extends ApiController
 {
@@ -56,16 +59,63 @@ class PalletApiController extends ApiController
                 throw new Exception('Pallet is invalid');
             }
 
-            $pallet = Pallet::with(
-                'masterPallet',
-                'palletDetails.skuCode',
-                'palletDetails.variant'
-            )->masterPalletName($request->pallet_name)->first();
+            $pallet = Pallet::with([
+                    'masterPallet.lastLocation',
+                    'palletDetails.skuCode',
+                    'palletDetails.variant'
+                ])
+                ->select('id', 'master_pallet_id')
+                ->masterPalletName($request->pallet_name)
+                ->first();
+
+            $pallet = $this->prepareDataOfPallet($pallet);
 
             return $this->showOne($pallet, 200);
         } catch (Exception $ex) {
             return $this->errorResponse($ex->getMessage(), 500);
         }
+    }
+
+    public function prepareDataOfPallet(Pallet $pallet)
+    {
+        $newPallet = new Pallet();
+        $newPallet->id = $pallet->id;
+        $newPallet->pallet_name = $pallet->masterPallet->name;
+
+        $newPallet->pallet_last_location = $pallet->masterPallet->last_locationable->name;
+
+        if($pallet->palletDetails->count() > 0) {
+            $palletDetailCollection = collect();
+            foreach ($pallet->palletDetails as $palletDetail) {
+                $palletDetails = new PalletDetails();
+                $palletDetails->id = $palletDetail->id;
+                $palletDetails->sku_code_id = $palletDetail->sku_code_id;
+                $palletDetails->sku_code_name = $palletDetail->skuCode->name;
+                $palletDetails->variant_id = $palletDetail->variant_id;
+                $palletDetails->variant_name = $palletDetail->variant->name;
+                $palletDetails->weight = $palletDetail->weight;
+                $palletDetails->batch = $palletDetail->batch;
+
+                $palletDetailCollection->push($palletDetails);
+            }
+
+            $newPallet->palletDetails = $palletDetailCollection;
+        }
+
+        if($pallet->palletBoxDetails->count() > 0) {
+            $palletBoxDetailCollection = collect();
+            foreach ($pallet->palletBoxDetails as $palletBoxDetail) {
+                $palletBoxDetails = new PalletBoxDetails();
+                $palletBoxDetails->id = $palletBoxDetail->id;
+                $palletBoxDetails->box_name = $palletBoxDetail->box_name;
+
+                $palletBoxDetailCollection->push($palletBoxDetails);
+            }
+
+            $newPallet->palletBoxDetails = $palletBoxDetailCollection;
+        }
+
+        return $newPallet;
     }
 
     public function store(Request $request)

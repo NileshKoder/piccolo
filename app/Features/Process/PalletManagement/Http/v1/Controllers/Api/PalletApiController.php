@@ -40,6 +40,23 @@ class PalletApiController extends ApiController
         return $this->showAll($masterData, 200);
     }
 
+    public function createBox(Request $request)
+    {
+        $validate = $this->validation_token($request->token);
+
+        if ($validate !== true) {
+            return $validate;
+        }
+
+        try {
+            $masterData = $this->palletAction->getMastersForBoxDetails();
+        } catch (Exception $ex) {
+            return $this->errorResponse($ex->getMessage(), 500);
+        }
+
+        return $this->showAll($masterData, 200);
+    }
+
     public function getPalletDetails(Request $request)
     {
         $validate = $this->validation_token($request->token);
@@ -61,6 +78,7 @@ class PalletApiController extends ApiController
 
             $pallet = Pallet::with([
                     'masterPallet.lastLocation',
+                    'palletDetails.orderItemPallet',
                     'palletDetails.skuCode',
                     'palletDetails.variant'
                 ])
@@ -95,6 +113,7 @@ class PalletApiController extends ApiController
                 $palletDetails->variant_name = $palletDetail->variant->name;
                 $palletDetails->weight = $palletDetail->weight;
                 $palletDetails->batch = $palletDetail->batch;
+                $palletDetails->mapped_weight = $palletDetail->orderItemPallet?->weight ?? 0;
 
                 $palletDetailCollection->push($palletDetails);
             }
@@ -144,7 +163,7 @@ class PalletApiController extends ApiController
             return $this->errorResponse($ex->getMessage(), 500);
         }
 
-        return $this->showOne($pallet, 200);
+        return $this->showOne(['success' => "Pallet Filled Successfully"], 200);
     }
 
     public function update(Pallet $pallet, Request $request)
@@ -166,21 +185,21 @@ class PalletApiController extends ApiController
         } catch (Exception $ex) {
             return $this->errorResponse($ex->getMessage(), 500);
         }
+
+        return $this->showOne(['success' => "Pallet Updated Successfully"], 200);
     }
 
     public function prepareData(Request $request): array
     {
         $requestData = [];
+        $requestData['pallet']['location_id'] = $request->location_id;
         $requestData['pallet']['master_pallet_id'] = $request->master_pallet_id;
         $requestData['pallet']['created_by'] = $request->created_by;
         $requestData['pallet']['updated_by'] = $request->updated_by ?? $request->created_by;
 
         $requestData['pallet_details'] = $request->pallet_details;
+        $requestData['pallet_box_details'] = $request->pallet_box_details;
         $requestData['is_request_for_warehouse'] = $request->is_request_for_warehouse;
-
-        $requestData['pallet_location']['locationable_type'] = Location::class;
-        $requestData['pallet_location']['locationable_id'] = $request->location_id;
-        $requestData['pallet_location']['created_by'] = $request->created_by;
 
         return $requestData;
     }

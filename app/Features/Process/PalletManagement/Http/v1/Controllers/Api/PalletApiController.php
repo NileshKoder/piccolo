@@ -113,7 +113,7 @@ class PalletApiController extends ApiController
                 $palletDetails->variant_name = $palletDetail->variant->name;
                 $palletDetails->weight = $palletDetail->weight;
                 $palletDetails->batch = $palletDetail->batch;
-                $palletDetails->mapped_weight = $palletDetail->orderItemPallet?->weight ?? 0;
+                $palletDetails->mapped_weight = !empty($palletDetail->orderItemPallet) ? $palletDetail->orderItemPallet->weight : 0;
 
                 $palletDetailCollection->push($palletDetails);
             }

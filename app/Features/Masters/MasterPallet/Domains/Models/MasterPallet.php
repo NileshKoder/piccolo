@@ -26,6 +26,11 @@ class MasterPallet extends Model
         return $masterPallet;
     }
 
+    public function lastLocation()
+    {
+        return $this->morphTo('last_locationable');
+    }
+
     public static function persistUpdateMasterPallet(MasterPallet $masterPallet, array $masterPalletData): MasterPallet
     {
         DB::transaction(function () use ($masterPallet, $masterPalletData) {

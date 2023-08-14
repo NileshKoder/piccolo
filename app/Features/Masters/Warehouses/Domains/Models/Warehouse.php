@@ -2,6 +2,8 @@
 
 namespace App\Features\Masters\Warehouses\Domains\Models;
 
+use App\Features\Masters\MasterPallet\Domains\Models\MasterPallet;
+use App\Features\Process\PalletManagement\Domains\Models\Pallet;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use App\Features\Masters\Warehouses\Constants\WarehouseConstants;
@@ -28,6 +30,11 @@ class Warehouse extends Model implements WarehouseConstants
         });
 
         return $warehouse;
+    }
+
+    public function last_locationable()
+    {
+        return $this->morphOne(MasterPallet::class, 'lastLocation');
     }
 
     public static function persistUpdateWarehouse(Warehouse $warehouse, array $warehouseData): Warehouse

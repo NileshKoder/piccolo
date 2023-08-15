@@ -78,8 +78,11 @@ class OrderAction
 
                 return $action;
             })
-            ->editColumn('updated_at', function ($palletCreation) {
-                return Carbon::parse($palletCreation->updated_at)->format('d-m-Y h:i A');
+            ->editColumn('state', function($order) {
+                return str_replace("_", " ", $order->state);
+            })
+            ->editColumn('updated_at', function ($order) {
+                return Carbon::parse($order->updated_at)->format('d-m-Y h:i A');
             })
             ->rawColumns(['action'])
             ->setFilteredRecords($numberOfFilteredRows)

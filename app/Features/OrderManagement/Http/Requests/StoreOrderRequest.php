@@ -29,9 +29,16 @@ class StoreOrderRequest extends FormRequest
 
     public function toFormData()
     {
+        $status = '';
+        if($this->save_as_draft) {
+            $status = Order::DRAFT;
+        } elseif ($this->save_as_ready_to_mapping) {
+            $status = Order::READY_TO_MAPPING;
+        }
         return [
             "order_number" => $this->order_number,
             "order_item_details" => $this->order_item_details,
+            "state" => $status,
             "created_by" => auth()->user()->id,
             "updated_by" => auth()->user()->id,
         ];

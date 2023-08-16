@@ -40,7 +40,7 @@ class OrderPalletMappingCommand extends Command
      */
     public function handle()
     {
-        $orderItems = OrderItem::with('order')->stateIn([OrderItem::CREATED, OrderItem::PARTIAL_MAPPED])
+        $orderItems = OrderItem::with('order','orderItemPalletDetails')->stateIn([OrderItem::CREATED, OrderItem::PARTIAL_MAPPED, OrderItem::TRANSFERED])
             ->whereHas('order', function ($orderQry) {
                 return $orderQry->stateIn([Order::READY_TO_MAPPING, Order::TRANSFERING_PALLETS]);
             })
@@ -49,8 +49,10 @@ class OrderPalletMappingCommand extends Command
 
         try {
             foreach ($orderItems as $key => $orderItem) {
-                $orderItem->mapPallets();
-                $orderItem->order->updateState(Order::TRANSFERING_PALLETS);
+                if($orderItem->required_weight > $orderItem->orderItemPalletDetails->sum('mapped_weight')) {
+                    $orderItem->mapPallets();
+                    $orderItem->order->updateState(Order::TRANSFERING_PALLETS);
+                }
             }
         } catch (Exception $ex) {
             info($ex);

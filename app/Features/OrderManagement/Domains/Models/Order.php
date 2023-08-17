@@ -93,6 +93,12 @@ class Order extends Model implements OrderConstants
 
     public function isOrderHasAllDetails()
     {
-        return $this->ordeItems()->whereNull('variant_id')->count() > 0 ? false : true;
+        return $this->ordeItems()
+            ->whereNotNull('sku_code_id')
+            ->whereNotNull('variant_id')
+            ->whereNotNull('location_id')
+            ->whereNotNull('required_weight')
+            ->whereNotNull('pick_up_date')
+            ->count() > 0 ? false : true;
     }
 }

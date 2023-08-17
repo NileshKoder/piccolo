@@ -2,6 +2,7 @@
 
 namespace App\Features\OrderManagement\Domains\Models;
 
+use App\Features\OrderManagement\Observers\OrderItemObserver;
 use Illuminate\Database\Eloquent\Model;
 use App\Features\OrderManagement\Domains\Models\Order;
 use App\Features\Masters\SkuCodes\Domains\Models\SkuCode;
@@ -107,6 +108,6 @@ class OrderItem extends Model implements OrderItemConstants
     public static function boot()
     {
         parent::boot();
-        // self::observe(OrderItemObserver::class);
+        self::observe(OrderItemObserver::class);
     }
 }

@@ -83,5 +83,43 @@
                 });
         })
     });
+
+    $(document).ready(function() {
+        $(document).on('click', '.updateStateAsComplete', function() {
+            let url = $(this).data('update_state_route');
+
+            swal({
+                    title: "Are you sure?",
+                    text: "You want to change status? You won't revert this record?",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true,
+                })
+                .then((changeStatus) => {
+                    if(changeStatus) {
+                        $.ajax({
+                            type: "post",
+                            url: url,
+                            data: {
+                                _token: "{{ csrf_token() }}",
+                            },
+                            success: function (response) {
+                                console.log(response);
+                                if (response.code == 200) {
+                                    toastr.success('Order Status Changed Successfully');
+                                    initWareHouseDataTable("{{ route('orders.getOrders') }}");
+                                }
+
+                                if (response.code == 500) {
+                                    toastr.error('something went wrong!!');
+                                }
+                            }
+                        });
+                    } else {
+                        toastr.warning('Order Status is safe!!');
+                    }
+                });
+        })
+    });
 </script>
 @endsection

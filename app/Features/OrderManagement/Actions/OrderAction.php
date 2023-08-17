@@ -11,6 +11,7 @@ use App\Features\Masters\Variants\Domains\Models\Variant;
 use App\Features\Masters\Locations\Domains\Models\Location;
 use App\Features\OrderManagement\Domains\Models\OrderItem;
 use App\Features\OrderManagement\Domains\Models\OrderItemPallet;
+use function route;
 
 class OrderAction
 {
@@ -66,6 +67,7 @@ class OrderAction
             ->skipPaging()
             ->addColumn('action', function ($order) {
                 $action = '';
+
                 $action .= "<a href='" . route('orders.edit', $order->id) . "' class='editOrder' title='Edit Order'>
                             <i class='fas fa-edit text-success'></i>
                         </a>";
@@ -75,6 +77,13 @@ class OrderAction
                             <i class='fas fa-check text-warning'></i>
                         </a>";
                 }
+
+                if ($order->state == Order::TRANSFERING_PALLETS) {
+                    $action .= "<a href='javascript:void(0);' data-update_state_route='" . route('orders.updateStateToComplete', $order->id) . "' class='updateStateAsComplete ml-2' title='Change Status to Compete'>
+                            <i class='fas fa-flag-checkered text-dark'></i>
+                        </a>";
+                }
+
 
                 return $action;
             })
@@ -99,5 +108,10 @@ class OrderAction
     public function updateStateToReadyToMapping(Order $order)
     {
         return $order->updateState(Order::READY_TO_MAPPING);
+    }
+
+    public function updateStateToComplete(Order $order)
+    {
+        return $order->updateState(Order::COMPLETED);
     }
 }

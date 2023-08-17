@@ -160,4 +160,15 @@ class OrderController extends Controller
 
         return response()->json(['message' => "Order state successfully", "code" => 200], 200);
     }
+
+    public function updateStateToComplete(Order $order)
+    {
+        try {
+            $this->orderAction->updateStateToComplete($order);
+        } catch (Exception $ex) {
+            return response()->json(['message' => $ex->getMessage(), "code" => 500], 500);
+        }
+
+        return response()->json(['message' => "Order state successfully", "code" => 200], 200);
+    }
 }

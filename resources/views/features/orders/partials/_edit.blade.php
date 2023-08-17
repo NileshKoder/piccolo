@@ -15,8 +15,10 @@
     <hr>
     @include('features.orders.partials._select_sku-details_table')
 </div>
+@if($order->state != "COMPLETED")
 <div class="card-footer">
     <button type="sumit" class="btn btn-info subnmitForm">
         <i class="fa fa-save"></i> Submit
     </button>
 </div>
+@endif

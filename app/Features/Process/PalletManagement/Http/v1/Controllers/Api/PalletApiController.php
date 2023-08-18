@@ -12,6 +12,7 @@ use App\Http\Controllers\ApiController;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+
 use function collect;
 
 class PalletApiController extends ApiController
@@ -85,10 +86,12 @@ class PalletApiController extends ApiController
                 ->select('id', 'master_pallet_id')
                 ->masterPalletName($request->pallet_name)
                 ->first();
+            if($pallet) {
+                $pallet = $this->prepareDataOfPallet($pallet);
+                return $this->showOne($pallet, 200);
+            }
 
-            $pallet = $this->prepareDataOfPallet($pallet);
-
-            return $this->showOne($pallet, 200);
+            return $this->showOne([null], 200);
         } catch (Exception $ex) {
             return $this->errorResponse($ex->getMessage(), 500);
         }

@@ -4,6 +4,7 @@ namespace App\Features\Process\ReachTruck\Actions;
 
 use App\User;
 use Carbon\Carbon;
+use SebastianBergmann\Diff\Line;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -114,6 +115,7 @@ class ReachTruckAction
 
         $locations->push($newLocation);
 
+        $lineIds = Location::type(Location::LINES)->pluck('id')->toArray();
         foreach ($locations as $key => $location) {
             if ($location->type == Location::LOADING) {
                 $location->type = Location::LOADING_LOCATION_NAME_CHANGE;
@@ -122,18 +124,27 @@ class ReachTruckAction
             if($location->type == Location::LINES) {
                 $location->type = Location::LINE_LOCATION_NAME_CHANGE;
                 $location->total = ReachTruck::fromLocationableType(Location::class)
-                    ->fromLocationableIdIn(Location::type(Location::LINES)->pluck('id')->toArray())
+                    ->fromLocationableIdIn($lineIds)
                     ->notToLocationableType(Location::class)
                     ->whereIsTransfered(false)
                     ->count();
             }
-            if($location->type == Location::LINE_TO_WH) {
 
+            if($location->type == Location::LINE_TO_WH) {
                  $location->total = ReachTruck::fromLocationableType(Location::class)
-                    ->toLocationableType(Location::class)
+                    ->toLocationableType(Warehouse::class)
                     ->toLocationableIdIn([Location::LOADING_LOCATION_ID])
                     ->nonTransfered()
                     ->count();
+            }
+
+            if($location->type == Location::LINE_TO_LOADING) {
+                 $location->total = ReachTruck::fromLocationableType(Location::class)
+                     ->fromLocationableIdIn($lineIds)
+                     ->toLocationableType(Location::class)
+                     ->toLocationableId(Location::LOADING_LOCATION_ID)
+                     ->nonTransfered()
+                     ->count();
             }
 
             $location->type = str_replace("_", " ", $location->type);
@@ -153,7 +164,12 @@ class ReachTruckAction
             $data['fromLocationType'] = Warehouse::class;
             $data['toLocationType'] = Location::class;
             $data['toLocations'] = Location::type(Location::LINES)->get();
-        } elseif($locationType == Location::LINE_TO_WH) {
+        } elseif($locationType == str_replace("_", " ", Location::LINE_TO_WH)) {
+            $data['fromLocations'] = Location::type(Location::LINES)->get();
+            $data['fromLocationType'] = Location::class;
+            $data['toLocationType'] = Location::class;
+            $data['toLocations'] = Location::type(Location::LOADING)->get();
+        } elseif($locationType == str_replace("_", " ", Location::LINE_TO_LOADING)) {
             $data['fromLocations'] = Location::type(Location::LINES)->get();
             $data['fromLocationType'] = Location::class;
             $data['toLocationType'] = Location::class;

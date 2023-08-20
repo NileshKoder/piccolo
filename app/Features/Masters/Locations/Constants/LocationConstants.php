@@ -11,8 +11,8 @@ interface LocationConstants
     public const LINES = "LINES";
     public const LOADING = "LOADING";
     public const FG_PALLET = "FG_PALLET";
-
     public const LINE_TO_WH = "LINE_TO_WH";
+    public const LINE_TO_LOADING = "LINE_TO_LOADING";
 
     public const TYPES = [
         self::GLASS => self::GLASS,

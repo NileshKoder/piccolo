@@ -46,6 +46,15 @@ trait ReachTruckScopes
         return $query;
     }
 
+    public function scopeToLocationableId(Builder $query, ?int $toLocationableId)
+    {
+        if (!empty($toLocationableId)) {
+            return $query->where('to_locationable_id', $toLocationableId);
+        }
+
+        return $query;
+    }
+
     public function scopeNotToLocationableType(Builder $query, ?string $toLocationAbleType)
     {
         if (!empty($toLocationAbleType)) {
@@ -73,10 +82,10 @@ trait ReachTruckScopes
         return $query;
     }
 
-    public function scopeFromLocationableIdIn(Builder $query, ?array $toLocationAbleIds)
+    public function scopeFromLocationableIdIn(Builder $query, ?array $fromLocationAbleIds)
     {
-        if (!empty($toLocationAbleIds)) {
-            return $query->whereIn('from_locationable_id', $toLocationAbleIds);
+        if (!empty($fromLocationAbleIds)) {
+            return $query->whereIn('from_locationable_id', $fromLocationAbleIds);
         }
 
         return $query;

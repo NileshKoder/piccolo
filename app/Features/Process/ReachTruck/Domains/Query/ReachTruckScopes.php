@@ -72,4 +72,13 @@ trait ReachTruckScopes
 
         return $query;
     }
+
+    public function scopeFromLocationableIdIn(Builder $query, ?array $toLocationAbleIds)
+    {
+        if (!empty($toLocationAbleIds)) {
+            return $query->whereIn('from_locationable_id', $toLocationAbleIds);
+        }
+
+        return $query;
+    }
 }

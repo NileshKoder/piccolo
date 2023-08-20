@@ -11,6 +11,8 @@ use App\Features\Masters\Locations\Domains\Models\Location;
 use App\Features\Masters\Warehouses\Domains\Models\Warehouse;
 use App\Features\Process\ReachTruck\Domains\Models\ReachTruck;
 use App\Features\Process\PalletManagement\Domains\Models\Pallet;
+use function str_replace;
+use function ucfirst;
 
 class ReachTruckAction
 {
@@ -120,7 +122,8 @@ class ReachTruckAction
             if($location->type == Location::LINES) {
                 $location->type = Location::LINE_LOCATION_NAME_CHANGE;
                 $location->total = ReachTruck::fromLocationableType(Location::class)
-                    ->notToLocationableType( Location::class)
+                    ->fromLocationableIdIn(Location::type(Location::LINES)->pluck('id')->toArray())
+                    ->notToLocationableType(Location::class)
                     ->whereIsTransfered(false)
                     ->count();
             }
@@ -132,6 +135,8 @@ class ReachTruckAction
                     ->nonTransfered()
                     ->count();
             }
+
+            $location->type = str_replace("_", " ", $location->type);
         }
         // dd($locations);
         return $locations;

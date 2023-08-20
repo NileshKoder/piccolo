@@ -62,6 +62,12 @@ class ReachTruckObserver
             if ($reachTruck->to_locationable_type == Location::class) {
                 $this->processUpdateOrderItemPalletDetails($reachTruck);
             }
+
+            if($reachTruck->is_transfered) {
+                if ($reachTruck->from_locationable_type == Location::class && $reachTruck->to_locationable_type == Warehouse::class) {
+                    $reachTruck->toLocationable->updateIsEmpty(true);
+                }
+            }
         }
     }
 

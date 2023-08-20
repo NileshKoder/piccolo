@@ -121,7 +121,7 @@ class PalletAction
 
         $data['locations'] = Location::select('id', 'name', 'abbr')->type(Location::LINES)->get();
         $data['masterPallets'] = MasterPallet::select('id', 'name')->isEmpty(true)->get();
-        $data['orders'] = Order::state(Order::TRANSFERRING_PALLETS)->get();
+        $data['orders'] = Order::StateIn([Order::TRANSFERRING_PALLETS, Order::COMPLETED])->get();
 
         return $data;
     }
@@ -132,7 +132,7 @@ class PalletAction
         $data['masterPallets'] = MasterPallet::select('id', 'name')->isEmpty(true)->get();
         $data['masterPallets']->push($pallet->masterPallet);
         $data['locations'] = Location::select(['id', 'name', 'abbr'])->type(Location::LINES)->get();
-
+        $data['orders'] = Order::StateIn([Order::TRANSFERRING_PALLETS, Order::COMPLETED])->get();
         return $data;
     }
 }

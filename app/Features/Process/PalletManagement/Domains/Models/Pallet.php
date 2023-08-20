@@ -24,7 +24,7 @@ class Pallet extends Model implements PalletContants
 {
     use PalletScopes, BelongsTo;
 
-    protected $fillable = ['master_pallet_id', 'loading_transfer_date', 'created_by', 'updated_by'];
+    protected $fillable = ['master_pallet_id', 'loading_transfer_date','order_id', 'created_by', 'updated_by'];
 
     public static function persistCreatePallet(array $palletData): ?Pallet
     {

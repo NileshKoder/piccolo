@@ -30,6 +30,7 @@ class StorePalletBoxDetailsRequest extends FormRequest
 
         $requestData['pallet']['master_pallet_id'] = $this->master_pallet_id;
         $requestData['pallet']['location_id'] = $this->location_id;
+        $requestData['pallet']['order_id'] = $this->order_id;
         $requestData['pallet']['created_by'] = auth()->check() ? auth()->user()->id : 1;
         $requestData['pallet']['updated_by'] = auth()->check() ? auth()->user()->id : 1;
         $requestData['pallet_box_details'] = $this->pallet_box_details;

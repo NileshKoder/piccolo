@@ -42,7 +42,7 @@ class OrderPalletMappingCommand extends Command
     {
         $orderItems = OrderItem::with('order','orderItemPalletDetails')->stateIn([OrderItem::CREATED, OrderItem::PARTIAL_MAPPED, OrderItem::TRANSFERED])
             ->whereHas('order', function ($orderQry) {
-                return $orderQry->stateIn([Order::READY_TO_MAPPING, Order::TRANSFERING_PALLETS]);
+                return $orderQry->stateIn([Order::READY_TO_MAPPING, Order::TRANSFERRING_PALLETS]);
             })
             ->pickUpDateLessThanToday()
             ->orderBy('pick_up_date', 'ASC')->get();
@@ -51,7 +51,7 @@ class OrderPalletMappingCommand extends Command
             foreach ($orderItems as $key => $orderItem) {
                 if($orderItem->required_weight > $orderItem->orderItemPalletDetails->sum('mapped_weight')) {
                     $orderItem->mapPallets();
-                    $orderItem->order->updateState(Order::TRANSFERING_PALLETS);
+                    $orderItem->order->updateState(Order::TRANSFERRING_PALLETS);
                 }
             }
         } catch (Exception $ex) {

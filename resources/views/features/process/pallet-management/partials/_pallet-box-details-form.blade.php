@@ -1,6 +1,5 @@
 <div class="row">
-    <div class="col-md-4">
-        <div class="col-md-12">
+        <div class="col-md-4">
             <div class="form-group">
                 <label>Location</label>
                 <select name="location_id" id="location_id" class="form-control select2">
@@ -11,7 +10,7 @@
                 </select>
             </div>
         </div>
-        <div class="col-md-12">
+        <div class="col-md-4">
             <div class="form-group">
                 <input type="hidden" id="max_weight">
                 <label>Pallet</label>
@@ -23,8 +22,19 @@
                 </select>
             </div>
         </div>
-    </div>
-    <div class="col-md-8">
+        <div class="col-md-4">
+            <div class="form-group">
+                <input type="hidden" id="max_weight">
+                <label>Order Number</label>
+                <select name="order_id" id="order_id" class="form-control select2">
+                    <option value="">Select Order</option>
+                    @foreach ($data['orders'] as $order)
+                        <option value="{{ $order->id }}" @if(!empty($pallet) && $pallet->order_id == $order->id) selected @endif>{{ $order->order_number }}</option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+    <div class="col-md-12">
          <table class="table table-striped table-bordered">
             <thead>
                 <tr>

@@ -2,6 +2,7 @@
 
 namespace App\Features\Process\PalletManagement\Actions;
 
+use App\Features\OrderManagement\Domains\Models\Order;
 use Carbon\Carbon;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Collection;
@@ -120,6 +121,7 @@ class PalletAction
 
         $data['locations'] = Location::select('id', 'name', 'abbr')->type(Location::LINES)->get();
         $data['masterPallets'] = MasterPallet::select('id', 'name')->isEmpty(true)->get();
+        $data['orders'] = Order::state(Order::TRANSFERRING_PALLETS)->get();
 
         return $data;
     }

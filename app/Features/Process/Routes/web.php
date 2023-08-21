@@ -26,5 +26,5 @@ Route::resource('pallets', '\App\Features\Process\PalletManagement\Http\v1\Contr
 
 // Reach truck routes
 Route::post('reach-trucks/get-pallet-for-reach-truck/ajax', '\App\Features\Process\ReachTruck\Http\Controllers\ReachTruckController@getPalletForReachTruck');
-Route::post('reach-trucks/get-reach-trucks/ajax', '\App\Features\Process\ReachTruck\Http\Controllers\ReachTruckController@getRechTrucks')->name('reach-trucks.getRechTrucks');
+Route::post('reach-trucks/get-reach-trucks/ajax', '\App\Features\Process\ReachTruck\Http\Controllers\ReachTruckController@getReachTrucks')->name('reach-trucks.getRechTrucks');
 Route::resource('reach-trucks', '\App\Features\Process\ReachTruck\Http\Controllers\ReachTruckController');

@@ -3,6 +3,7 @@
 namespace App\Features\Process\ReachTruck\Http\Controllers\Api;
 
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ApiController;
 use Illuminate\Support\Facades\Validator;
@@ -48,30 +49,14 @@ class ReachTruckApiController extends ApiController
             throw new Exception("Location Type is required");
         }
 
-        $locationType = $this->getLocationType($request->location_type);
-
         try {
-            $createData = $this->reachTruckAction->getCreateData($locationType);
+            $createData = $this->reachTruckAction->getCreateData($request->location_type);
             unset($createData['reachTruckUsers']);
 
             return $this->showAll($createData, 200);
         } catch (Exception $ex) {
             return $this->errorResponse($ex->getMessage(), 500);
         }
-
-        return $this->showOne("Pallet Transfer Successfully");
-    }
-
-    public function getLocationType(string $locationType)
-    {
-        if (
-            $locationType == Location::GLASS || $locationType == Location::GLASS ||
-            $locationType == Location::CURING || $locationType == Location::RECYCLE
-        ) {
-            return Location::class;
-        }
-
-        return "";
     }
 
     public function store(Request $request)

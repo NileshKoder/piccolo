@@ -3,12 +3,15 @@
 namespace App\Features\Process\ReachTruck\Http\Controllers;
 
 use Exception;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Features\Process\ReachTruck\Actions\ReachTruckAction;
 use App\Features\Process\ReachTruck\Domains\Models\ReachTruck;
 use App\Features\Process\ReachTruck\Http\Requests\StoreReachTruchRequest;
 use App\Features\Process\ReachTruck\Http\Requests\UpdateReachTruchRequest;
+use Illuminate\View\View;
 
 class ReachTruckController extends Controller
 {
@@ -22,9 +25,9 @@ class ReachTruckController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return View
      */
-    public function index()
+    public function index(): View
     {
         return view('features.process.reach-truck.index');
     }
@@ -32,9 +35,10 @@ class ReachTruckController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return View
      */
-    public function create(Request $request)
+    public function create(Request $request): View
     {
         if (empty($request->type)) {
             $locationCounts = $this->reachTruckAction->getLocationCount();
@@ -48,10 +52,10 @@ class ReachTruckController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param  StoreReachTruchRequest  $request
+     * @return RedirectResponse
      */
-    public function store(StoreReachTruchRequest $request)
+    public function store(StoreReachTruchRequest $request): RedirectResponse
     {
         try {
             $requestData = $request->toFormData();
@@ -66,8 +70,8 @@ class ReachTruckController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Features\Process\ReachTruck\Domains\Models\ReachTruck  $reachTruck
-     * @return \Illuminate\Http\Response
+     * @param  ReachTruck  $reachTruck
+     * @return void
      */
     public function show(ReachTruck $reachTruck)
     {
@@ -77,10 +81,10 @@ class ReachTruckController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Features\Process\ReachTruck\Domains\Models\ReachTruck  $reachTruck
-     * @return \Illuminate\Http\Response
+     * @param  ReachTruck  $reachTruck
+     * @return View
      */
-    public function edit(ReachTruck $reachTruck)
+    public function edit(ReachTruck $reachTruck): View
     {
         $reachTruck = ReachTruck::with('fromLocationable')->find($reachTruck->id);
         $data = $this->reachTruckAction->getEditData($reachTruck);
@@ -91,11 +95,11 @@ class ReachTruckController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Features\Process\ReachTruck\Domains\Models\ReachTruck  $reachTruck
-     * @return \Illuminate\Http\Response
+     * @param  UpdateReachTruchRequest $request
+     * @param  ReachTruck  $reachTruck
+     * @return RedirectResponse
      */
-    public function update(UpdateReachTruchRequest $request, ReachTruck $reachTruck)
+    public function update(UpdateReachTruchRequest $request, ReachTruck $reachTruck): RedirectResponse
     {
         try {
             $requestData = $request->toFormData();
@@ -110,15 +114,19 @@ class ReachTruckController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Features\Process\ReachTruck\Domains\Models\ReachTruck  $reachTruck
-     * @return \Illuminate\Http\Response
+     * @param  ReachTruck  $reachTruck
+     * @return void
      */
     public function destroy(ReachTruck $reachTruck)
     {
         //
     }
 
-    public function getRechTrucks(Request $request)
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function getReachTrucks(Request $request): JsonResponse
     {
         try {
             $data = $this->reachTruckAction->getReachTrucks(

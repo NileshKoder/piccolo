@@ -102,35 +102,30 @@ class ReachTruckAction
                 $rtQuery->where('is_transfered', false);
                 $rtQuery->on('from_locationable_id', '=', 'locations.id');
             })
-            ->groupBy('locations.type')->get();
-
-        $fromWarhouseToLineCount = ReachTruck::where('from_locationable_type', Warehouse::class)
-            ->where('to_locationable_type', Location::class)
-            ->where('is_transfered', false)
-            ->count();
-
-        $newLocation = new Location();
-        $newLocation->type = "WH TO ASSEMBLY LINE";
-        $newLocation->total = $fromWarhouseToLineCount;
-
-        $locations->push($newLocation);
+            ->groupBy('locations.type')
+            ->orderBy('locations.sequence')->get();
 
         $lineIds = Location::type(Location::LINES)->pluck('id')->toArray();
-        foreach ($locations as $key => $location) {
-            if ($location->type == Location::LOADING) {
-                $location->type = Location::LOADING_LOCATION_NAME_CHANGE;
+
+        foreach ($locations as $location) {
+            if($location->type == Location::LINES) {
+                $location->type = Location::LOCATION_NAME_CHANGE_LINE;
+//                $location->total = ReachTruck::fromLocationableType(Location::class)
+//                    ->fromLocationableIdIn($lineIds)
+//                    ->notToLocationableType(Location::class)
+//                    ->whereIsTransfered(false)
+//                    ->count();
             }
 
-            if($location->type == Location::LINES) {
-                $location->type = Location::LINE_LOCATION_NAME_CHANGE;
-                $location->total = ReachTruck::fromLocationableType(Location::class)
-                    ->fromLocationableIdIn($lineIds)
-                    ->notToLocationableType(Location::class)
-                    ->whereIsTransfered(false)
+            if ($location->type == Location::WH_TO_LINE) {
+                $location->type = Location::LOCATION_NAME_CHANGE_WH_TO_LINE;
+                $location->total =  ReachTruck::where('from_locationable_type', Warehouse::class)
+                    ->where('to_locationable_type', Location::class)
+                    ->where('is_transfered', false)
                     ->count();
             }
 
-            if($location->type == Location::LINE_TO_WH) {
+            if($location->type == Location::LOCATION_NAME_CHANGE_LINE_TO_WH) {
                  $location->total = ReachTruck::fromLocationableType(Location::class)
                     ->toLocationableType(Warehouse::class)
                     ->toLocationableIdIn([Location::LOADING_LOCATION_ID])
@@ -139,12 +134,17 @@ class ReachTruckAction
             }
 
             if($location->type == Location::LINE_TO_LOADING) {
+                $location->type = Location::LOCATION_NAME_CHANGE_LINE_TO_LOADING;
                  $location->total = ReachTruck::fromLocationableType(Location::class)
                      ->fromLocationableIdIn($lineIds)
                      ->toLocationableType(Location::class)
                      ->toLocationableId(Location::LOADING_LOCATION_ID)
                      ->nonTransfered()
                      ->count();
+            }
+
+            if ($location->type == Location::LOADING) {
+                $location->type = Location::LOCATION_NAME_CHANGE_LOADING;
             }
 
             $location->type = str_replace("_", " ", $location->type);
@@ -164,7 +164,7 @@ class ReachTruckAction
             $data['fromLocationType'] = Warehouse::class;
             $data['toLocationType'] = Location::class;
             $data['toLocations'] = Location::type(Location::LINES)->get();
-        } elseif($locationType == str_replace("_", " ", Location::LINE_TO_WH)) {
+        } elseif($locationType == str_replace("_", " ", Location::LOCATION_NAME_CHANGE_LINE_TO_WH)) {
             $data['fromLocations'] = Location::type(Location::LINES)->get();
             $data['fromLocationType'] = Location::class;
             $data['toLocationType'] = Location::class;
@@ -175,7 +175,7 @@ class ReachTruckAction
             $data['toLocationType'] = Location::class;
             $data['toLocations'] = Location::type(Location::LOADING)->get();
         } else {
-            if($locationType == Location::LINE_LOCATION_NAME_CHANGE)
+            if($locationType == Location::LOCATION_NAME_CHANGE_LINE)
             {
                 $locationType = Location::LINES;
             }

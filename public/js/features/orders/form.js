@@ -44,7 +44,6 @@ $(document).ready(function () {
             }
         }
 
-
         let isAlreadyExists = false
         $('#tbody tr').each(function (index, value) {
             let selectedSkuId = $(this).find('.selected_sku_id').val();
@@ -62,6 +61,16 @@ $(document).ready(function () {
                 icon: "error"
             })
             return false;
+        }
+
+        if(varinatName == "Select Variant")
+        {
+            varinatName = "";
+        }
+
+        if(dropLocationName == "Select Location")
+        {
+            dropLocationName = "";
         }
 
         let orderId = $('#order_id').val()
@@ -83,11 +92,11 @@ $(document).ready(function () {
                     <input type="text" class="form-control" value="` + requiredWeight + `" disabled>
                 </td>
                 <td>
-                    <input type="hidden" name="order_item_details[` + time + `][pick_up_date]" value="` + pickUpDate + `">
+                    <input type="hidden" class="selected_pick_up_date" name="order_item_details[` + time + `][pick_up_date]" value="` + pickUpDate + `">
                     <input type="text" class="form-control" value="` + pickUpDate + `" disabled>
                 </td>
                 <td>
-                    <input type="hidden" name="order_item_details[` + time + `][location_id]" class="weight" value="` + dropLocationId + `">
+                    <input type="hidden"  name="order_item_details[` + time + `][location_id]" class="drop_location" value="` + dropLocationId + `">
                     <input type="text" class="form-control" value="` + dropLocationName + `" disabled>
                 </td>
                 <td>
@@ -102,31 +111,88 @@ $(document).ready(function () {
             </tr>`;
 
         $('#tbody').append(tbodyHtml);
+        checkSubmitAsReadyState();
     });
 
     $(document).on('click', '.remove-sku', function() {
         if($('.remove-sku').length > 1) {
-        swal({
-            title: "Are you sure?",
-            text: "You won't revert this record?",
-            icon: "warning",
-            buttons: true,
-            dangerMode: true,
-          })
-          .then((changeStatus) => {
-            if (changeStatus) {
-                $(this).closest('tr').remove();
-                toastr.success('sku removed successfully');
-            } else {
-                toastr.warning('Sku code is safe');
-            }
-        });
-    } else {
+            swal({
+                title: "Are you sure?",
+                text: "You won't revert this record?",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+            .then((changeStatus) => {
+                if (changeStatus) {
+                    $(this).closest('tr').remove();
+                    toastr.success('sku removed successfully');
+                } else {
+                    toastr.warning('Sku code is safe');
+                }
+            });
+        } else {
             toastr.error('Select atleast one sku');
         }
+
+        checkSubmitAsReadyState();
     })
 
     $('.date').datetimepicker({
         format: 'DD-MM-YYYY'
     });
+
+    $("#createOrderCreationForm").validate({
+        rules: {
+            order_number: {
+                required: true
+            }
+        },
+        messages: {
+            order_number: {
+                required: "Order number is required",
+            }
+        },
+        errorElement: "span",
+        errorPlacement: function (error, element) {
+            error.addClass("invalid-feedback");
+            element.closest(".form-group").append(error);
+        },
+        highlight: function (element, errorClass, validClass) {
+            $(element).addClass("is-invalid");
+        },
+        unhighlight: function (element, errorClass, validClass) {
+            $(element).removeClass("is-invalid");
+        },
+    });
 });
+
+function checkSubmitAsReadyState()
+{
+    let isEnableBtn = true
+    $('#tbody tr').each(function(index, tr) {
+        if($(this).find('.selected_variant_id').val() === '') {
+            $('#save_as_ready_to_mapping').prop('disabled', true)
+            isEnableBtn = false;
+            return false;
+        }
+
+        if($(this).find('.selected_pick_up_date').val() === '') {
+            $('#save_as_ready_to_mapping').prop('disabled', true)
+            isEnableBtn = false;
+            return false;
+        }
+
+        if($(this).find('.drop_location').val() === '') {
+            $('#save_as_ready_to_mapping').prop('disabled', true)
+            isEnableBtn = false;
+            return false;
+        }
+    })
+
+    if(isEnableBtn === false) {
+        return false;
+    }
+
+    $('#save_as_ready_to_mapping').prop('disabled', false)
+}

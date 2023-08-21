@@ -18,7 +18,7 @@
     <button type="submit" class="btn btn-info" id="save_as_draft" name="save_as_draft" value="true">
         <i class="fa fa-save"></i> Submit as Draft
     </button>
-    <button type="submit" class="btn btn-success" id="save_as_ready_to_mapping" name="save_as_ready_to_mapping" value="true">
+    <button type="submit" class="btn btn-success" id="save_as_ready_to_mapping" name="save_as_ready_to_mapping" value="true" disabled>
         <i class="fa fa-save"></i> Submit as Ready
     </button>
 </div>

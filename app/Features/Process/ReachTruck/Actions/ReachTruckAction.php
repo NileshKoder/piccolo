@@ -183,7 +183,7 @@ class ReachTruckAction
             $data['fromLocations'] = Location::type($locationType)->get();
             $data['fromLocationType'] = Location::class;
             $data['toLocationType'] = Warehouse::class;
-            $data['toLocations'] = Warehouse::isEmpty()->get();
+            $data['toLocations'] = Warehouse::select(['id','name'])->isEmpty()->get();
         }
 
         return $data;

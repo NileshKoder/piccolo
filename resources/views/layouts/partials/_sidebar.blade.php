@@ -25,7 +25,7 @@
                 </li>
                 <li class="nav-item @if($urlName[0] == 'masters') menu-open @endif">
                     <a href="#" class="nav-link @if($urlName[0] == 'masters') active @endif">
-                        <i class="nav-icon fas fa-asterisk"></i>
+                        <i class="nav-icon fas fa-database"></i>
                         <p>
                             Masters
                             <i class="right fas fa-angle-left"></i>
@@ -51,12 +51,6 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ route('boxes.index') }}" class="nav-link @if($urlName[1] == 'boxes') active @endif">
-                                <i class="fas fa-boxes nav-icon"></i>
-                                <p>Box Codes</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
                             <a href="{{ route('master-pallets.index') }}" class="nav-link @if($urlName[1] == 'master-pallets') active @endif">
                                 <i class="fa fa-pallet nav-icon"></i>
                                 <p>Master Pallet</p>
@@ -70,9 +64,9 @@
                         </li>
                     </ul>
                 </li>
-                <li class="nav-item @if($urlName[0] == 'process') menu-open @endif">
+                <li class="nav-item @if($urlName[0] == 'process' || $urlName[0] == 'orders-management' ) menu-open @endif">
                     <a href="#" class="nav-link @if($urlName[0] == 'process') active @endif">
-                        <i class="nav-icon fas fa-asterisk"></i>
+                        <i class="nav-icon fas fa-paperclip"></i>
                         <p>
                             Process
                             <i class="right fas fa-angle-left"></i>
@@ -81,7 +75,7 @@
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
                             <a href="{{ route('pallets.index') }}" class="nav-link @if($urlName[1] == 'pallets') active @endif">
-                                <i class="fa fa-dollar-sign nav-icon"></i>
+                                <i class="fa fa-pallet nav-icon"></i>
                                 <p>Manage Pallet</p>
                             </a>
                         </li>
@@ -92,8 +86,8 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ route('orders.index') }}" class="nav-link @if($urlName[1] == 'reach-truck') active @endif">
-                                <i class="fa fa-truck nav-icon"></i>
+                            <a href="{{ route('orders.index') }}" class="nav-link @if($urlName[1] == 'orders') active @endif">
+                                <i class="fa fa-receipt nav-icon"></i>
                                 <p>Orders</p>
                             </a>
                         </li>

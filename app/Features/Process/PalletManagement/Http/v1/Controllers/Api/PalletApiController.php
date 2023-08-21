@@ -116,7 +116,7 @@ class PalletApiController extends ApiController
                 $palletDetails->variant_name = $palletDetail->variant->name;
                 $palletDetails->weight = $palletDetail->weight;
                 $palletDetails->batch = $palletDetail->batch;
-                $palletDetails->mapped_weight = !empty($palletDetail->orderItemPallet) ? $palletDetail->orderItemPallet->weight : 0;
+                $palletDetails->mapped_weight = !empty($palletDetail->orderItemPallet) ? "Mapped {$palletDetail->orderItemPallet->weight} KG weight for Order # : {$palletDetail->orderItemPallet->orderItem->order->order_number}" : "";
 
                 $palletDetailCollection->push($palletDetails);
             }
@@ -161,7 +161,7 @@ class PalletApiController extends ApiController
             }
 
             $data = $this->prepareData($request);
-            $pallet = $this->palletAction->createPallet($data);
+            $this->palletAction->createPallet($data);
         } catch (Exception $ex) {
             return $this->errorResponse($ex->getMessage(), 500);
         }
@@ -203,6 +203,7 @@ class PalletApiController extends ApiController
         $requestData['pallet_details'] = $request->pallet_details;
         $requestData['pallet_box_details'] = $request->pallet_box_details;
         $requestData['is_request_for_warehouse'] = $request->is_request_for_warehouse;
+        $requestData['is_request_for_loading'] = $request->is_request_for_loading;
 
         return $requestData;
     }

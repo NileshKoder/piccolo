@@ -16,7 +16,7 @@ class Location extends Model implements LocationConstants
 
     protected $table = "locations";
 
-    protected $fillable = ['name', 'abbr', 'type'];
+    protected $fillable = ['name', 'abbr', 'type', 'state', 'sequence'];
 
     protected $hidden = ['created_at', 'updated_at'];
 

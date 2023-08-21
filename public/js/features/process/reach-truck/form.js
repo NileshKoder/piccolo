@@ -51,3 +51,47 @@ $(document).on("mouseleave", ".to_locationable_id_div", function() {
     }
 });
 
+$(document).ready(function () {
+    // Initialize the validation
+    $("#createReachTruckForm").validate({
+        rules: {
+            transfered_by: {
+                required: true
+            },
+            from_locationable_id: {
+                required: true,
+            },
+            reach_truck_id: {
+                required: true,
+            },
+            to_locationable_id: {
+                required: true,
+            }
+        },
+        messages: {
+            transfered_by: {
+                required: "Please Select Reach Truck User",
+            },
+            from_locationable_id: {
+                required: "Choose Pick Up Location",
+            },
+            reach_truck_id: {
+                required: "Select Pallet",
+            },
+            to_locationable_id: {
+                required: "Choose Drop Location",
+            }
+        },
+        errorElement: "span",
+        errorPlacement: function (error, element) {
+            error.addClass("invalid-feedback");
+            element.closest(".form-group").append(error);
+        },
+        highlight: function (element, errorClass, validClass) {
+            $(element).addClass("is-invalid");
+        },
+        unhighlight: function (element, errorClass, validClass) {
+            $(element).removeClass("is-invalid");
+        },
+    });
+});

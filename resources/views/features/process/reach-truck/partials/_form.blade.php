@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-md-4">
             <div class="form-group">
-                <label for="name">Reach Truck User</label>
+                <label for="name">Transfer By <span class="text-danger">*</span></label>
                 <select name="transfered_by" id="transfered_by" class="form-control select2">
                     <option value="">Select Reach Truck</option>
                     @foreach ($data['reachTruckUsers'] as $reachTruckUser)
@@ -16,7 +16,7 @@
         <div class="col-md-4">
             <div class="form-group">
                 <input type="hidden" name="from_locationable_type" id="from_locationable_type" value="{{ $data['fromLocationType'] }}">
-                <label for="name">From Location </label>
+                <label for="name">Pick Up Location <span class="text-danger">*</span></label>
                 <select name="from_locationable_id" id="from_locationable_id" class="form-control select2" @if(!empty($reachTruck)) disabled @endif>
                     <option value="">Select Location</option>
                     @foreach ($data['fromLocations'] as $fromLocation)
@@ -27,7 +27,7 @@
         </div>
         <div class="col-md-4">
             <div class="form-group">
-                <label for="name">Pallet</label>
+                <label for="name">Pallet <span class="text-danger">*</span></label>
                 <select name="reach_truck_id" id="reach_truck_id" class="form-control select2" @if(!empty($reachTruck)) disabled @endif>
                     <option value="">Select Pallet</option>
                     @foreach ($data['reachTrucks'] as $nonTransferredReachTruck)
@@ -40,7 +40,7 @@
         <div class="col-md-4 to_locationable_id_div">
             <div class="form-group">
                 <input type="hidden" name="to_locationable_type" value="{{ $data['toLocationType'] }}">
-                <label for="name">To Location </label>
+                <label for="name">Drop Location <span class="text-danger">*</span></label>
                 <select name="to_locationable_id" id="to_locationable_id" class="form-control select2">
                     <option value="">Select Location</option>
                     @foreach ($data['toLocations'] as $toLocation)

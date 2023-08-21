@@ -1,7 +1,7 @@
 <div class="row">
     <div class="col-md-4">
         <div class="form-group">
-            <label>Location</label>
+            <label>Location <span class="text-danger">*</span></label>
             <select name="location_id" id="location_id" class="form-control select2">
                 <option value="">Select Locations</option>
                 @foreach ($data['locations'] as $location)
@@ -13,7 +13,7 @@
     <div class="col-md-4">
         <div class="form-group">
             <input type="hidden" id="max_weight">
-            <label>Pallet</label>
+            <label>Pallet <span class="text-danger">*</span></label>
             <select name="master_pallet_id" id="master_pallet_id" class="form-control select2">
                 <option value="">Select Master Pallet</option>
                 @foreach ($data['masterPallets'] as $masterPallet)

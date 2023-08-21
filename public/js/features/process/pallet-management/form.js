@@ -192,6 +192,48 @@ function updateMaxWight() {
 
         return false;
     }
+
+    $("#createFillPallets").validate({
+        rules: {
+            location_id: {
+                required: true
+            },
+            master_pallet_id: {
+                required: true,
+            },
+            reach_truck_id: {
+                required: true,
+            },
+            to_locationable_id: {
+                required: true,
+            }
+        },
+        messages: {
+            location_id: {
+                required: "Please Choose Location",
+            },
+            master_pallet_id: {
+                required: "Please Choose Pallet",
+            },
+            reach_truck_id: {
+                required: "Select Pallet",
+            },
+            to_locationable_id: {
+                required: "Choose Drop Location",
+            }
+        },
+        errorElement: "span",
+        errorPlacement: function (error, element) {
+            error.addClass("invalid-feedback");
+            element.closest(".form-group").append(error);
+        },
+        highlight: function (element, errorClass, validClass) {
+            $(element).addClass("is-invalid");
+        },
+        unhighlight: function (element, errorClass, validClass) {
+            $(element).removeClass("is-invalid");
+        },
+    });
 }
 
 function changeStatusOfIsRequestWarehouse()

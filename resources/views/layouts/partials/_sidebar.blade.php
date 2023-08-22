@@ -65,7 +65,7 @@
                     </ul>
                 </li>
                 <li class="nav-item @if($urlName[0] == 'process' || $urlName[0] == 'orders-management' ) menu-open @endif">
-                    <a href="#" class="nav-link @if($urlName[0] == 'process') active @endif">
+                    <a href="#" class="nav-link @if($urlName[0] == 'process' || $urlName[0] == 'orders-management') active @endif">
                         <i class="nav-icon fas fa-paperclip"></i>
                         <p>
                             Process
@@ -94,7 +94,7 @@
                     </ul>
                 </li>
                 <li class="nav-item @if($urlName[0] == 'reports') menu-open @endif">
-                    <a href="#" class="nav-link @if($urlName[0] == 'process') active @endif">
+                    <a href="#" class="nav-link @if($urlName[0] == 'reports') active @endif">
                         <i class="nav-icon fas fa-asterisk"></i>
                         <p>
                             Reports

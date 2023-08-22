@@ -54,11 +54,11 @@ class ReachTruckObserver
                 $reachTruck->toLocationable->updateIsEmpty(false);
             }
 
-            $this->updateMasterPalletlastLocation($reachTruck);
+            $this->updateMasterPalletLastLocation($reachTruck);
         }
 
         if ($reachTruck->isDirty('is_transfered')) {
-            $this->updateMasterPalletlastLocation($reachTruck);
+            $this->updateMasterPalletLastLocation($reachTruck);
             if ($reachTruck->to_locationable_type == Location::class) {
                 $this->processUpdateOrderItemPalletDetails($reachTruck);
             }
@@ -71,7 +71,7 @@ class ReachTruckObserver
         }
     }
 
-    public function updateMasterPalletlastLocation($reachTruck)
+    public function updateMasterPalletLastLocation($reachTruck)
     {
         if ($reachTruck->is_transfered) {
             $locationableType = $reachTruck->to_locationable_type;

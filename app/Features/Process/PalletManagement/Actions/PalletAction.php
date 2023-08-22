@@ -21,7 +21,9 @@ class PalletAction
         $data['masterPallets'] = MasterPallet::select('id', 'name')->isEmpty(true)->get();
         $data['skuCodes'] = SkuCode::select('id', 'name')->get();
         $data['variants'] = Variant::select('id', 'name')->get();
-        $data['locations'] = Location::select('id', 'name', 'abbr')->orderBy('id', 'ASC')->get();
+        $data['locations'] = Location::select('id', 'name', 'abbr')
+            ->typeIn([Location::GLASS, Location::CERAMIC, Location::RECYCLE])
+            ->orderBy('id', 'ASC')->get();
         $data['maxWeightForPallet'] = Pallet::MAX_WEIGHT_FOR_PALLET;
         $data['maxWeightForContainer'] = Pallet::MAX_WEIGHT_FOR_CONTAINER;
 

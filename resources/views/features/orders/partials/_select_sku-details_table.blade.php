@@ -61,19 +61,13 @@
                     </td>
                     <td>
                         <input type="text" name="order_item_details[{{ $key }}][state]" class="form-control" value="{{ $ordeItem->state }}" readonly>
-                        <!-- <select name="order_item_details[{{ $key }}][state]" class="form-control state">
-                            <option value="">Select State</option>
-                            @foreach ($masterData['orderItemStates'] as $orderItemState)
-                            <option value="{{ $orderItemState }}" @if($ordeItem->state == $orderItemState) selected @endif>{{ $orderItemState }}</option>
-                            @endforeach
-                        </select> -->
                     </td>
                     <td class="text-center">
                         @if($ordeItem->state == $masterData['orderItemCreate'])
                         <a href="javascript:void(0);" class="text-danger remove-sku">
                             <i class="fa fa-trash"></i>
                         </a>
-                        @elseif ($ordeItem->state == $masterData['orderItemMapped'] || $ordeItem->state == $masterData['orderItemPartialMapped'] || $ordeItem->state == $masterData['orderItemTransffered'])
+                        @elseif (in_array($ordeItem->state, $masterData['showOrderItemDetailsState']))
                         <a href="{{ route('orders.getOrderIteMappedDetails', [$ordeItem->order_id, $ordeItem->id]) }}" class="text-info">
                             <i class="fa fa-eye"></i>
                         </a>

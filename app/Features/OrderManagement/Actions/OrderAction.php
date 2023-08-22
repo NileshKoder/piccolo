@@ -20,11 +20,8 @@ class OrderAction
         $data['skuCodes'] = SkuCode::get();
         $data['variants'] = Variant::get();
         $data['locations'] = Location::type(Location::LINES)->get();
-        $data['orderItemStates'] = OrderItem::STATES;
+        $data['showOrderItemDetailsState'] = OrderItem::SHOW_ORDER_ITEM_DETAILS_STATE;
         $data['orderItemCreate'] = OrderItem::CREATED;
-        $data['orderItemPartialMapped'] = OrderItem::PARTIAL_MAPPED;
-        $data['orderItemMapped'] = OrderItem::MAPPED;
-        $data['orderItemTransffered'] = OrderItem::TRANSFERRED;
 
         return $data;
     }

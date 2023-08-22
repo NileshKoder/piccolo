@@ -19,4 +19,11 @@ interface OrderItemConstants
         self::TRANSFERRED => self::TRANSFERRED,
         self::CANCELLED => self::CANCELLED,
     ];
+
+    public const SHOW_ORDER_ITEM_DETAILS_STATE = [
+        self::PARTIAL_MAPPED => self::PARTIAL_MAPPED,
+        self::MAPPED => self::MAPPED,
+        self::PARTIAL_TRANSFERRED => self::PARTIAL_TRANSFERRED,
+        self::TRANSFERRED => self::TRANSFERRED,
+    ];
 }

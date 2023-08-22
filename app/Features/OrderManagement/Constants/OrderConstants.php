@@ -6,7 +6,8 @@ interface OrderConstants
 {
     public const DRAFT = 'DRAFT';
     public const READY_TO_MAPPING = 'READY_TO_MAPPING';
-    public const TRANSFERRING_PALLETS = 'TRANSFERING_PALLETS';
+    public const TRANSFERRING_PALLETS = 'TRANSFERRING_PALLETS';
+    public const TRANSFERRED = 'TRANSFERRED';
     public const COMPLETED = 'COMPLETED';
 
     public const CREATE_RULE = [

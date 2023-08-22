@@ -78,7 +78,7 @@
                             }
                         });
                     } else {
-                        toastr.warning('Order Status is safe!!');
+                        toastr.warning('Order Status : Not Changed!!');
                     }
                 });
         })
@@ -116,7 +116,7 @@
                             }
                         });
                     } else {
-                        toastr.warning('Order Status is safe!!');
+                        toastr.warning('Order Status : not changed!!');
                     }
                 });
         })

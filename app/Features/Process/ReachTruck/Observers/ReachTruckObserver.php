@@ -65,7 +65,11 @@ class ReachTruckObserver
 
             if($reachTruck->is_transfered) {
                 if ($reachTruck->from_locationable_type == Location::class && $reachTruck->to_locationable_type == Warehouse::class) {
-                    $reachTruck->toLocationable->updateIsEmpty(true);
+                    $reachTruck->toLocationable->updateIsEmpty(false);
+                }
+
+                if($reachTruck->from_locationable_type == Warehouse::class && $reachTruck->to_locationable_type == Location::class) {
+                    $reachTruck->fromLocationable->updateIsEmpty(true);
                 }
             }
         }

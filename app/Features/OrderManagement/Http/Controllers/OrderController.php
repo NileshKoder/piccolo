@@ -3,6 +3,8 @@
 namespace App\Features\OrderManagement\Http\Controllers;
 
 use Exception;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Features\OrderManagement\Actions\OrderAction;
@@ -10,6 +12,7 @@ use App\Features\OrderManagement\Domains\Models\Order;
 use App\Features\OrderManagement\Domains\Models\OrderItem;
 use App\Features\OrderManagement\Http\Requests\StoreOrderRequest;
 use App\Features\OrderManagement\Http\Requests\UpdateOrderRequest;
+use Illuminate\View\View;
 
 class OrderController extends Controller
 {
@@ -23,9 +26,9 @@ class OrderController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return View
      */
-    public function index()
+    public function index(): View
     {
         return view('features.orders.index');
     }
@@ -33,9 +36,9 @@ class OrderController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return View
      */
-    public function create()
+    public function create(): View
     {
         $masterData = $this->orderAction->getMasterData();
         return view('features.orders.create', compact('masterData'));
@@ -44,10 +47,10 @@ class OrderController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param  StoreOrderRequest  $request
+     * @return RedirectResponse
      */
-    public function store(StoreOrderRequest $request)
+    public function store(StoreOrderRequest $request): RedirectResponse
     {
         try {
             $data = $request->toFormData();
@@ -62,8 +65,8 @@ class OrderController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Features\OrderManagement\Domains\Models\Order  $order
-     * @return \Illuminate\Http\Response
+     * @param  Order  $order
+     * @return void
      */
     public function show(Order $order)
     {
@@ -73,10 +76,10 @@ class OrderController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Features\OrderManagement\Domains\Models\Order  $order
-     * @return \Illuminate\Http\Response
+     * @param  Order  $order
+     * @return View
      */
-    public function edit(Order $order)
+    public function edit(Order $order): View
     {
         $masterData = $this->orderAction->getMasterData();
         $order->load('orderItems');
@@ -87,11 +90,11 @@ class OrderController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Features\OrderManagement\Domains\Models\Order  $order
-     * @return \Illuminate\Http\Response
+     * @param  UpdateOrderRequest  $request
+     * @param  Order  $order
+     * @return RedirectResponse
      */
-    public function update(UpdateOrderRequest $request, Order $order)
+    public function update(UpdateOrderRequest $request, Order $order): RedirectResponse
     {
         try {
             $data = $request->toFormData();
@@ -106,15 +109,15 @@ class OrderController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Features\OrderManagement\Domains\Models\Order  $order
-     * @return \Illuminate\Http\Response
+     * @param  Order  $order
+     * @return void
      */
     public function destroy(Order $order)
     {
         //
     }
 
-    public function getOrders(Request $request)
+    public function getOrders(Request $request): JsonResponse
     {
         try {
             $data = $this->orderAction->getOrders(
@@ -128,7 +131,7 @@ class OrderController extends Controller
         return $data;
     }
 
-    public function getOrderIteMappedDetails(Order $order, OrderItem $orderItem)
+    public function getOrderIteMappedDetails(Order $order, OrderItem $orderItem): View
     {
          $orderItem->load([
             'skuCode', 'variant', 'location', 'orderItemPalletDetails',

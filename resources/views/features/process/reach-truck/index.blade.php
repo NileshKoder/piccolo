@@ -20,7 +20,7 @@
                         Reach Truck Details
                     </h3>
                     <div class="card-tools">
-                        <a href="{{ route('reach-trucks.create') }}" target="_blank">
+                        <a href="{{ route('reach-trucks.create') }}">
                             <button type="button" class="btn btn-primary float-right">
                                 <i class="fas fa-plus"></i> Transfer Pallet
                             </button>

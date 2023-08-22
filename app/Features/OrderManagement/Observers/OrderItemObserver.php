@@ -10,7 +10,7 @@ class OrderItemObserver
     public function updated(OrderItem  $orderItem)
     {
         if($orderItem->isDirty('state')) {
-            if ($orderItem->state == OrderItem::TRANSFERED) {
+            if ($orderItem->state == OrderItem::TRANSFERRED) {
                 $this->processUpdateOrderState($orderItem->order);
             }
         }
@@ -18,7 +18,7 @@ class OrderItemObserver
 
     public function processUpdateOrderState(Order $order)
     {
-        if($order->orderItems()->count() == $order->orderItems()->where('state', OrderItem::TRANSFERED)->count())
+        if($order->orderItems()->count() == $order->orderItems()->where('state', OrderItem::TRANSFERRED)->count())
         {
             $order->updateState(Order::COMPLETED);
         }

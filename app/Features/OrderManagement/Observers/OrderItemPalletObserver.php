@@ -9,6 +9,10 @@ class OrderItemPalletObserver
 {
     public function deleting(OrderItemPallet $orderItemPallet)
     {
-        $orderItemPallet->orderItem->updateState(OrderItem::TRANSFERED);
+       if($orderItemPallet->orderItem->orderItemPalletDetails->whereNull('transfered_by')->count() == 0) {
+           $orderItemPallet->orderItem->updateState(OrderItem::TRANSFERRED);
+       } else {
+           $orderItemPallet->orderItem->updateState(OrderItem::PARTIAL_TRANSFERRED);
+       }
     }
 }

@@ -40,7 +40,7 @@ class OrderPalletMappingCommand extends Command
      */
     public function handle(): void
     {
-        $orderItems = OrderItem::with('order','orderItemPalletDetails')->stateIn([OrderItem::CREATED, OrderItem::PARTIAL_MAPPED, OrderItem::TRANSFERED])
+        $orderItems = OrderItem::with('order','orderItemPalletDetails')->stateIn([OrderItem::CREATED, OrderItem::PARTIAL_MAPPED, OrderItem::TRANSFERRED])
             ->whereHas('order', function ($orderQry) {
                 return $orderQry->stateIn([Order::READY_TO_MAPPING, Order::TRANSFERRING_PALLETS]);
             })

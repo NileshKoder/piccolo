@@ -14,7 +14,7 @@
             </thead>
             <tbody id="tbody">
                 @if(!empty($order))
-                @foreach ($order->ordeItems as $key => $ordeItem)
+                @foreach ($order->orderItems as $key => $ordeItem)
                 <tr>
                     <input type="hidden" class="order_item_detail_id" name="order_item_details[{{ $key }}][order_item_id]" value="{{ $ordeItem->id }}">
                     <td>

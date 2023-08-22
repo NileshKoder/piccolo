@@ -80,7 +80,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ route('reach-trucks.index') }}" class="nav-link @if($urlName[1] == 'reach-truck') active @endif">
+                            <a href="{{ route('reach-trucks.index') }}" class="nav-link @if($urlName[1] == 'reach-trucks') active @endif">
                                 <i class="fa fa-truck nav-icon"></i>
                                 <p>Reach Truck</p>
                             </a>

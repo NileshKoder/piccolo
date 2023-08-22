@@ -66,12 +66,9 @@ class OrderAction
         return DataTables::of($orders)
             ->skipPaging()
             ->addColumn('action', function ($order) {
-                $action = '';
-
-                $action .= "<a href='" . route('orders.edit', $order->id) . "' class='editOrder' title='Edit Order'>
+                 $action = "<a href='" . route('orders.edit', $order->id) . "' class='editOrder' title='Edit Order'>
                             <i class='fas fa-edit text-success'></i>
                         </a>";
-
                 if($order->isOrderHasAllDetails() && $order->state == Order::DRAFT) {
                     $action .= "<a href='javascript:void(0);' data-update_state_route='" . route('orders.updateStateToReadyToDispatch', $order->id) . "' class='updateState ml-2' title='Change Status to READY TO MAPPING'>
                             <i class='fas fa-check text-warning'></i>

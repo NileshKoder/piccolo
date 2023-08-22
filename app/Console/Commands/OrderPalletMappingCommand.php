@@ -40,10 +40,10 @@ class OrderPalletMappingCommand extends Command
      */
     public function handle(): void
     {
-        $orderItems = OrderItem::with('order','orderItemPalletDetails')->stateIn([OrderItem::CREATED, OrderItem::PARTIAL_MAPPED, OrderItem::TRANSFERRED])
-            ->whereHas('order', function ($orderQry) {
-                return $orderQry->stateIn([Order::READY_TO_MAPPING, Order::TRANSFERRING_PALLETS]);
-            })
+        $orderItems = OrderItem::with('order','orderItemPalletDetails')->stateIn([OrderItem::CREATED, OrderItem::PARTIAL_MAPPED])
+//            ->whereHas('order', function ($orderQry) {
+//                return $orderQry->stateIn([Order::READY_TO_MAPPING, Order::TRANSFERRING_PALLETS]);
+//            })
             ->pickUpDateLessThanToday()
             ->orderBy('pick_up_date', 'ASC')->get();
 
@@ -51,8 +51,10 @@ class OrderPalletMappingCommand extends Command
             foreach ($orderItems as $key => $orderItem) {
                 if($orderItem->required_weight > $orderItem->orderItemPalletDetails->sum('mapped_weight')) {
                     $orderItem->mapPallets();
-                    if ($orderItem->order->orderItems->where('state', OrderItem::PARTIAL_MAPPED)->count() > 0 ||
-                        $orderItem->order->orderItems->where('state', OrderItem::MAPPED)->count() > 0) {
+                    if (
+                        $orderItem->order->orderItems->where('state', OrderItem::PARTIAL_MAPPED)->count() > 0 ||
+                        $orderItem->order->orderItems->where('state', OrderItem::MAPPED)->count() > 0
+                    ) {
                         $orderItem->order->updateState(Order::TRANSFERRING_PALLETS);
                     }
                 }

@@ -31,12 +31,12 @@ class OrderAction
 
     public function createOrder(array $data)
     {
-        return Order::persristCreateOrder($data);
+        return Order::persistCreateOrder($data);
     }
 
     public function updateOrder(Order $order, array $data)
     {
-        return Order::persristUpdateOrder($order, $data);
+        return Order::persistUpdateOrder($order, $data);
     }
 
     public function getOrders(
@@ -44,7 +44,7 @@ class OrderAction
         int $start,
         int $length
     ) {
-        $orders = Order::with('ordeItems', 'creator', 'updator');
+        $orders = Order::with('orderItems', 'creator', 'updator');
 
         // Modifying total record count and filtered row count as data is manually filtered
         $numberOfTotalRows = Order::count('*');

@@ -3,6 +3,8 @@
 namespace App\Features\OrderManagement\Domains\Models;
 
 use App\User;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use App\Features\OrderManagement\Constants\OrderConstants;
@@ -15,32 +17,29 @@ class Order extends Model implements OrderConstants
 
     protected $fillable = ['order_number', 'state', 'created_by', 'updated_by'];
 
-    public function ordeItems()
+    public function orderItems(): HasMany
     {
         return $this->hasMany(OrderItem::class);
     }
 
-    public function creator()
+    public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
     }
 
-    public function updator()
+    public function updator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'updated_by');
     }
 
-    public static function persristCreateOrder(array $data): ?Order
+    public static function persistCreateOrder(array $data): ?Order
     {
-        $order = null;
-        $order = DB::transaction(function () use ($data) {
+        return DB::transaction(function () use ($data) {
             $order = Order::create($data);
             self::createOrderItems($order, $data);
 
             return $order;
         });
-
-        return $order;
     }
 
     public static function createOrderItems(Order $order, array $data)
@@ -52,7 +51,7 @@ class Order extends Model implements OrderConstants
         return $order->ordeItems;
     }
 
-    public static function persristUpdateOrder(Order $order, array $data)
+    public static function persistUpdateOrder(Order $order, array $data)
     {
         DB::transaction(function () use ($data, $order) {
             $order->update($data);
@@ -83,7 +82,7 @@ class Order extends Model implements OrderConstants
         return $order->ordeItemDetails;
     }
 
-    public function updateState(string $state)
+    public function updateState(string $state): Order
     {
         $this->state = $state;
         $this->update();
@@ -91,11 +90,12 @@ class Order extends Model implements OrderConstants
         return $this;
     }
 
-    public function isOrderHasAllDetails()
+    /**
+     * @return bool
+     */
+    public function isOrderHasAllDetails(): bool
     {
-        return $this->ordeItems()
-            ->whereNotNull('sku_code_id')
-            ->whereNotNull('variant_id')
+        return $this->ordeItems->whereNotNull('sku_code_id')->whereNotNull('variant_id')
             ->whereNotNull('location_id')
             ->whereNotNull('required_weight')
             ->whereNotNull('pick_up_date')

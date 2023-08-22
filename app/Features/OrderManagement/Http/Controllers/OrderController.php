@@ -79,7 +79,7 @@ class OrderController extends Controller
     public function edit(Order $order)
     {
         $masterData = $this->orderAction->getMasterData();
-        $order->load('ordeItems');
+        $order->load('orderItems');
 
         return view('features.orders.edit', compact('masterData', 'order'));
     }

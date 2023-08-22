@@ -18,7 +18,7 @@ class OrderItemObserver
 
     public function processUpdateOrderState(Order $order)
     {
-        if($order->ordeItems()->count() == $order->ordeItems()->where('state', OrderItem::TRANSFERED)->count())
+        if($order->orderItems()->count() == $order->orderItems()->where('state', OrderItem::TRANSFERED)->count())
         {
             $order->updateState(Order::COMPLETED);
         }

@@ -53,14 +53,14 @@ class OrderItem extends Model implements OrderItemConstants
     public static function persistCreateOrderItem(Order $order, array $data): ?OrderItem
     {
         $data['pick_up_date'] = date('Y-m-d', strtotime($data['pick_up_date']));
-        $orderItem = $order->ordeItems()->create($data);
+        $orderItem = $order->orderItems()->create($data);
 
         return $orderItem;
     }
 
     public static function persistDeleteOrderItemDetail(Order $order, array $ids)
     {
-        return $order->ordeItems()->whereNotIn('id', $ids)->delete();
+        return $order->orderItems()->whereNotIn('id', $ids)->delete();
     }
 
     public static function persistUpdateOrderItem(Order $order, array $data): ?OrderItem

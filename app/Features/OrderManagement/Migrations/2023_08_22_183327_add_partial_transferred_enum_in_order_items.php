@@ -14,7 +14,7 @@ class AddPartialTransferredEnumInOrderItems extends Migration
     public function up()
     {
         Schema::table('order_items', function (Blueprint $table) {
-            DB::statement("ALTER TABLE `order_items` CHANGE `state` `state` ENUM('CREATED','PARTIAL_MAPPED','MAPPED','PARTIAL_TRANSFERRED','TRANSFERED','CANCELLED') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'CREATED';");
+            DB::statement("ALTER TABLE `order_items` CHANGE `state` `state` ENUM('CREATED','PARTIAL_MAPPED','MAPPED','PARTIAL_TRANSFERRED','TRANSFERRED','CANCELLED') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'CREATED';");
         });
     }
 
@@ -26,7 +26,7 @@ class AddPartialTransferredEnumInOrderItems extends Migration
     public function down()
     {
         Schema::table('order_items', function (Blueprint $table) {
-            $table->enum('state', ["CREATED", "PARTIAL_MAPPED", "MAPPED", "TRANSFERED", "CANCELLED"])->default("CREATED");
+            $table->enum('state', ["CREATED", "PARTIAL_MAPPED", "MAPPED", "TRANSFERRED", "CANCELLED"])->default("CREATED");
         });
     }
 }

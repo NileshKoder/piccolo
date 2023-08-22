@@ -72,7 +72,7 @@ class OrderAction
                         </a>";
                 }
 
-                if ($order->state == Order::TRANSFERRING_PALLETS) {
+                if ($order->state == Order::TRANSFERRED) {
                     $action .= "<a href='javascript:void(0);' data-update_state_route='" . route('orders.updateStateToComplete', $order->id) . "' class='updateStateAsComplete ml-2' title='Change Status to Compete'>
                             <i class='fas fa-flag-checkered text-dark'></i>
                         </a>";

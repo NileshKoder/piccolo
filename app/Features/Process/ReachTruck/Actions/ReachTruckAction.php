@@ -12,8 +12,6 @@ use App\Features\Masters\Locations\Domains\Models\Location;
 use App\Features\Masters\Warehouses\Domains\Models\Warehouse;
 use App\Features\Process\ReachTruck\Domains\Models\ReachTruck;
 use App\Features\Process\PalletManagement\Domains\Models\Pallet;
-use function str_replace;
-use function ucfirst;
 
 class ReachTruckAction
 {
@@ -158,7 +156,7 @@ class ReachTruckAction
         $data['reachTruckUsers'] = User::role(User::REACH_TRUCK)->get();
         $data['reachTrucks'] = $this->getNonTransferedPalletsFromReachTruckFromLocationableType($locationType);
 
-        if ($locationType ==  "WH TO ASSEMBLY LINE") {
+        if ($locationType == "WH TO ASSEMBLY LINE") {
             $warehouseIds = ReachTruck::fromLocationableType(Warehouse::class)->nonTransfered()->pluck('from_locationable_id')->toArray();
             $data['fromLocations'] = Warehouse::idIn($warehouseIds)->get();
             $data['fromLocationType'] = Warehouse::class;
@@ -191,6 +189,7 @@ class ReachTruckAction
 
     public function getEditData(ReachTruck $reachTruck)
     {
+
         if ($reachTruck->from_locationable_type == Location::class) {
             if($reachTruck->to_locationable_type != Location::class) {
                 $data['reachTrucks'] = $this->getNonTransferedPalletsFromReachTruckFromLocationableType($reachTruck->fromLocationable->type);
@@ -211,7 +210,15 @@ class ReachTruckAction
                 $data['toLocationType'] =Location::class;
                 $data['toLocations'] = Location::type(Location::LOADING)->get();
             }
-
+        } else if($reachTruck->from_locationable_type == Warehouse::class) {
+            $data['reachTrucks'] = collect();
+            $data['reachTrucks']->push($reachTruck);
+            $warehouseIds = ReachTruck::fromLocationableType(Warehouse::class)->nonTransfered()->pluck('from_locationable_id')->toArray();
+            array_push($warehouseIds, $reachTruck->from_locationable_id);
+            $data['fromLocations'] = Warehouse::idIn($warehouseIds)->get();
+            $data['fromLocationType'] = Warehouse::class;
+            $data['toLocationType'] = Location::class;
+            $data['toLocations'] = Location::type(Location::LINES)->get();
         }
 
         $data['reachTruckUsers'] = User::role(User::REACH_TRUCK)->get();

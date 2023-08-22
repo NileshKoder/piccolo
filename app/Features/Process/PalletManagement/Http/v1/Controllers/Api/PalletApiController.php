@@ -197,7 +197,9 @@ class PalletApiController extends ApiController
         $requestData = [];
         $requestData['pallet']['location_id'] = $request->location_id;
         $requestData['pallet']['master_pallet_id'] = $request->master_pallet_id;
-        $requestData['pallet']['created_by'] = $request->created_by;
+        if(!empty($request->created_by)) {
+            $requestData['pallet']['created_by'] = $request->created_by;
+        }
         $requestData['pallet']['updated_by'] = $request->updated_by ?? $request->created_by;
 
         $requestData['pallet_details'] = $request->pallet_details;

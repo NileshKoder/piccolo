@@ -14,7 +14,7 @@ class AddCancelledEnumInOrders extends Migration
     public function up()
     {
         Schema::table('orders', function (Blueprint $table) {
-            DB::statement("ALTER TABLE `orders` CHANGE `state` `state` ENUM('DRAFT','READY_TO_MAPPING','TRANSFERING_PALLETS','TRANSFERRED', 'COMPLETED','CANCELLED') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'DRAFT';");
+            DB::statement("ALTER TABLE `orders` CHANGE `state` `state` ENUM('DRAFT','READY_TO_MAPPING','TRANSFERRING_PALLETS','TRANSFERRED', 'COMPLETED','CANCELLED') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'DRAFT';");
         });
     }
 

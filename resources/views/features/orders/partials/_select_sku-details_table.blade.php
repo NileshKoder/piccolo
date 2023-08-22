@@ -51,7 +51,7 @@
                         <input type="hidden" name="order_item_details[{{ $key }}][location_id]" class="weight" value="{{ $ordeItem->location_id }}">
                         <input type="text" class="form-control" value="{{ $ordeItem->location->abbr }}" disabled>
                         @else
-                        <select name="order_item_details[{{ $key }}][   ]" class="from-control select2" required>
+                        <select name="order_item_details[{{ $key }}][location_id]" class="from-control select2" required>
                             <option value="">Select Location</option>
                             @foreach ($masterData['locations'] as $location)
                             <option value="{{ $location->id }}">{{ $location->abbr }}</option>

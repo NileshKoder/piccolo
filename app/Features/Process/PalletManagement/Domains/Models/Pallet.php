@@ -2,8 +2,11 @@
 
 namespace App\Features\Process\PalletManagement\Domains\Models;
 
+use App\Features\OrderManagement\Domains\Models\Order;
 use App\Helpers\Traits\BelongsTo;
+use Exception;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use App\Features\Masters\Locations\Domains\Models\Location;
@@ -148,13 +151,16 @@ class Pallet extends Model implements PalletContants
         }
     }
 
-    public static function persistDeletePallet(Pallet $pallet)
+    /**
+     * @throws Exception
+     */
+    public static function persistDeletePallet(Pallet $pallet): bool
     {
         $pallet->reachTruck()->delete();
         return $pallet->delete();
     }
 
-    public function masterPallet()
+    public function masterPallet(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(MasterPallet::class);
     }
@@ -169,14 +175,19 @@ class Pallet extends Model implements PalletContants
         return $this->hasMany(PalletBoxDetails::class);
     }
 
-    public function reachTruck()
+    public function reachTruck(): HasOne
     {
         return $this->hasOne(ReachTruck::class);
     }
 
-    public function orderItemPallet()
+    public function orderItemPallet(): HasOne
     {
         return $this->hasOne(OrderItemPallet::class);
+    }
+
+    public function order(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Order::class);
     }
 
     public static function boot()

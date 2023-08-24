@@ -48,14 +48,12 @@
                     <tr>
                         <input type="hidden" name="pallet_box_details[{{ $key }}][id]" value="{{ $palletBoxDetail->id }}">
                         <td>
-                            <input type="text" name="pallet_box_details[{{ $key }}][box_name]" class="form-control" placeholder="Enter Box Names" value="{{ $palletBoxDetail->box_name }}">
+                            <input type="text" name="pallet_box_details[{{ $key }}][box_name]" class="form-control box_name" placeholder="Enter Box Names" value="{{ $palletBoxDetail->box_name }}">
                         </td>
                         <td>
-                            @if(!$loop->first)
-                                <a href="javascript:void(0)" class="deleteBoxDetail text-danger">
-                                    <i class="fa fa-trash text-danger"></i>
-                                </a>
-                            @endif
+                            <a href="javascript:void(0)" class="deleteBoxDetail text-danger">
+                                <i class="fa fa-trash text-danger"></i>
+                            </a>
                         </td>
                     </tr>
                 @endforeach
@@ -63,7 +61,7 @@
                     <tr>
                         <input type="hidden" name="pallet_box_details[0][id]" value="">
                         <td>
-                            <input type="text" name="pallet_box_details[0][box_name]" class="form-control" placeholder="Enter Box Names">
+                            <input type="text" name="pallet_box_details[0][box_name]" class="form-control box_name" placeholder="Enter Box Names">
                         </td>
                         <td></td>
                     </tr>

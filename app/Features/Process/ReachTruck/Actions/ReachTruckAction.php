@@ -108,11 +108,11 @@ class ReachTruckAction
         foreach ($locations as $location) {
             if($location->type == Location::LINES) {
                 $location->type = Location::LOCATION_NAME_CHANGE_LINE;
-//                $location->total = ReachTruck::fromLocationableType(Location::class)
-//                    ->fromLocationableIdIn($lineIds)
-//                    ->notToLocationableType(Location::class)
-//                    ->whereIsTransfered(false)
-//                    ->count();
+                $location->total = ReachTruck::fromLocationableType(Location::class)
+                    ->fromLocationableIdIn($lineIds)
+                    ->notToLocationableType(Location::class)
+                    ->whereIsTransfered(false)
+                    ->count();
             }
 
             if ($location->type == Location::WH_TO_LINE) {
@@ -154,7 +154,7 @@ class ReachTruckAction
     public function getCreateData(string $locationType)
     {
         $data['reachTruckUsers'] = User::role(User::REACH_TRUCK)->get();
-        $data['reachTrucks'] = $this->getNonTransferedPalletsFromReachTruckFromLocationableType($locationType);
+        $data['reachTrucks'] = $this->getNonTransfferedPalletsFromReachTruckFromLocationAbleType($locationType);
 
         if ($locationType == "WH TO ASSEMBLY LINE") {
             $warehouseIds = ReachTruck::fromLocationableType(Warehouse::class)->nonTransfered()->pluck('from_locationable_id')->toArray();
@@ -167,7 +167,7 @@ class ReachTruckAction
             $data['fromLocationType'] = Location::class;
             $data['toLocationType'] = Location::class;
             $data['toLocations'] = Location::type(Location::LOADING)->get();
-        } elseif($locationType == str_replace("_", " ", Location::LINE_TO_LOADING)) {
+        } elseif($locationType == str_replace("_", " ", Location::LOCATION_NAME_CHANGE_LINE_TO_LOADING)) {
             $data['fromLocations'] = Location::type(Location::LINES)->get();
             $data['fromLocationType'] = Location::class;
             $data['toLocationType'] = Location::class;
@@ -182,6 +182,11 @@ class ReachTruckAction
             $data['fromLocationType'] = Location::class;
             $data['toLocationType'] = Warehouse::class;
             $data['toLocations'] = Warehouse::select(['id','name'])->isEmpty()->get();
+            $data['reachTrucks'] = ReachTruck::with('pallet.masterPallet')
+                ->fromLocationAbleType($locationType)
+                ->nonTransfered()
+                ->notToLocationableType(Location::class)
+                ->get();
         }
 
         return $data;
@@ -189,10 +194,9 @@ class ReachTruckAction
 
     public function getEditData(ReachTruck $reachTruck)
     {
-
         if ($reachTruck->from_locationable_type == Location::class) {
             if($reachTruck->to_locationable_type != Location::class) {
-                $data['reachTrucks'] = $this->getNonTransferedPalletsFromReachTruckFromLocationableType($reachTruck->fromLocationable->type);
+                $data['reachTrucks'] = $this->getNonTransfferedPalletsFromReachTruckFromLocationAbleType($reachTruck->fromLocationable->type);
                 $data['reachTrucks']->push($reachTruck);
 
                 $data['fromLocations'] = Location::type($reachTruck->fromLocationable->type)->get();
@@ -202,7 +206,7 @@ class ReachTruckAction
                 $data['toLocations'] = Warehouse::isEmpty()->get();
                 $data['toLocations']->push($reachTruck->toLocationable);
             } else {
-                $data['reachTrucks'] = $this->getNonTransferedPalletsFromReachTruckFromLocationableType($reachTruck->fromLocationable->type);
+                $data['reachTrucks'] = $this->getNonTransfferedPalletsFromReachTruckFromLocationAbleType($reachTruck->fromLocationable->type);
                 $data['reachTrucks']->push($reachTruck);
                 $data['fromLocations'] = Location::type($reachTruck->fromLocationable->type)->get();
                 $data['fromLocationType'] = Location::class;
@@ -228,22 +232,19 @@ class ReachTruckAction
 
     public function getPalletForReachTruck(array $requestData)
     {
-        return ReachTruck::with('pallet.masterPallet')
+        $reachTruck = ReachTruck::with('pallet.masterPallet')
             ->fromLocationAbleType($requestData['from_locationable_type'])
             ->fromLocationAbleId($requestData['from_locationable_id'])
-            ->nonTransfered()
-            ->get();
+            ->nonTransfered();
+
+        if($requestData['location_type'] == Location::LOCATION_NAME_CHANGE_LINE) {
+            $reachTruck->whereNull('to_locationable_id');
+        }
+
+        return $reachTruck->get();
     }
 
-    public function getNonTransferedPalletsFromLocationable(string $locationType)
-    {
-        return Pallet::with('masterPallet')
-            ->currentLocationType($locationType)
-            ->nonTransfered()
-            ->get();
-    }
-
-    public function getNonTransferedPalletsFromReachTruckFromLocationableType(string $locationType)
+    public function getNonTransfferedPalletsFromReachTruckFromLocationAbleType(string $locationType)
     {
         return ReachTruck::with('pallet.masterPallet')
             ->fromLocationAbleType($locationType)

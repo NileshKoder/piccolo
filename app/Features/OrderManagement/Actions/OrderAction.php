@@ -15,7 +15,7 @@ use function route;
 
 class OrderAction
 {
-    public function getMasterData()
+    public function getMasterData(): array
     {
         $data['skuCodes'] = SkuCode::get();
         $data['variants'] = Variant::get();
@@ -26,7 +26,7 @@ class OrderAction
         return $data;
     }
 
-    public function createOrder(array $data)
+    public function createOrder(array $data): ?Order
     {
         return Order::persistCreateOrder($data);
     }
@@ -99,13 +99,18 @@ class OrderAction
         return $orderItemPallet->unMappedPallet();
     }
 
-    public function updateStateToReadyToMapping(Order $order)
+    public function updateStateToReadyToMapping(Order $order): Order
     {
         return $order->updateState(Order::READY_TO_MAPPING);
     }
 
-    public function updateStateToComplete(Order $order)
+    public function updateStateToComplete(Order $order): Order
     {
         return $order->updateState(Order::COMPLETED);
+    }
+
+    public  function getTransferredOrders(): Collection
+    {
+        return Order::select('id', 'order_number')->state(Order::TRANSFERRED)->get();
     }
 }

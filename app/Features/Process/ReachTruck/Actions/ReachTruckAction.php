@@ -234,7 +234,7 @@ class ReachTruckAction
     {
         $reachTruck = ReachTruck::select([
             'id', 'from_locationable_type', 'from_locationable_id', 'to_locationable_type', 'from_locationable_id',
-            'pallet_id'
+            'to_locationable_id','pallet_id'
         ])
             ->with([
                 'pallet' => function($q) {

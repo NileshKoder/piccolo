@@ -43,6 +43,16 @@ class PalletAction
         return $data;
     }
 
+    public function getMasterDataIndex(): array
+    {
+        $data['skuCodes'] = SkuCode::select('id', 'name')->get();
+        $data['variants'] = Variant::select('id', 'name')->get();
+        $data['locations'] = Location::select('id', 'name', 'abbr')->orderBy('id', 'ASC')->onlyActive()->get();
+        $data['orders'] = Order::select('id', 'order_number')->has('pallets')->state(Order::COMPLETED)->get();
+
+        return $data;
+    }
+
     public function createPallet(array $palletData): ?Pallet
     {
         return Pallet::persistCreatePallet($palletData);
@@ -62,9 +72,14 @@ class PalletAction
     public function getPallets(
         array $order,
         int $start,
-        int $length
+        int $length,
+        array $filterData
     ) {
-        $pallets = Pallet::with('masterPallet', 'palletDetails', 'updater');
+        $pallets = Pallet::with('masterPallet', 'palletDetails', 'updater')
+            ->skuCodeId($filterData['sku_code_id'])
+            ->variantId($filterData['variant_id'])
+            ->orderId($filterData['order_id'])
+            ->locationId($filterData['location_id']);
 
         // Modifying total record count and filtered row count as data is manually filtered
         $numberOfTotalRows = Pallet::count('*');

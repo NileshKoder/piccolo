@@ -31,7 +31,8 @@ class PalletController extends Controller
      */
     public function index(): View
     {
-        return view("features.process.pallet-management.index");
+        $data = $this->palletAction->getMasterDataIndex();
+        return view("features.process.pallet-management.index", compact('data'));
     }
 
     /**
@@ -120,7 +121,8 @@ class PalletController extends Controller
             $data = $this->palletAction->getPallets(
                 $request->order,
                 $request->start,
-                $request->length
+                $request->length,
+                $request->all()
             );
         } catch (Exception $ex) {
             return response()->json(['message' => $ex->getMessage()], 500);

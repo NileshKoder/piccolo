@@ -2,6 +2,7 @@
 
 namespace App\Features\OrderManagement\Domains\Models;
 
+use App\Features\Process\PalletManagement\Domains\Models\Pallet;
 use App\User;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -30,6 +31,11 @@ class Order extends Model implements OrderConstants
     public function updator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'updated_by');
+    }
+
+    public function pallets(): HasMany
+    {
+        return $this->hasMany(Pallet::class);
     }
 
     public static function persistCreateOrder(array $data): ?Order

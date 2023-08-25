@@ -2,6 +2,7 @@
 
 namespace App\Features\Masters\Locations\Domains\Query;
 
+use App\Features\Masters\Locations\Domains\Models\Location;
 use Illuminate\Database\Eloquent\Builder;
 
 trait LocationScopes
@@ -49,5 +50,10 @@ trait LocationScopes
         }
 
         return $query;
+    }
+
+    public function scopeOnlyActive(Builder $query): Builder
+    {
+        return $query->where('state', 'ACTIVE');
     }
 }

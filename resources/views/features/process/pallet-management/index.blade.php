@@ -112,7 +112,7 @@
 @endsection
 
 @section('scripts')
-<script src="{{asset('js/features/process/pallet-management/index.js')}}"></script>
+<script src="{{asset('js/features/process/pallet-management/index.js?v=0.1')}}"></script>
 <script src="{{asset('js/sweetalert.min.js')}}"></script>
 <script>
     initPalletDataTable("{{ route('pallets.getAllPallets') }}");

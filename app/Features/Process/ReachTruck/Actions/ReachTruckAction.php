@@ -158,27 +158,27 @@ class ReachTruckAction
 
         if ($locationType == "WH TO ASSEMBLY LINE") {
             $warehouseIds = ReachTruck::fromLocationableType(Warehouse::class)->nonTransfered()->pluck('from_locationable_id')->toArray();
-            $data['fromLocations'] = Warehouse::idIn($warehouseIds)->get();
+            $data['fromLocations'] = Warehouse::select(['id','name'])->idIn($warehouseIds)->get();
             $data['fromLocationType'] = Warehouse::class;
             $data['toLocationType'] = Location::class;
-            $data['toLocations'] = Location::type(Location::LINES)->get();
+            $data['toLocations'] = Location::select(['id', 'name', 'abbr'])->type(Location::LINES)->get();
         } elseif($locationType == str_replace("_", " ", Location::LOCATION_NAME_CHANGE_LINE_TO_WH)) {
-            $data['fromLocations'] = Location::type(Location::LINES)->get();
+            $data['fromLocations'] = Location::select(['id', 'name', 'abbr'])->type(Location::LINES)->get();
             $data['fromLocationType'] = Location::class;
             $data['toLocationType'] = Location::class;
-            $data['toLocations'] = Location::type(Location::LOADING)->get();
+            $data['toLocations'] = Location::select(['id', 'name', 'abbr'])->type(Location::LOADING)->get();
         } elseif($locationType == str_replace("_", " ", Location::LOCATION_NAME_CHANGE_LINE_TO_LOADING)) {
-            $data['fromLocations'] = Location::type(Location::LINES)->get();
+            $data['fromLocations'] = Location::select(['id', 'name', 'abbr'])->type(Location::LINES)->get();
             $data['fromLocationType'] = Location::class;
             $data['toLocationType'] = Location::class;
-            $data['toLocations'] = Location::type(Location::LOADING)->get();
+            $data['toLocations'] = Location::select(['id', 'name', 'abbr'])->type(Location::LOADING)->get();
         } else {
             if($locationType == Location::LOCATION_NAME_CHANGE_LINE)
             {
                 $locationType = Location::LINES;
             }
 
-            $data['fromLocations'] = Location::type($locationType)->get();
+            $data['fromLocations'] = Location::select(['id', 'name', 'abbr'])->type($locationType)->get();
             $data['fromLocationType'] = Location::class;
             $data['toLocationType'] = Warehouse::class;
             $data['toLocations'] = Warehouse::select(['id','name'])->isEmpty()->get();
@@ -232,7 +232,18 @@ class ReachTruckAction
 
     public function getPalletForReachTruck(array $requestData)
     {
-        $reachTruck = ReachTruck::with('pallet.masterPallet')
+        $reachTruck = ReachTruck::select([
+            'id', 'from_locationable_type', 'from_locationable_id', 'to_locationable_type', 'from_locationable_id',
+            'pallet_id'
+        ])
+            ->with([
+                'pallet' => function($q) {
+                    $q->select('id','master_pallet_id')
+                        ->with(['masterPallet' => function($q) {
+                            $q->select('id','name');
+                        }]);
+                }
+            ])
             ->fromLocationAbleType($requestData['from_locationable_type'])
             ->fromLocationAbleId($requestData['from_locationable_id'])
             ->nonTransfered();

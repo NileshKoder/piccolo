@@ -63,7 +63,7 @@
         $(document).on('click', '.setDateForLoading', function () {
             let palletId = $(this).data('pallet_id');
             let palletName = $(this).data('pallet-name');
-alert(palletName)
+
             $('#set_date_for_loading_pallet_id').val(palletId)
             $('#set_date_for_loading_pallet_name').text(palletName)
 

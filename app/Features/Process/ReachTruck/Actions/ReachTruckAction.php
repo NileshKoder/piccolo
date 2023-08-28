@@ -90,7 +90,6 @@ class ReachTruckAction
 
     public function getLocationCount()
     {
-
         $locations = Location::select(
             'type',
             DB::raw('count(reach_trucks.id) as total')
@@ -119,6 +118,7 @@ class ReachTruckAction
                 $location->type = Location::LOCATION_NAME_CHANGE_WH_TO_LINE;
                 $location->total =  ReachTruck::where('from_locationable_type', Warehouse::class)
                     ->where('to_locationable_type', Location::class)
+                    ->where('to_locationable_id', '!=', Location::LOADING_LOCATION_ID)
                     ->where('is_transfered', false)
                     ->count();
             }
@@ -143,6 +143,11 @@ class ReachTruckAction
 
             if ($location->type == Location::LOADING) {
                 $location->type = Location::LOCATION_NAME_CHANGE_LOADING;
+                $location->total =  ReachTruck::where('from_locationable_type', Warehouse::class)
+                    ->where('to_locationable_type', Location::class)
+                    ->where('to_locationable_id',  Location::LOADING_LOCATION_ID)
+                    ->where('is_transfered', false)
+                    ->count();
             }
 
             $location->type = str_replace("_", " ", $location->type);

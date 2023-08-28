@@ -150,8 +150,10 @@ class PalletAction
         $data['masterPallets']->push($pallet->masterPallet);
         $data['locations'] = Location::select(['id', 'name', 'abbr'])->type(Location::LINES)->get();
         $data['orders'] = Order::StateIn([Order::TRANSFERRED])->get();
-        if($pallet->order->state == Order::COMPLETED) {
-            $data['orders']->push($pallet->order);
+        if(!empty($pallet->order)) {
+            if($pallet->order->state == Order::COMPLETED) {
+                $data['orders']->push($pallet->order);
+            }
         }
         return $data;
     }

@@ -4,6 +4,8 @@ namespace App\Features\Process\PalletManagement\Http\v1\Controllers\Api;
 
 use App\Features\Masters\Locations\Domains\Models\Location;
 use App\Features\Masters\MasterPallet\Domains\Models\MasterPallet;
+use App\Features\OrderManagement\Domains\Models\Order;
+use App\Features\OrderManagement\Domains\Models\OrderItem;
 use App\Features\Process\PalletManagement\Actions\PalletAction;
 use App\Features\Process\PalletManagement\Domains\Models\Pallet;
 use App\Features\Process\PalletManagement\Domains\Models\PalletBoxDetails;
@@ -121,6 +123,7 @@ class PalletApiController extends ApiController
         $newPallet->pallet_name = $pallet->masterPallet->name;
 
         $newPallet->pallet_last_location = $pallet->masterPallet->last_locationable->name;
+        $newPallet->wh_last_location = $pallet->masterPallet->last_locationable->name;
 
         if($pallet->palletDetails->count() > 0) {
             $palletDetailCollection = collect();
@@ -133,8 +136,14 @@ class PalletApiController extends ApiController
                 $palletDetails->variant_name = $palletDetail->variant->name;
                 $palletDetails->weight = $palletDetail->weight;
                 $palletDetails->batch = $palletDetail->batch;
-                $palletDetails->mapped_weight_value = !empty($palletDetail->orderItemPallet) ? (int) $palletDetail->orderItemPallet->weight : 0;
-                $palletDetails->mapped_weight = !empty($palletDetail->orderItemPallet) ? "Mapped {$palletDetail->orderItemPallet->weight} KG weight for Order # : {$palletDetail->orderItemPallet->orderItem->order->order_number}" : "";
+                if($palletDetail->orderItemPallet->state != OrderItem::CANCELLED) {
+                    $palletDetails->mapped_weight_value = !empty($palletDetail->orderItemPallet) ? (int) $palletDetail->orderItemPallet->weight : 0;
+                    $palletDetails->mapped_weight = !empty($palletDetail->orderItemPallet) ? "Mapped {$palletDetail->orderItemPallet->weight} KG weight for Order # : {$palletDetail->orderItemPallet->orderItem->order->order_number}" : "";
+                } else {
+                    $palletDetails->mapped_weight_value = 0;
+                    $palletDetails->mapped_weight =  "";
+                }
+
 
                 $palletDetailCollection->push($palletDetails);
             }

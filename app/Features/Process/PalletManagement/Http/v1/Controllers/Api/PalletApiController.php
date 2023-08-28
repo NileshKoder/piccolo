@@ -41,6 +41,23 @@ class PalletApiController extends ApiController
         return $this->showAll($masterData, 200);
     }
 
+    public function returnCreate(Request $request)
+    {
+        $validate = $this->validation_token($request->token);
+
+        if ($validate !== true) {
+            return $validate;
+        }
+
+        try {
+            $masterData = $this->palletAction->getMasterDataForReturn();
+        } catch (Exception $ex) {
+            return $this->errorResponse($ex->getMessage(), 500);
+        }
+
+        return $this->showAll($masterData, 200);
+    }
+
     public function createBox(Request $request)
     {
         $validate = $this->validation_token($request->token);

@@ -9,6 +9,7 @@ Route::post('pallets/create/box-details', [PalletApiController::class, 'createBo
 Route::post('pallets/get-pallet-details', [PalletApiController::class, 'getPalletDetails']);
 Route::post('pallets/store', [PalletApiController::class, 'store']);
 Route::put('pallets/update/{pallet}', [PalletApiController::class, 'update']);
+Route::post('pallets/return/create', [PalletApiController::class, 'returnCreate']);
 
 Route::post('reach-truck/home', [ReachTruckApiController::class, 'home']);
 Route::post('reach-truck/create', [ReachTruckApiController::class, 'getCreateData']);

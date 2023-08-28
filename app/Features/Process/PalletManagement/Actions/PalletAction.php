@@ -3,6 +3,7 @@
 namespace App\Features\Process\PalletManagement\Actions;
 
 use App\Features\OrderManagement\Domains\Models\Order;
+use App\Features\Process\ReachTruck\Domains\Models\ReachTruck;
 use Carbon\Carbon;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Collection;
@@ -23,6 +24,23 @@ class PalletAction
         $data['variants'] = Variant::select('id', 'name')->get();
         $data['locations'] = Location::select('id', 'name', 'abbr')
             ->typeIn([Location::GLASS, Location::CERAMIC, Location::RECYCLE])
+            ->orderBy('id', 'ASC')->get();
+        $data['maxWeightForPallet'] = Pallet::MAX_WEIGHT_FOR_PALLET;
+        $data['maxWeightForContainer'] = Pallet::MAX_WEIGHT_FOR_CONTAINER;
+
+        return $data;
+    }
+
+    public function getMasterDataForReturn(): array
+    {
+        $data['masterPallets'] = MasterPallet::select('id', 'name')->isEmpty(true)->get();
+        $data['skuCodes'] = SkuCode::select('id', 'name')->get();
+        $data['variants'] = Variant::select('id', 'name')->get();
+        $data['locations'] = Location::select('id', 'name', 'abbr')
+            ->whereHas('fromLocationable', function ($q) {
+                return $q->nonTransfered();
+            })
+            ->typeIn([Location::LINES])
             ->orderBy('id', 'ASC')->get();
         $data['maxWeightForPallet'] = Pallet::MAX_WEIGHT_FOR_PALLET;
         $data['maxWeightForContainer'] = Pallet::MAX_WEIGHT_FOR_CONTAINER;

@@ -98,6 +98,8 @@
                                 <th>Action</th>
                                 <th>Id</th>
                                 <th>Pallet Code</th>
+                                <th>Current Location</th>
+                                <th>Mapped Order</th>
                                 <th>Last Modified By</th>
                                 <th>Last Modified At</th>
                             </tr>

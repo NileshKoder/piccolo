@@ -40,6 +40,14 @@ var initPalletDataTable = function(route) {
                 name: 'master_pallet.name',
             },
             {
+                data: 'master_pallet.last_locationable.name',
+                name: 'master_pallet.last_locationable.name',
+            },
+            {
+                data: 'order.order_number',
+                name: 'order.order_number',
+            },
+            {
                 data: 'updater.name',
                 name: 'updater.name',
             },

@@ -168,12 +168,12 @@ class ReachTruckAction
             $data['toLocationType'] = Location::class;
             $data['toLocations'] = Location::select(['id', 'name', 'abbr'])->type(Location::LINES)->get();
         } elseif($locationType == str_replace("_", " ", Location::LOCATION_NAME_CHANGE_LINE_TO_WH)) {
-            $data['fromLocations'] = Location::select(['id', 'name', 'abbr'])->type(Location::LINES)->get();
+            $data['fromLocations'] = Location::select(['id', 'name', 'abbr'])->has('fromLocationable')->type(Location::LINES)->get();
             $data['fromLocationType'] = Location::class;
             $data['toLocationType'] = Location::class;
             $data['toLocations'] = Location::select(['id', 'name', 'abbr'])->type(Location::LOADING)->get();
         } elseif($locationType == str_replace("_", " ", Location::LOCATION_NAME_CHANGE_LINE_TO_LOADING)) {
-            $data['fromLocations'] = Location::select(['id', 'name', 'abbr'])->type(Location::LINES)->get();
+            $data['fromLocations'] = Location::select(['id', 'name', 'abbr'])->has('fromLocationable')->type(Location::LINES)->get();
             $data['fromLocationType'] = Location::class;
             $data['toLocationType'] = Location::class;
             $data['toLocations'] = Location::select(['id', 'name', 'abbr'])->type(Location::LOADING)->get();
@@ -189,7 +189,7 @@ class ReachTruckAction
                 $locationType = Location::LINES;
             }
 
-            $data['fromLocations'] = Location::select(['id', 'name', 'abbr'])->type($locationType)->get();
+            $data['fromLocations'] = Location::select(['id', 'name', 'abbr'])->has('fromLocationable')->type($locationType)->get();
             $data['fromLocationType'] = Location::class;
             $data['toLocationType'] = Warehouse::class;
             $data['toLocations'] = Warehouse::select(['id','name'])->isEmpty()->get();

@@ -28,6 +28,11 @@ trait ReachTruckScopes
         return $query->where('is_transfered', false);
     }
 
+    public function scopeTransfered(Builder $query)
+    {
+        return $query->where('is_transfered', true);
+    }
+
     public function scopeFromLocationableType(Builder $query, ?string $fromLocationableType)
     {
         if (!empty($fromLocationableType)) {

@@ -37,8 +37,8 @@ class PalletAction
         $data['skuCodes'] = SkuCode::select('id', 'name')->get();
         $data['variants'] = Variant::select('id', 'name')->get();
         $data['locations'] = Location::select('id', 'name', 'abbr')
-            ->whereHas('fromLocationable', function ($q) {
-                return $q->nonTransfered();
+            ->whereHas('toLocationable', function ($q) {
+                return $q->transfered();
             })
             ->typeIn([Location::LINES])
             ->orderBy('id', 'ASC')->get();

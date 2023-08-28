@@ -177,8 +177,8 @@ class ReachTruckAction
             $data['fromLocationType'] = Location::class;
             $data['toLocationType'] = Location::class;
             $data['toLocations'] = Location::select(['id', 'name', 'abbr'])->type(Location::LOADING)->get();
-        } elseif($locationType == str_replace("_", " ", Location::LOCATION_NAME_CHANGE_LINE_TO_LOADING)) {
-            $warehouseIds = ReachTruck::fromLocationableType(Warehouse::class)->nonTransfered()->pluck('from_locationable_id')->toArray();
+        } elseif($locationType == str_replace("_", " ", Location::LOCATION_NAME_CHANGE_LOADING)) {
+            $warehouseIds = ReachTruck::fromLocationableType(Warehouse::class)->toLocationableId(Location::LOADING_LOCATION_ID)->nonTransfered()->pluck('from_locationable_id')->toArray();
             $data['fromLocations'] = Warehouse::select(['id','name'])->idIn($warehouseIds)->get();
             $data['fromLocationType'] = Warehouse::class;
             $data['toLocationType'] = Location::class;

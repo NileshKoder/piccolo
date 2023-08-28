@@ -152,7 +152,7 @@ class ReachTruckAction
 
             $location->type = str_replace("_", " ", $location->type);
         }
-        // dd($locations);
+
         return $locations;
     }
 
@@ -175,6 +175,12 @@ class ReachTruckAction
         } elseif($locationType == str_replace("_", " ", Location::LOCATION_NAME_CHANGE_LINE_TO_LOADING)) {
             $data['fromLocations'] = Location::select(['id', 'name', 'abbr'])->type(Location::LINES)->get();
             $data['fromLocationType'] = Location::class;
+            $data['toLocationType'] = Location::class;
+            $data['toLocations'] = Location::select(['id', 'name', 'abbr'])->type(Location::LOADING)->get();
+        } elseif($locationType == str_replace("_", " ", Location::LOCATION_NAME_CHANGE_LINE_TO_LOADING)) {
+            $warehouseIds = ReachTruck::fromLocationableType(Warehouse::class)->nonTransfered()->pluck('from_locationable_id')->toArray();
+            $data['fromLocations'] = Warehouse::select(['id','name'])->idIn($warehouseIds)->get();
+            $data['fromLocationType'] = Warehouse::class;
             $data['toLocationType'] = Location::class;
             $data['toLocations'] = Location::select(['id', 'name', 'abbr'])->type(Location::LOADING)->get();
         } else {

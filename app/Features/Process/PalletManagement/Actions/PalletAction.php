@@ -33,7 +33,11 @@ class PalletAction
 
     public function getMasterDataForReturn(): array
     {
-        $data['masterPallets'] = MasterPallet::select('id', 'name')->isEmpty(true)->get();
+        $data['masterPallets'] = MasterPallet::select('id', 'name')
+            ->whereHasMorph('lastLocation', [Location::class], function ($q) {
+                $q->whereIn('last_locationable_id', Location::type(Location::LINES)->pluck('id')->toArray());
+            })
+            ->isEmpty(false)->get();
         $data['skuCodes'] = SkuCode::select('id', 'name')->get();
         $data['variants'] = Variant::select('id', 'name')->get();
         $data['locations'] = Location::select('id', 'name', 'abbr')

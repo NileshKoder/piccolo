@@ -70,7 +70,7 @@ class PalletAction
         $data['skuCodes'] = SkuCode::select('id', 'name')->get();
         $data['variants'] = Variant::select('id', 'name')->get();
         $data['locations'] = Location::select('id', 'name', 'abbr')->orderBy('id', 'ASC')->onlyActive()->get();
-        $data['orders'] = Order::select('id', 'order_number')->has('pallets')->state(Order::COMPLETED)->get();
+        $data['orders'] = Order::select('id', 'order_number')->has('pallets')->stateIn([Order::COMPLETED, Order::TRANSFERRED])->get();
 
         return $data;
     }
@@ -97,7 +97,7 @@ class PalletAction
         int $length,
         array $filterData
     ) {
-        $pallets = Pallet::with('masterPallet', 'palletDetails', 'updater')
+        $pallets = Pallet::with('masterPallet.lastLocation', 'palletDetails', 'updater', 'order')
             ->skuCodeId($filterData['sku_code_id'])
             ->variantId($filterData['variant_id'])
             ->orderId($filterData['order_id'])

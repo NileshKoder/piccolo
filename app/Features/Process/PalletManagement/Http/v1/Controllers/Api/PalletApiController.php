@@ -100,7 +100,8 @@ class PalletApiController extends ApiController
                     'masterPallet.lastLocation',
                     'palletDetails.orderItemPallet',
                     'palletDetails.skuCode',
-                    'palletDetails.variant'
+                    'palletDetails.variant',
+                    'palletBoxDetails.order'
                 ])
                 ->select('id', 'master_pallet_id')
                 ->masterPalletName($request->pallet_name)
@@ -136,13 +137,13 @@ class PalletApiController extends ApiController
                 $palletDetails->variant_name = $palletDetail->variant->name;
                 $palletDetails->weight = $palletDetail->weight;
                 $palletDetails->batch = $palletDetail->batch;
-                if($palletDetail->orderItemPallet->state != OrderItem::CANCELLED) {
+//                if($palletDetail->orderItemPallet->state != OrderItem::CANCELLED) {
                     $palletDetails->mapped_weight_value = !empty($palletDetail->orderItemPallet) ? (int) $palletDetail->orderItemPallet->weight : 0;
                     $palletDetails->mapped_weight = !empty($palletDetail->orderItemPallet) ? "Mapped {$palletDetail->orderItemPallet->weight} KG weight for Order # : {$palletDetail->orderItemPallet->orderItem->order->order_number}" : "";
-                } else {
-                    $palletDetails->mapped_weight_value = 0;
-                    $palletDetails->mapped_weight =  "";
-                }
+//                } else {
+//                    $palletDetails->mapped_weight_value = 0;
+//                    $palletDetails->mapped_weight =  "";
+//                }
 
 
                 $palletDetailCollection->push($palletDetails);
@@ -152,6 +153,8 @@ class PalletApiController extends ApiController
         }
 
         if($pallet->palletBoxDetails->count() > 0) {
+            $newPallet->order_id = $pallet->order_id;
+            $newPallet->order_name = $pallet->order->order_number;
             $palletBoxDetailCollection = collect();
             foreach ($pallet->palletBoxDetails as $palletBoxDetail) {
                 $palletBoxDetails = new PalletBoxDetails();

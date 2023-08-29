@@ -3,6 +3,7 @@ var initPalletDataTable = function(route) {
         processing: true,
         serverSide: true,
         responsive: true,
+        searching: false,
         destroy: true,
         'fnCreatedRow': function (nRow, aData, iDataIndex) {
             $(nRow).attr('id', 'row_' + iDataIndex); // or whatever you choose to set as the id

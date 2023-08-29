@@ -125,9 +125,11 @@
         $(document).on('click', '.setDateForLoading', function () {
             let palletId = $(this).data('pallet_id');
             let palletName = $(this).data('pallet-name');
+            let loadingTransferDate = $(this).data('loading_transfer_date');
 
             $('#set_date_for_loading_pallet_id').val(palletId)
             $('#set_date_for_loading_pallet_name').text(palletName)
+            $('#last_set_date').text(loadingTransferDate)
 
             $('#set_date_for_loading_modal').modal('show')
         })

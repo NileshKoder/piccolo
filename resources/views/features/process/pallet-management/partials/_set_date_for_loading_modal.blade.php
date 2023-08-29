@@ -13,9 +13,10 @@
                 <div class="modal-body">
                     <div class="col-md-12">
                         <h4 class="">For Pallet # <span id="set_date_for_loading_pallet_name"></span></h4>
+                        <h5 class="">Last Set Date : <span id="last_set_date"></span></h5>
                         <div class="form-group">
                             <label for="name">Date</label>
-                            <input type="date" class="form-control" name="transfer_date" placeholder="Select a date">
+                            <input type="date" class="form-control" name="transfer_date" id="transfer_date" placeholder="Select a date">
                         </div>
                     </div>
                 </div>

@@ -14,6 +14,7 @@ use App\Features\Masters\Warehouses\Domains\Models\Warehouse;
 use App\Features\Process\ReachTruck\Actions\ReachTruckAction;
 use App\Features\Process\PalletManagement\Domains\Models\Pallet;
 use App\Features\Masters\MasterPallet\Domains\Models\MasterPallet;
+use function strtotime;
 
 class PalletAction
 {
@@ -138,7 +139,10 @@ class PalletAction
 
                 } else {
                     if($pallet->isPalletIsWithBoxDetailsAndPresentAtWarehouse()) {
-                        $action .= "<a href='javascript:void(0);' class='setDateForLoading' title='Set Date For Loading' data-pallet_id='". $pallet->id ."' data-pallet-name='". $pallet->masterPallet->name ."'>
+                        $action .= "<a href='javascript:void(0);' class='setDateForLoading' title='Set Date For Loading'
+                                        data-pallet_id='". $pallet->id ."'
+                                        data-pallet-name='". $pallet->masterPallet->name ."'
+                                        data-loading_transfer_date='". date('d-m-Y', strtotime($pallet->loading_transfer_date)) ."'>
                             <i class='fas fa-calendar-times text-danger'></i>
                         </a>";
                     }

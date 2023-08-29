@@ -59,7 +59,7 @@ class ReachTruckObserver
 
         if ($reachTruck->isDirty('is_transfered')) {
             $this->updateMasterPalletLastLocation($reachTruck);
-            if ($reachTruck->to_locationable_type == Location::class) {
+            if ($reachTruck->to_locationable_type == Location::class && $reachTruck->to_locationable_id != Location::LOADING_LOCATION_ID) {
                 $this->processUpdateOrderItemPalletDetails($reachTruck);
             }
 

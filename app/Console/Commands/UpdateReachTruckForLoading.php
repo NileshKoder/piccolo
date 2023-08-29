@@ -2,9 +2,11 @@
 
 namespace App\Console\Commands;
 
+use App\Features\Masters\Locations\Domains\Models\Location;
 use App\Features\Process\PalletManagement\Domains\Models\Pallet;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 
 class UpdateReachTruckForLoading extends Command
 {
@@ -39,14 +41,22 @@ class UpdateReachTruckForLoading extends Command
      */
     public function handle()
     {
-        $pallets = Pallet::with('reachTruck')->whereNotNull('loading_transfer_date')->whereDate('loading_transfer_date', '<=', Carbon::today())->get();
-
+        $pallets = Pallet::with('reachTruck')
+                ->whereDoesntHave('reachTruck', function($q) {
+                    $q->where('to_locationable_type', Location::class)
+                        ->where('to_locationable_id', Location::LOADING_LOCATION_ID);
+                })
+                ->whereNotNull('loading_transfer_date')
+                ->whereDate('loading_transfer_date', '<=', Carbon::today())
+                ->get();
         foreach ($pallets as $pallet)
         {
+            DB::beginTransaction();
             if($pallet->reachTruck)
             {
                 $pallet->reachTruck->updateForLoadingTransfer();
             }
+            DB::commit();
         }
     }
 }

@@ -124,7 +124,7 @@ class PalletApiController extends ApiController
         $newPallet->id = $pallet->id;
         $newPallet->pallet_name = $pallet->masterPallet->name;
         $newPallet->order_id = $pallet->order_id;
-        $newPallet->order_name = $pallet->order?->order_number ?? '';
+        $newPallet->order_name = !empty($pallet->order) ? $pallet->order->order_number : '';
         $newPallet->pallet_last_location = $pallet->masterPallet->last_locationable->name;
         $newPallet->wh_last_location = $pallet->masterPallet->last_locationable->name;
 

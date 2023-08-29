@@ -73,6 +73,9 @@ class PalletApiController extends ApiController
 
         try {
             $masterData = $this->palletAction->getMastersForBoxDetails();
+            $masterData['masterPallets'] = MasterPallet::select('id', 'name')->whereHas('pallet.reachTruck',function($q) {
+                $q->nonTransfered();
+            })->orWhere('is_empty', true)->get();
         } catch (Exception $ex) {
             return $this->errorResponse($ex->getMessage(), 500);
         }

@@ -4,6 +4,7 @@ namespace App\Features\Process\PalletManagement\Http\v1\Controllers\Api;
 
 use App\Features\Masters\Locations\Domains\Models\Location;
 use App\Features\Masters\MasterPallet\Domains\Models\MasterPallet;
+use App\Features\Masters\Warehouses\Domains\Models\Warehouse;
 use App\Features\OrderManagement\Domains\Models\Order;
 use App\Features\OrderManagement\Domains\Models\OrderItem;
 use App\Features\Process\PalletManagement\Actions\PalletAction;
@@ -37,7 +38,9 @@ class PalletApiController extends ApiController
         try {
             $masterData = $this->palletAction->getMasterData();
             $masterData['masterPallets'] = MasterPallet::select('id', 'name')->whereHas('pallet.reachTruck',function($q) {
-                $q->nonTransfered();
+                $q->nonTransfered()->where(function ($q) {
+                    $q->where('to_locationable_type', Location::class)->where('to_locationable_id', '!=', Location::LOADING_LOCATION_ID);
+                })->orWhere('to_locationable_type', Warehouse::class);
             })->orWhere('is_empty', true)->get();
         } catch (Exception $ex) {
             return $this->errorResponse($ex->getMessage(), 500);
@@ -74,7 +77,9 @@ class PalletApiController extends ApiController
         try {
             $masterData = $this->palletAction->getMastersForBoxDetails();
             $masterData['masterPallets'] = MasterPallet::select('id', 'name')->whereHas('pallet.reachTruck',function($q) {
-                $q->nonTransfered();
+                $q->nonTransfered()->where(function ($q) {
+                    $q->where('to_locationable_type', Location::class)->where('to_locationable_id', '!=', Location::LOADING_LOCATION_ID);
+                })->orWhere('to_locationable_type', Warehouse::class);
             })->orWhere('is_empty', true)->get();
         } catch (Exception $ex) {
             return $this->errorResponse($ex->getMessage(), 500);

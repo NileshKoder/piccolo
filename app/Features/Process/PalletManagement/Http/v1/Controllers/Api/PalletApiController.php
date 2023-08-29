@@ -154,8 +154,10 @@ class PalletApiController extends ApiController
         }
 
         if($pallet->palletBoxDetails->count() > 0) {
-            $newPallet->order_id = $pallet->order_id;
-            $newPallet->order_name = $pallet->order->order_number;
+            if($pallet->order) {
+                $newPallet->order_id = $pallet->order_id;
+                $newPallet->order_name = $pallet->order->order_number;
+            }
             $palletBoxDetailCollection = collect();
             foreach ($pallet->palletBoxDetails as $palletBoxDetail) {
                 $palletBoxDetails = new PalletBoxDetails();

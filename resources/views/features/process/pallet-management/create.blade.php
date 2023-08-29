@@ -48,7 +48,7 @@
 @endsection
 
 @section('scripts')
-<script src="{{asset('js/features/process/pallet-management/form.js?v=1.0')}}"></script>
+<script src="{{asset('js/features/process/pallet-management/form.js?v=1.1')}}"></script>
 <script src="{{asset('js/sweetalert.min.js')}}"></script>
 <script>
 </script>

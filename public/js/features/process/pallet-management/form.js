@@ -176,11 +176,11 @@ function updateMaxWight() {
     let selectedPallet = $('#master_pallet_id option:selected').text();
     let maxWeight = 0;
     if(selectedPallet.charAt(0) == 'P') {
-        maxWeight = 900;
+        maxWeight = 945;
     } else if(selectedPallet.charAt(0) == 'C') {
         maxWeight = 1500;
     } else {
-        maxWeight = 900;
+        maxWeight = 945;
     }
     $('#max_weight').val(maxWeight);
 

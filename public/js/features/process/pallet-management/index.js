@@ -60,7 +60,7 @@ var initPalletDataTable = function(route) {
             "defaultContent": "-",
             "targets": "_all"
           }],
-        order: [[1, 'asc']],
+        order: [[1, 'desc']],
     });
 
     $('#search_pallet').on('click', function () {

@@ -104,7 +104,7 @@ class PalletApiController extends ApiController
                     'order',
                     'palletBoxDetails'
                 ])
-                ->select('id', 'master_pallet_id')
+                ->select('id', 'master_pallet_id', 'order_id')
                 ->masterPalletName($request->pallet_name)
                 ->first();
             if($pallet) {
@@ -123,7 +123,8 @@ class PalletApiController extends ApiController
         $newPallet = new Pallet();
         $newPallet->id = $pallet->id;
         $newPallet->pallet_name = $pallet->masterPallet->name;
-
+        $newPallet->order_id = $pallet->order_id;
+        $newPallet->order_name = $pallet->order?->order_number ?? '';
         $newPallet->pallet_last_location = $pallet->masterPallet->last_locationable->name;
         $newPallet->wh_last_location = $pallet->masterPallet->last_locationable->name;
 
@@ -154,10 +155,6 @@ class PalletApiController extends ApiController
         }
 
         if($pallet->palletBoxDetails->count() > 0) {
-            if($pallet->order) {
-                $newPallet->order_id = $pallet->order_id;
-                $newPallet->order_name = $pallet->order->order_number;
-            }
             $palletBoxDetailCollection = collect();
             foreach ($pallet->palletBoxDetails as $palletBoxDetail) {
                 $palletBoxDetails = new PalletBoxDetails();

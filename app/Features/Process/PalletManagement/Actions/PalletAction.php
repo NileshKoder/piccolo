@@ -68,6 +68,7 @@ class PalletAction
 
     public function getMasterDataIndex(): array
     {
+        $data['masterPallets'] = MasterPallet::select('id', 'name')->isEmpty(false)->get();
         $data['skuCodes'] = SkuCode::select('id', 'name')->get();
         $data['variants'] = Variant::select('id', 'name')->get();
         $data['locations'] = Location::select('id', 'name', 'abbr')->orderBy('id', 'ASC')->onlyActive()->get();
@@ -101,6 +102,7 @@ class PalletAction
         $pallets = Pallet::with('masterPallet.lastLocation', 'palletDetails', 'updater', 'order')
             ->skuCodeId($filterData['sku_code_id'])
             ->variantId($filterData['variant_id'])
+            ->masterPalletId($filterData['master_pallet_id'])
             ->orderId($filterData['order_id'])
             ->locationId($filterData['location_id']);
 

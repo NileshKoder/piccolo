@@ -47,6 +47,15 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-3">
+                                            <label>Pallet</label>
+                                            <select id="master_pallet_id" class="form-control select2">
+                                                <option value="">Select Pallet</option>
+                                                @foreach ($data['masterPallets'] as $masterPallet)
+                                                    <option value="{{ $masterPallet->id }}">{{ $masterPallet->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="col-3">
                                             <label>Sku</label>
                                             <select id="sku_code_id" class="form-control select2">
                                                 <option value="">Select Sku Code</option>
@@ -73,6 +82,8 @@
                                                 @endforeach
                                             </select>
                                         </div>
+                                    </div>
+                                    <div class="row mt-3">
                                         <div class="col-3">
                                             <label>Mapped Orders </label>
                                             <select name="order_id" id="order_id" class="form-control select2">
@@ -82,7 +93,7 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                        <div class="col-3 mt-3">
+                                        <div class="col-3 mt-4">
                                             <button type="button" id="search_pallet" class="btn btn-success">Submit</button>
                                             <button type="button" id="clear_pallet" class="btn btn-default ml-1" >Clear</button>
                                         </div>
@@ -114,7 +125,7 @@
 @endsection
 
 @section('scripts')
-<script src="{{asset('js/features/process/pallet-management/index.js?v=0.3')}}"></script>
+<script src="{{asset('js/features/process/pallet-management/index.js?v=0.4')}}"></script>
 <script src="{{asset('js/sweetalert.min.js')}}"></script>
 <script>
     initPalletDataTable("{{ route('pallets.getAllPallets') }}");

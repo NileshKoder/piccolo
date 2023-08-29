@@ -19,6 +19,7 @@ var initPalletDataTable = function(route) {
                 d.variant_id = $('#variant_id').val()
                 d.location_id = $('#location_id').val()
                 d.order_id = $('#order_id').val()
+                d.master_pallet_id = $('#master_pallet_id').val()
             },
             error: function (e){
                 console.log(e)
@@ -69,6 +70,7 @@ var initPalletDataTable = function(route) {
     });
 
     $('#clear_pallet').on('click', function () {
+        $('#master_pallet_id').val("").select2();
         $('#sku_code_id').val("").select2();
         $('#variant_id').val("").select2();
         $('#location_id').val("").select2();

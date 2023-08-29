@@ -101,7 +101,8 @@ class PalletApiController extends ApiController
                     'palletDetails.orderItemPallet',
                     'palletDetails.skuCode',
                     'palletDetails.variant',
-                    'palletBoxDetails.order'
+                    'order',
+                    'palletBoxDetails'
                 ])
                 ->select('id', 'master_pallet_id')
                 ->masterPalletName($request->pallet_name)

@@ -141,10 +141,11 @@ class PalletAction
 
                 } else {
                     if($pallet->isPalletIsWithBoxDetailsAndPresentAtWarehouse()) {
+                        $loadingTransferDate = !empty($pallet->loading_transfer_date) ? date('d-m-Y', strtotime($pallet->loading_transfer_date)) : "Not Set";
                         $action .= "<a href='javascript:void(0);' class='setDateForLoading' title='Set Date For Loading'
                                         data-pallet_id='". $pallet->id ."'
                                         data-pallet-name='". $pallet->masterPallet->name ."'
-                                        data-loading_transfer_date='". date('d-m-Y', strtotime($pallet->loading_transfer_date)) ."'>
+                                        data-loading_transfer_date='". $loadingTransferDate ."'>
                             <i class='fas fa-calendar-times text-danger'></i>
                         </a>";
                     }

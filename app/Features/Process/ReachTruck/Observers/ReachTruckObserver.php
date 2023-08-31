@@ -18,7 +18,9 @@ class ReachTruckObserver
      */
     public function created(ReachTruck $reachTruck)
     {
-        //
+        if($reachTruck->to_locationable_type == Warehouse::class && $reachTruck->is_transfered) {
+            $this->updateWarehouseLocationOnPallet($reachTruck);
+        }
     }
 
     /**
@@ -73,6 +75,22 @@ class ReachTruckObserver
                 }
             }
         }
+
+        /*
+         * if pallet drop at warehouse location
+         * then update warehouse location on pallet
+         */
+        if(($reachTruck->wasChanged('is_transfered') || $reachTruck->wasChanged('to_locationable_id')) && $reachTruck->to_locationable_type == Warehouse::class)
+        {
+            if($reachTruck->is_transfered) {
+                $this->updateWarehouseLocationOnPallet($reachTruck);
+            }
+        }
+    }
+
+    public function updateWarehouseLocationOnPallet(ReachTruck  $reachTruck)
+    {
+        $reachTruck->pallet->updateLastWarehouseLocation($reachTruck->to_locationable_id);
     }
 
     public function updateMasterPalletLastLocation($reachTruck)

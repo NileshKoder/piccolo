@@ -27,7 +27,7 @@ class Pallet extends Model implements PalletContants
 {
     use PalletScopes, BelongsTo;
 
-    protected $fillable = ['master_pallet_id', 'loading_transfer_date','order_id', 'created_by', 'updated_by'];
+    protected $fillable = ['master_pallet_id', 'loading_transfer_date','order_id', 'warehouse_id', 'created_by', 'updated_by'];
 
     public static function persistCreatePallet(array $palletData): ?Pallet
     {
@@ -160,9 +160,25 @@ class Pallet extends Model implements PalletContants
         return $pallet->delete();
     }
 
+    /**
+     * @throws Exception
+     */
+    public function updateLastWarehouseLocation(int $warehouseId)
+    {
+        $this->warehouse_id = $warehouseId;
+        $this->update();
+
+        return;
+    }
+
     public function masterPallet(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(MasterPallet::class);
+    }
+
+    public function warehouse(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Warehouse::class);
     }
 
     public function palletDetails(): HasMany

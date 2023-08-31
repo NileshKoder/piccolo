@@ -112,10 +112,10 @@ class PalletApiController extends ApiController
                     'palletDetails.orderItemPallet',
                     'palletDetails.skuCode',
                     'palletDetails.variant',
-                    'order',
+                    'order', 'warehouse',
                     'palletBoxDetails'
                 ])
-                ->select('id', 'master_pallet_id', 'order_id')
+                ->select('id', 'master_pallet_id', 'order_id', 'warehouse_id')
                 ->masterPalletName($request->pallet_name)
                 ->first();
             if($pallet) {
@@ -137,7 +137,7 @@ class PalletApiController extends ApiController
         $newPallet->order_id = $pallet->order_id;
         $newPallet->order_name = !empty($pallet->order) ? $pallet->order->order_number : '';
         $newPallet->pallet_last_location = $pallet->masterPallet->last_locationable->name;
-        $newPallet->wh_last_location = $pallet->masterPallet->last_locationable->name;
+        $newPallet->wh_last_location = $pallet->warehouse->name;
 
         if($pallet->palletDetails->count() > 0) {
             $palletDetailCollection = collect();

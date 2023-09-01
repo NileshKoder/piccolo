@@ -56,4 +56,13 @@ trait OrderScopes
 
         return $query;
     }
+
+    public function scopeStateNotIn(Builder $query, ?array $states)
+    {
+        if (!empty($states)) {
+            return $query->whereNotIn('state', $states);
+        }
+
+        return $query;
+    }
 }

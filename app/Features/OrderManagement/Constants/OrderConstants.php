@@ -11,6 +11,15 @@ interface OrderConstants
     public const COMPLETED = 'COMPLETED';
     public const CANCELLED = 'CANCELLED';
 
+    public const STATES = [
+        self::DRAFT => self::DRAFT,
+        self::READY_TO_MAPPING => self::READY_TO_MAPPING,
+        self::TRANSFERRING_PALLETS => self::TRANSFERRING_PALLETS,
+        self::TRANSFERRED => self::TRANSFERRED,
+        self::COMPLETED => self::COMPLETED,
+        self::CANCELLED => self::CANCELLED,
+    ];
+
     public const CREATE_RULE = [
         "order_number" => "required",
         "order_item_details.*.sku_code_id" => "required|exists:sku_codes,id",

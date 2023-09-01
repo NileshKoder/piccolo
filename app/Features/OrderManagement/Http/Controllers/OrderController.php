@@ -13,6 +13,7 @@ use App\Features\OrderManagement\Domains\Models\OrderItem;
 use App\Features\OrderManagement\Http\Requests\StoreOrderRequest;
 use App\Features\OrderManagement\Http\Requests\UpdateOrderRequest;
 use Illuminate\View\View;
+use function compact;
 
 class OrderController extends Controller
 {
@@ -30,7 +31,8 @@ class OrderController extends Controller
      */
     public function index(): View
     {
-        return view('features.orders.index');
+        $data = $this->orderAction->getMasterDataIndex();
+        return view('features.orders.index', compact('data'));
     }
 
     /**
@@ -106,24 +108,14 @@ class OrderController extends Controller
         return redirect()->route('orders.index')->with('success', 'Order Updated Successfully');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  Order  $order
-     * @return void
-     */
-    public function destroy(Order $order)
-    {
-        //
-    }
-
     public function getOrders(Request $request): JsonResponse
     {
         try {
             $data = $this->orderAction->getOrders(
                 $request->order,
                 $request->start,
-                $request->length
+                $request->length,
+                $request->all()
             );
         } catch (Exception $ex) {
             return response()->json(['message' => $ex->getMessage()], 500);

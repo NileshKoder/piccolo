@@ -26,6 +26,16 @@ class OrderAction
         return $data;
     }
 
+    public function getMasterDataIndex(): array
+    {
+        $data['skuCodes'] = SkuCode::get();
+        $data['variants'] = Variant::get();
+        $data['locations'] = Location::type(Location::LINES)->get();
+        $data['states'] = Order::STATES;
+
+        return $data;
+    }
+
     public function createOrder(array $data): ?Order
     {
         return Order::persistCreateOrder($data);
@@ -39,16 +49,22 @@ class OrderAction
     public function getOrders(
         array $order,
         int $start,
-        int $length
+        int $length,
+        array $filterData
     ) {
-        $orders = Order::with('orderItems', 'creator', 'updator');
+        $orders = Order::with('orderItems', 'creator', 'updator')
+            ->skuCodeId($filterData['sku_code_id'])
+            ->variantId($filterData['variant_id'])
+            ->locationId($filterData['location_id'])
+            ->state($filterData['state'])
+            ->pickUpDate($filterData['pickup_date']);
 
         // Modifying total record count and filtered row count as data is manually filtered
         $numberOfTotalRows = Order::count('*');
         if (empty($searchValue)) {
             $numberOfFilteredRows = $numberOfTotalRows;
         } else {
-            $numberOfFilteredRows = Order::count('*');
+            $numberOfFilteredRows = $orders->count();
         }
 
         $orders = $orders->orderBy('id', 'desc')

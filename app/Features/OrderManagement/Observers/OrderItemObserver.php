@@ -9,6 +9,14 @@ class OrderItemObserver
 {
     public function updated(OrderItem  $orderItem)
     {
-        //
+        if($orderItem->isDirty('state')) {
+            if($orderItem->state == OrderItem::CANCELLED) {
+                if($orderItem->orderItemPallets->count() > 0) {
+                    foreach ($orderItem->orderItemPallets as $orderItemPallet) {
+                        $orderItemPallet->delete();
+                    }
+                }
+            }
+        }
     }
 }

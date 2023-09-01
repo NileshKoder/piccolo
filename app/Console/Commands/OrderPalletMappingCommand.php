@@ -41,9 +41,9 @@ class OrderPalletMappingCommand extends Command
     public function handle(): void
     {
         $orderItems = OrderItem::with('order','orderItemPalletDetails')->stateIn([OrderItem::CREATED, OrderItem::PARTIAL_MAPPED])
-//            ->whereHas('order', function ($orderQry) {
-//                return $orderQry->stateIn([Order::READY_TO_MAPPING, Order::TRANSFERRING_PALLETS]);
-//            })
+            ->whereHas('order', function ($orderQry) {
+                return $orderQry->stateNotIn([Order::CANCELLED, Order::TRANSFERRED, Order::COMPLETED]);
+            })
             ->pickUpDateLessThanToday()
             ->orderBy('pick_up_date', 'ASC')->get();
 

@@ -90,7 +90,43 @@
 
             swal({
                     title: "Are you sure?",
-                    text: "You want to change status? You won't revert this record?",
+                    text: "You want to change status ready for mapping? You won't revert this record?",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true,
+                })
+                .then((changeStatus) => {
+                    if(changeStatus) {
+                        $.ajax({
+                            type: "post",
+                            url: url,
+                            data: {
+                                _token: "{{ csrf_token() }}",
+                            },
+                            success: function (response) {
+                                console.log(response);
+                                if (response.code == 200) {
+                                    toastr.success('Order Status Changed Successfully');
+                                    initWareHouseDataTable("{{ route('orders.getOrders') }}");
+                                }
+
+                                if (response.code == 500) {
+                                    toastr.error('something went wrong!!');
+                                }
+                            }
+                        });
+                    } else {
+                        toastr.warning('Order Status : not changed!!');
+                    }
+                });
+        })
+
+        $(document).on('click', '.updateStateAsCancel', function() {
+            let url = $(this).data('cancel_route');
+
+            swal({
+                    title: "Are you sure?",
+                    text: "You want to change status to cancel? You won't revert this record?",
                     icon: "warning",
                     buttons: true,
                     dangerMode: true,

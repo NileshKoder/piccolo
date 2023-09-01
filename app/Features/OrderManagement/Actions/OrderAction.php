@@ -78,8 +78,13 @@ class OrderAction
                         </a>";
                 }
 
+                if ($order->state != Order::COMPLETED && $order->state != Order::CANCELLED) {
+                    $action .= "<a href='javascript:void(0);' data-cancel_route='" . route('orders.updateStateToCancel', $order->id) . "' class='updateStateAsCancel ml-2' title='Change Status to Cancel'>
+                            <i class='fas fa-ban text-dark'></i>
+                        </a>";
+                }
 
-                return $action;
+                return  $action;
             })
             ->editColumn('state', function($order) {
                 return str_replace("_", " ", $order->state);
@@ -107,6 +112,14 @@ class OrderAction
     public function updateStateToComplete(Order $order): Order
     {
         return $order->updateState(Order::COMPLETED);
+    }
+
+    public function updateStateToCancel(Order $order): Order
+    {
+        foreach ($order->orderItems as $orderItem) {
+            $orderItem->updateState(OrderItem::CANCELLED);
+        }
+        return $order->updateState(Order::CANCELLED);
     }
 
     public  function getTransferredOrders(): Collection

@@ -20,5 +20,6 @@ Route::post("orders/get-orders/ajax", [OrderController::class, 'getOrders'])->na
 Route::post("orders/orderItem/unmapped-pallet", [OrderController::class, 'unmappedPallet'])->name('order.orderItem.unmappedPallet');
 Route::post("orders/update-state/{order}", [OrderController::class, 'updateStateToReadyToMapping'])->name('orders.updateStateToReadyToDispatch');
 Route::post("orders/update-state/complete/{order}", [OrderController::class, 'updateStateToComplete'])->name('orders.updateStateToComplete');
+Route::post("orders/update-state/cancel/{order}", [OrderController::class, 'updateStateToCancel'])->name('orders.updateStateToCancel');
 Route::get("orders/{order}/order-item/{order_item}/get-order-item-mapped-details", [OrderController::class, 'getOrderIteMappedDetails'])->name('orders.getOrderIteMappedDetails');
 Route::resource('orders', OrderController::class);

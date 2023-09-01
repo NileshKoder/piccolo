@@ -33,9 +33,11 @@
                         <input type="hidden" name="pallet_details[{{ $key }}][weight]" class="weight" value="{{ $palletDetail->weight }}">
                         <input type="text" class="form-control" value="{{ $palletDetail->weight }}" disabled>
                         @if(!empty($palletDetail->orderItemPallet))
-                        <span class="text-danger">
-                            Mapped {{ $palletDetail->orderItemPallet->weight }} weight for Order : {{ $palletDetail->orderItemPallet->orderItem->order->order_number }}
-                        </span>
+                            @if($palletDetail->orderItemPallet->orderItem->state != "CANCELLED")
+                                <span class="text-danger">
+                                    Mapped {{ $palletDetail->orderItemPallet->weight }} weight for Order : {{ $palletDetail->orderItemPallet->orderItem->order->order_number }}
+                                </span>
+                           @endif
                         @endif
                     </td>
                     <td>

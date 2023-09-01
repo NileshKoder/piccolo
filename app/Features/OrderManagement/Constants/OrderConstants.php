@@ -9,6 +9,7 @@ interface OrderConstants
     public const TRANSFERRING_PALLETS = 'TRANSFERRING_PALLETS';
     public const TRANSFERRED = 'TRANSFERRED';
     public const COMPLETED = 'COMPLETED';
+    public const CANCELLED = 'CANCELLED';
 
     public const CREATE_RULE = [
         "order_number" => "required",

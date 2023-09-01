@@ -37,11 +37,18 @@ class PalletApiController extends ApiController
 
         try {
             $masterData = $this->palletAction->getMasterData();
-            $masterData['masterPallets'] = MasterPallet::select('id', 'name')->whereHas('pallet.reachTruck',function($q) {
-                $q->nonTransfered()->where(function ($q) {
-                    $q->where('to_locationable_type', Location::class)->where('to_locationable_id', '!=', Location::LOADING_LOCATION_ID);
-                })->orWhere('to_locationable_type', Warehouse::class);
-            })->orWhere('is_empty', true)->get();
+            $masterData['masterPallets'] = MasterPallet::select('id', 'name')
+                ->whereHas('pallet.reachTruck',function($q) {
+                    $q->where(function ($q) {
+                        $q->where('to_locationable_type', Location::class)
+                            ->where('to_locationable_id', '!=', Location::LOADING_LOCATION_ID);
+                    });
+                })
+                ->orWhere('is_empty', true)
+                ->where(function ($q) {
+                    $q->where('last_locationable_type', '!=', Warehouse::class)->orWhereNull('last_locationable_type');
+                })
+                ->get();
         } catch (Exception $ex) {
             return $this->errorResponse($ex->getMessage(), 500);
         }
@@ -76,11 +83,18 @@ class PalletApiController extends ApiController
 
         try {
             $masterData = $this->palletAction->getMastersForBoxDetails();
-            $masterData['masterPallets'] = MasterPallet::select('id', 'name')->whereHas('pallet.reachTruck',function($q) {
-                $q->nonTransfered()->where(function ($q) {
-                    $q->where('to_locationable_type', Location::class)->where('to_locationable_id', '!=', Location::LOADING_LOCATION_ID);
-                })->orWhere('to_locationable_type', Warehouse::class);
-            })->orWhere('is_empty', true)->get();
+            $masterData['masterPallets'] = MasterPallet::select('id', 'name')
+                ->whereHas('pallet.reachTruck',function($q) {
+                    $q->where(function ($q) {
+                        $q->where('to_locationable_type', Location::class)
+                            ->where('to_locationable_id', '!=', Location::LOADING_LOCATION_ID);
+                    });
+                })
+                ->orWhere('is_empty', true)
+                ->where(function ($q) {
+                    $q->where('last_locationable_type', '!=', Warehouse::class)->orWhereNull('last_locationable_type');
+                })
+                ->get();
         } catch (Exception $ex) {
             return $this->errorResponse($ex->getMessage(), 500);
         }
@@ -150,14 +164,18 @@ class PalletApiController extends ApiController
                 $palletDetails->variant_name = $palletDetail->variant->name;
                 $palletDetails->weight = $palletDetail->weight;
                 $palletDetails->batch = $palletDetail->batch;
-                if($palletDetail->orderItemPallet->orderItem->state != OrderItem::CANCELLED) {
-                    $palletDetails->mapped_weight_value = !empty($palletDetail->orderItemPallet) ? (int) $palletDetail->orderItemPallet->weight : 0;
-                    $palletDetails->mapped_weight = !empty($palletDetail->orderItemPallet) ? "Mapped {$palletDetail->orderItemPallet->weight} KG weight for Order # : {$palletDetail->orderItemPallet->orderItem->order->order_number}" : "";
+                if(!empty($palletDetail->orderItemPallet)) {
+                    if($palletDetail->orderItemPallet->orderItem->state != OrderItem::CANCELLED) {
+                        $palletDetails->mapped_weight_value = !empty($palletDetail->orderItemPallet) ? (int) $palletDetail->orderItemPallet->weight : 0;
+                        $palletDetails->mapped_weight = !empty($palletDetail->orderItemPallet) ? "Mapped {$palletDetail->orderItemPallet->weight} KG weight for Order # : {$palletDetail->orderItemPallet->orderItem->order->order_number}" : "";
+                    } else {
+                        $palletDetails->mapped_weight_value = 0;
+                        $palletDetails->mapped_weight =  "";
+                    }
                 } else {
                     $palletDetails->mapped_weight_value = 0;
                     $palletDetails->mapped_weight =  "";
                 }
-
 
                 $palletDetailCollection->push($palletDetails);
             }

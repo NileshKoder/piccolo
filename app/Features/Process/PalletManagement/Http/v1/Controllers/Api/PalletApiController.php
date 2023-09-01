@@ -137,7 +137,7 @@ class PalletApiController extends ApiController
         $newPallet->order_id = $pallet->order_id;
         $newPallet->order_name = !empty($pallet->order) ? $pallet->order->order_number : '';
         $newPallet->pallet_last_location = $pallet->masterPallet->last_locationable->name;
-        $newPallet->wh_last_location = $pallet->warehouse->name;
+        $newPallet->wh_last_location = !empty($pallet->warehouse) ? $pallet->warehouse->name : '';
 
         if($pallet->palletDetails->count() > 0) {
             $palletDetailCollection = collect();
@@ -150,13 +150,13 @@ class PalletApiController extends ApiController
                 $palletDetails->variant_name = $palletDetail->variant->name;
                 $palletDetails->weight = $palletDetail->weight;
                 $palletDetails->batch = $palletDetail->batch;
-//                if($palletDetail->orderItemPallet->state != OrderItem::CANCELLED) {
+                if($palletDetail->orderItemPallet->orderItem->state != OrderItem::CANCELLED) {
                     $palletDetails->mapped_weight_value = !empty($palletDetail->orderItemPallet) ? (int) $palletDetail->orderItemPallet->weight : 0;
                     $palletDetails->mapped_weight = !empty($palletDetail->orderItemPallet) ? "Mapped {$palletDetail->orderItemPallet->weight} KG weight for Order # : {$palletDetail->orderItemPallet->orderItem->order->order_number}" : "";
-//                } else {
-//                    $palletDetails->mapped_weight_value = 0;
-//                    $palletDetails->mapped_weight =  "";
-//                }
+                } else {
+                    $palletDetails->mapped_weight_value = 0;
+                    $palletDetails->mapped_weight =  "";
+                }
 
 
                 $palletDetailCollection->push($palletDetails);

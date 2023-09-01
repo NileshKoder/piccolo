@@ -16,7 +16,7 @@
         </div>
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header bg-primary">
+                <div class="card-header">
                     <h3 class="card-title">
                         <i class="fas fa-chart-pie mr-1"></i>
                         Order Management
@@ -47,6 +47,7 @@
     initWareHouseDataTable("{{ route('orders.getOrders') }}");
 
     $(document).ready(function() {
+        $('.select2').select2();
         $(document).on('click', '.updateState', function() {
             let url = $(this).data('update_state_route');
 

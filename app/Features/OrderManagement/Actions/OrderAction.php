@@ -12,6 +12,7 @@ use App\Features\Masters\Locations\Domains\Models\Location;
 use App\Features\OrderManagement\Domains\Models\OrderItem;
 use App\Features\OrderManagement\Domains\Models\OrderItemPallet;
 use function route;
+use function strtotime;
 
 class OrderAction
 {
@@ -141,5 +142,47 @@ class OrderAction
     public  function getTransferredOrders(): Collection
     {
         return Order::select('id', 'order_number')->state(Order::TRANSFERRED)->get();
+    }
+
+    public function getOrderStats(): Collection
+    {
+        $collection = collect();
+        foreach (Order::STATES as $state) {
+            $data = [];
+
+            $orderByState = Order::state($state)->orderBy('updated_at', 'ASC')->get();
+            $data['state'] = $state;
+            if($orderByState->count() > 0) {
+                $data['count'] = $orderByState->count();
+                $data['oldest'] = date('d-M-Y', strtotime($orderByState->first()->updated_at));
+            } else {
+                $data['count'] = 0;
+                $data['oldest'] = '-';
+            }
+
+            $collection->push($data);
+        }
+
+        return $collection;
+    }
+
+    public function getOrdersByPickUpDate(string $pickUpDate): Collection
+    {
+        $collection = collect();
+        $locations = Location::type(Location::LINES)->get();
+        foreach ($locations as $location) {
+            $data = [];
+
+            $orderItems = OrderItem::locationId($location->id)->pickUpDate($pickUpDate)->get();
+
+            $data['location_id'] = $location->id;
+            $data['location_name'] = $location->name;
+            $data['count'] = $orderItems->count();
+            $data['pickup_date'] = $pickUpDate;
+
+            $collection->push($data);
+        }
+
+        return $collection;
     }
 }

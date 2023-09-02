@@ -7,7 +7,7 @@
                 </a>
             </h4>
         </div>
-        <div id="collapseOne" class="collapse" data-parent="#accordion">
+        <div id="collapseOne" class="collapse @if(request()->get('state') || request()->get('location_id') || request()->get('pickup_date')) show @endif" data-parent="#accordion">
             <div class="card-body">
                 <div class="row">
                     <div class="col-3">
@@ -33,7 +33,7 @@
                         <select name="location_id" id="location_id" class="form-control select2">
                             <option value="">Select Locations</option>
                             @foreach ($data['locations'] as $location)
-                                <option value="{{ $location->id }}">{{ $location->name }}</option>
+                                <option value="{{ $location->id }}" @if(!empty(request()->get('location_id')) && request()->get('location_id') == $location->id) selected @endif>{{ $location->name }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -42,7 +42,7 @@
                         <select name="state" id="state" class="form-control select2">
                             <option value="">Select State</option>
                             @foreach ($data['states'] as $state)
-                                <option value="{{ $state }}">{{ $state }}</option>
+                                <option value="{{ $state }}" @if(!empty(request()->get('state')) && request()->get('state') == $state) selected @endif>{{ $state }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -50,7 +50,7 @@
                 <div class="row mt-3">
                     <div class="col-3">
                         <label>PickUp Date </label>
-                        <input type="date" name="pickup_date" id="pickup_date" class="form-control">
+                        <input type="date" name="pickup_date" id="pickup_date" class="form-control" @if(!empty(request()->get('pickup_date'))) value="{{ request()->get('pickup_date') }}" @endif>
                     </div>
                     <div class="col-3 mt-4">
                         <button type="button" id="search_order" class="btn btn-success">Submit</button>

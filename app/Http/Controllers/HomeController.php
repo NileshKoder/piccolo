@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Features\Masters\Warehouses\Domains\Models\Warehouse;
+use App\Features\OrderManagement\Domains\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -29,12 +31,9 @@ class HomeController extends Controller
     {
         $data['filled_pallets'] = MasterPallet::isEmpty(false)->count();
         $data['unfilled_pallets'] = MasterPallet::isEmpty(true)->count();
-        $data['most_sku_used'] = PalletDetails::with('skuCode')
-            ->select('sku_code_id', DB::raw('COUNT(*) as count'))
-            ->groupBy('sku_code_id')->having(DB::raw('COUNT(*)'), '>=', 1)
-            ->orderBy(DB::raw('COUNT(*)'), 'desc')
-            ->limit(1)
-            ->first();
+        $data['filled_warehouses'] = Warehouse::isEmpty(false)->count();
+        $data['unfilled_warehouses'] = Warehouse::isEmpty(true)->count();
+        $data['active_orders'] = Order::notInState([Order::COMPLETED, Order::CANCELLED])->count();
 
         return view('home', compact('data'));
     }

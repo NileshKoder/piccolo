@@ -22,4 +22,8 @@ Route::post("orders/update-state/{order}", [OrderController::class, 'updateState
 Route::post("orders/update-state/complete/{order}", [OrderController::class, 'updateStateToComplete'])->name('orders.updateStateToComplete');
 Route::post("orders/update-state/cancel/{order}", [OrderController::class, 'updateStateToCancel'])->name('orders.updateStateToCancel');
 Route::get("orders/{order}/order-item/{order_item}/get-order-item-mapped-details", [OrderController::class, 'getOrderIteMappedDetails'])->name('orders.getOrderIteMappedDetails');
+
+Route::post('home/order/stats', [OrderController::class, 'getStats'])->name('home.order.stats');
+Route::post('home/order/get-order-by-pick-up-date', [OrderController::class, 'getOrderByPickUpDate'])->name('home.order.get-order-by-pick-up-date');
+
 Route::resource('orders', OrderController::class);

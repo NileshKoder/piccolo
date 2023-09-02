@@ -13,7 +13,7 @@ use App\Features\OrderManagement\Domains\Models\OrderItem;
 use App\Features\OrderManagement\Http\Requests\StoreOrderRequest;
 use App\Features\OrderManagement\Http\Requests\UpdateOrderRequest;
 use Illuminate\View\View;
-use function compact;
+
 
 class OrderController extends Controller
 {
@@ -176,5 +176,25 @@ class OrderController extends Controller
         }
 
         return response()->json(['message' => "Order state successfully", "code" => 200], 200);
+    }
+
+    public function getStats(Request $request)
+    {
+        try {
+            $orderStatesData = $this->orderAction->getOrderStats();
+            return response()->json(['data' => $orderStatesData], 200);
+        } catch (Exception $ex) {
+            return response()->json(['message' => $ex->getMessage()], 500);
+        }
+    }
+
+    public function getOrderByPickUpDate(Request $request)
+    {
+        try {
+            $ordersByPickupDate = $this->orderAction->getOrdersByPickUpDate($request->pickUpDate);
+            return response()->json(['data' => $ordersByPickupDate], 200);
+        } catch (Exception $ex) {
+            return response()->json(['message' => $ex->getMessage()], 500);
+        }
     }
 }

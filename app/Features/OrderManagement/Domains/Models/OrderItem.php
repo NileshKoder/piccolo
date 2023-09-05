@@ -89,11 +89,9 @@ class OrderItem extends Model implements OrderItemConstants
 
     public function reCalculateOrderItemState()
     {
+        $this->refresh();
         if ($this->orderItemPallets->count() > 0) {
-            $mappedWeight = 0;
-            foreach ($this->orderItemPallets as $key => $orderItemPallet) {
-                $mappedWeight += $orderItemPallet->sum('weight');
-            }
+            $mappedWeight = $this->orderItemPallets->sum('weight');
 
             if ($mappedWeight == 0) {
                 $this->updateState(OrderItem::CREATED);

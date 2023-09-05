@@ -2,7 +2,9 @@
 
 namespace App\Features\OrderManagement\Domains\Models;
 
+use App\Features\Masters\Warehouses\Domains\Models\Warehouse;
 use App\Features\OrderManagement\Observers\OrderItemObserver;
+use App\Features\Process\PalletManagement\Domains\Models\PalletDetails;
 use Illuminate\Database\Eloquent\Model;
 use App\Features\OrderManagement\Domains\Models\Order;
 use App\Features\Masters\SkuCodes\Domains\Models\SkuCode;
@@ -103,6 +105,31 @@ class OrderItem extends Model implements OrderItemConstants
         } else {
             $this->updateState(OrderItem::CREATED);
         }
+    }
+
+    public function isItemHasAllDetails(): bool
+    {
+        return !empty($this->sku_code_id) &&
+               !empty($this->variant_id) &&
+               !empty($this->location_id) &&
+               !empty($this->required_weight) &&
+               !empty($this->pick_up_date);
+    }
+
+    public function getPalletsForMapping()
+    {
+        return PalletDetails::with('pallet.masterPallet.lastLocation')
+            ->doesntHave('orderItemPallet')
+            ->whereHas('pallet', function ($palletQry) {
+                $palletQry->doesntHave('orderItemPallet')
+                    ->whereHas('masterPallet', function ($masterPalletQry) {
+                        $masterPalletQry->where('last_locationable_type', Warehouse::class);
+                    });
+            })
+            ->skuCodeId($this->sku_code_id)
+            ->variantId($this->variant_id)
+            ->orderBy('batch_date', 'ASC')
+            ->get();
     }
 
     public static function boot()

@@ -20,18 +20,7 @@ class OrderItemPallet extends Model
 
     public static function persistMapPallets(OrderItem $orderItem)
     {
-        $palletDetails = PalletDetails::with('pallet.masterPallet')
-            ->doesntHave('orderItemPallet')
-            ->whereHas('pallet', function ($palletQry) {
-                $palletQry->doesntHave('orderItemPallet')
-                    ->whereHas('masterPallet', function ($masterPalletQry) {
-                        $masterPalletQry->where('last_locationable_type', Warehouse::class);
-                    });
-            })
-            ->skuCodeId($orderItem->sku_code_id)
-            ->variantId($orderItem->variant_id)
-            ->orderBy('batch_date', 'ASC')
-            ->get();
+        $palletDetails = $orderItem->getPalletsForMapping();
 
         if ($palletDetails->count() > 0) {
             $maxWeight = $orderItem->required_weight;
@@ -55,11 +44,13 @@ class OrderItemPallet extends Model
                     $mappingWeight = $palletDetail->weight;
                 }
 
-                $orderItemPallet = $orderItem->orderItemPallets()->create([
-                    'pallet_id' => $palletDetail->pallet_id,
-                    'pallet_detail_id' => $palletDetail->id,
-                    'weight' => $mappingWeight
-                ]);
+                $orderItemPalletData = [];
+
+                $orderItemPalletData['pallet_id'] = $palletDetail->pallet_id;
+                $orderItemPalletData['pallet_detail_id'] = $palletDetail->id;
+                $orderItemPalletData['weight'] = $mappingWeight;
+
+                $orderItemPallet = self::persistOrderItemPallet($orderItem, $orderItemPalletData);
 
                 $reachTruckAction->createReachTruckFromPallet($palletDetail->pallet, Location::class, $orderItem->location_id);
                 OrderItemPalletDetails::procressOrderItemPalletDetails($orderItemPallet, $mappingWeight);
@@ -82,6 +73,11 @@ class OrderItemPallet extends Model
         $this->delete();
         $this->orderItem->reCalculateOrderItemState();
         return;
+    }
+
+    public static function persistOrderItemPallet(OrderItem $orderItem, array $orderItemPalletData)
+    {
+        return $orderItem->orderItemPallets()->create($orderItemPalletData);
     }
 
     public function pallet()

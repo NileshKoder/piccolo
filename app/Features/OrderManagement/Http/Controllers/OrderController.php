@@ -2,6 +2,7 @@
 
 namespace App\Features\OrderManagement\Http\Controllers;
 
+use App\Features\OrderManagement\Http\Requests\StoreManualMappingPallets;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -13,6 +14,8 @@ use App\Features\OrderManagement\Domains\Models\OrderItem;
 use App\Features\OrderManagement\Http\Requests\StoreOrderRequest;
 use App\Features\OrderManagement\Http\Requests\UpdateOrderRequest;
 use Illuminate\View\View;
+use function compact;
+use function redirect;
 
 
 class OrderController extends Controller
@@ -196,5 +199,23 @@ class OrderController extends Controller
         } catch (Exception $ex) {
             return response()->json(['message' => $ex->getMessage()], 500);
         }
+    }
+
+    public function manualMapping(Order  $order, OrderItem $orderItem)
+    {
+        $orderItem->load(['skuCode', 'variant', 'location', 'orderItemPalletDetails', 'orderItemPallets.pallet.masterPallet.lastLocation']);
+        $data = $this->orderAction->getPalletForManualMapping($orderItem);
+        return view('features.orders.manual-mapping', compact('order', 'orderItem', 'data'));
+    }
+
+    public function storeManualMapping(Order $order, OrderItem $orderItem, StoreManualMappingPallets $request)
+    {
+        try {
+            $this->orderAction->manualMapping($request->toData(), $orderItem);
+        } catch (Exception $ex) {
+            return back()->with('error', $ex->getMessage());
+        }
+
+        return redirect()->route('orders.edit', $order->id)->with('success', 'Pallet Mapped Successfully');
     }
 }

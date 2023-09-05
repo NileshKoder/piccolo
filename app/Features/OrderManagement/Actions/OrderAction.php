@@ -2,7 +2,10 @@
 
 namespace App\Features\OrderManagement\Actions;
 
+use App\Features\Masters\Warehouses\Domains\Models\Warehouse;
+use App\Features\OrderManagement\Domains\Models\OrderItemPalletDetails;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Collection;
 use App\Features\OrderManagement\Domains\Models\Order;
@@ -184,5 +187,30 @@ class OrderAction
         }
 
         return $collection;
+    }
+
+    public function getPalletForManualMapping(OrderItem $orderItem): array
+    {
+        $data = [];
+        $data['palletDetails'] = $orderItem->getPalletsForMapping();
+        $data['nonTransferredfMappedWeight'] = $orderItem->orderItemPallets()->whereHas('pallet.masterPallet', function ($q) {
+            $q->where('last_locationable_type', Warehouse::class);
+        })->sum('weight');
+        $data['transferredfMappedWeight'] = $orderItem->orderItemPallets()->whereHas('pallet.masterPallet', function ($q) {
+            $q->where('last_locationable_type', '!=', Warehouse::class);
+        })->sum('weight');
+
+        return $data;
+    }
+
+    public function manualMapping(Collection $orderItemPallets, OrderItem $orderItem)
+    {
+        DB::beginTransaction();
+        foreach ($orderItemPallets as $orderItemPallet) {
+            $orderItemPalletModel = OrderItemPallet::persistUpdateOrCreateOrderItemPallet($orderItem, $orderItemPallet);
+            OrderItemPalletDetails::procressOrderItemPalletDetails($orderItemPalletModel, $orderItemPallet['weight']);
+            $orderItem->reCalculateOrderItemState();
+        }
+        DB::commit();
     }
 }

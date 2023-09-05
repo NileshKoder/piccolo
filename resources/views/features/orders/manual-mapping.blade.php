@@ -106,9 +106,11 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-md-12">
+                                    <input type="hidden" id="required_weight" value="{{ $orderItem->required_weight }}">
                                     <input type="hidden" id="remaining_weight" value="{{ $orderItem->required_weight -  $data['transferredfMappedWeight']}}">
                                     <input type="hidden" id="non_transferred_mapped_weight" value="{{ $data['nonTransferredfMappedWeight'] }}">
-                                    <input type="hidden" id="mapped_weight_input" value="0">
+                                    <input type="hidden" id="transferred_mapped_weight" value="{{ $data['transferredfMappedWeight'] }}">
+                                    <input type="hidden" id="total_mapped_weight_input" value="{{ $data['nonTransferredfMappedWeight'] + $data['transferredfMappedWeight'] }}">
                                     <table class="table">
                                         <thead>
                                             <tr>
@@ -192,7 +194,7 @@
                                                 <th colspan="6" class="text-right">
                                                 </th>
                                                 <th>
-                                                    <span id="total_mapped_weight">{{ $data['nonTransferredfMappedWeight'] }}</span> / {{ $orderItem->required_weight -  $orderItem->orderItemPalletDetails->sum('mapped_weight') + $data['nonTransferredfMappedWeight']}}
+                                                    <span id="total_mapped_weight">{{ $orderItem->orderItemPalletDetails->sum('mapped_weight') }}</span> / {{ $orderItem->required_weight }}
                                                 </th>
                                             </tr>
                                         </tfoot>

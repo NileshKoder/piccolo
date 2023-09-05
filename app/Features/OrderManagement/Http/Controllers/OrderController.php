@@ -213,6 +213,7 @@ class OrderController extends Controller
         try {
             $this->orderAction->manualMapping($request->toData(), $orderItem);
         } catch (Exception $ex) {
+            dd($ex);
             return back()->with('error', $ex->getMessage());
         }
 

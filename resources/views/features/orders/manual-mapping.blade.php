@@ -72,7 +72,7 @@
                                 @if(($orderItem->required_weight -  $orderItem->orderItemPalletDetails->sum('mapped_weight')) < 0)
                                     0
                                 @else
-                                    {{ $orderItem->required_weight -  $orderItem->orderItemPalletDetails->sum('mapped_weight') }}\
+                                    {{ $orderItem->required_weight -  $orderItem->orderItemPalletDetails->sum('mapped_weight') }}
                                 @endif
                             </div>
                             <div class="col-md-6">
@@ -141,49 +141,51 @@
                                                 </tr>
                                                 @php($counter++)
                                             @endforeach
-                                            <tr>
-                                                <td colspan="7" class="text-center font-weight-bold"> Mapped But Non Transferred Pallets</td>
-                                            </tr>
-                                            @php($counter++)
-                                            @foreach($orderItem->orderItemPallets->sortByDesc('id') as $orderItemPallet)
-                                                @if($orderItemPallet->pallet->masterPallet->last_locationable_type == Warehouse::class)
-                                                    <tr>
-                                                        <td>
-                                                            <input type="hidden" name="order_item_pallets[{{ $counter }}][order_item_pallet_id]" value="{{ $orderItemPallet->id }}">
-                                                            <input type="hidden" name="order_item_pallets[{{ $counter }}][is_updated]" value="true">
-                                                            <input type="checkbox" name="order_item_pallets[{{ $counter }}][pallet_detail_id]"
-                                                                   class="pallet_detail_id" value="{{ $orderItemPallet->pallet_detail_id }}"
-                                                                   data-weight="{{ $orderItemPallet->palletDetail->weight }}" checked>
-                                                        </td>
-                                                        <td>{{ $orderItemPallet->palletDetail->pallet->masterPallet->name }}</td>
-                                                        <td>{{ $orderItemPallet->palletDetail->batch }}</td>
-                                                        <td>{{ $orderItemPallet->palletDetail->skuCode->name }}</td>
-                                                        <td>{{ $orderItemPallet->palletDetail->variant->name }}</td>
-                                                        <td>{{ $orderItemPallet->pallet->masterPallet->last_locationable->name }}</td>
-                                                        <td>{{ $orderItemPallet->palletDetail->weight }}</td>
-                                                    </tr>
-                                                @endif
+                                            @if($orderItem->orderItemPallets->count() > 0)
+                                                <tr>
+                                                    <td colspan="7" class="text-center font-weight-bold"> Mapped But Non Transferred Pallets</td>
+                                                </tr>
                                                 @php($counter++)
-                                            @endforeach
-                                            <tr>
-                                                <td colspan="7" class="text-center font-weight-bold"> Mapped & Transferred Pallets</td>
-                                            </tr>
-                                            @php($counter++)
-                                            @foreach($orderItem->orderItemPallets->sortByDesc('id') as $orderItemPallet)
-                                                @if($orderItemPallet->pallet->masterPallet->last_locationable_type != Warehouse::class)
-                                                    <tr>
-                                                        <input type="hidden" name="order_item_pallets[{{ $counter }}][order_item_pallet_id]" value="{{ $orderItemPallet->id }}">
-                                                        <input type="hidden" name="order_item_pallets[{{ $counter }}][is_updated]" value="false">
-                                                        <td></td>
-                                                        <td>{{ $orderItemPallet->palletDetail->pallet->masterPallet->name }}</td>
-                                                        <td>{{ $orderItemPallet->palletDetail->batch }}</td>
-                                                        <td>{{ $orderItemPallet->palletDetail->skuCode->name }}</td>
-                                                        <td>{{ $orderItemPallet->palletDetail->variant->name }}</td>
-                                                        <td>{{ $orderItemPallet->pallet->masterPallet->last_locationable->name }}</td>
-                                                        <td>{{ $orderItemPallet->palletDetail->weight }}</td>
-                                                    </tr>
-                                                @endif
-                                            @endforeach
+                                                @foreach($orderItem->orderItemPallets->sortByDesc('id') as $orderItemPallet)
+                                                    @if($orderItemPallet->pallet->masterPallet->last_locationable_type == Warehouse::class)
+                                                        <tr>
+                                                            <td>
+                                                                <input type="hidden" name="order_item_pallets[{{ $counter }}][order_item_pallet_id]" value="{{ $orderItemPallet->id }}">
+                                                                <input type="hidden" name="order_item_pallets[{{ $counter }}][is_updated]" value="true">
+                                                                <input type="checkbox" name="order_item_pallets[{{ $counter }}][pallet_detail_id]"
+                                                                       class="pallet_detail_id" value="{{ $orderItemPallet->pallet_detail_id }}"
+                                                                       data-weight="{{ $orderItemPallet->palletDetail->weight }}" checked>
+                                                            </td>
+                                                            <td>{{ $orderItemPallet->palletDetail->pallet->masterPallet->name }}</td>
+                                                            <td>{{ $orderItemPallet->palletDetail->batch }}</td>
+                                                            <td>{{ $orderItemPallet->palletDetail->skuCode->name }}</td>
+                                                            <td>{{ $orderItemPallet->palletDetail->variant->name }}</td>
+                                                            <td>{{ $orderItemPallet->pallet->masterPallet->last_locationable->name }}</td>
+                                                            <td>{{ $orderItemPallet->palletDetail->weight }}</td>
+                                                        </tr>
+                                                    @endif
+                                                    @php($counter++)
+                                                @endforeach
+                                                <tr>
+                                                    <td colspan="7" class="text-center font-weight-bold"> Mapped & Transferred Pallets</td>
+                                                </tr>
+                                                @php($counter++)
+                                                @foreach($orderItem->orderItemPallets->sortByDesc('id') as $orderItemPallet)
+                                                    @if($orderItemPallet->pallet->masterPallet->last_locationable_type != Warehouse::class)
+                                                        <tr>
+                                                            <input type="hidden" name="order_item_pallets[{{ $counter }}][order_item_pallet_id]" value="{{ $orderItemPallet->id }}">
+                                                            <input type="hidden" name="order_item_pallets[{{ $counter }}][is_updated]" value="false">
+                                                            <td></td>
+                                                            <td>{{ $orderItemPallet->palletDetail->pallet->masterPallet->name }}</td>
+                                                            <td>{{ $orderItemPallet->palletDetail->batch }}</td>
+                                                            <td>{{ $orderItemPallet->palletDetail->skuCode->name }}</td>
+                                                            <td>{{ $orderItemPallet->palletDetail->variant->name }}</td>
+                                                            <td>{{ $orderItemPallet->pallet->masterPallet->last_locationable->name }}</td>
+                                                            <td>{{ $orderItemPallet->palletDetail->weight }}</td>
+                                                        </tr>
+                                                    @endif
+                                                @endforeach
+                                            @endif
                                         </tbody>
                                         <tfoot>
                                             <tr>

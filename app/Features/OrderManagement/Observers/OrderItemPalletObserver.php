@@ -16,8 +16,6 @@ class OrderItemPalletObserver
                 if ($orderItemPallet->orderItem->order->orderItems->where('state', OrderItem::TRANSFERRED)->count() == $orderItemPallet->orderItem->order->orderItems->count()) {
                     $orderItemPallet->orderItem->order->updateState(Order::TRANSFERRED);
                 }
-            } else {
-                $orderItemPallet->orderItem->updateState(OrderItem::PARTIAL_TRANSFERRED);
             }
         }
     }

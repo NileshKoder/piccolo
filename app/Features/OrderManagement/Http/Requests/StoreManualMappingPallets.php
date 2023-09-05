@@ -36,8 +36,7 @@ class StoreManualMappingPallets extends FormRequest
     public function toData(): Collection
     {
         $orderItemPalletData = collect();
-
-        foreach ($this->order_item_pallets as $orderItemPallet) {
+        foreach ($this->order_item_pallets as $key => $orderItemPallet) {
             if(array_key_exists('pallet_detail_id', $orderItemPallet) && $orderItemPallet['is_updated'] == "true") {
                 $data = [];
                 $palletDetail = PalletDetails::find($orderItemPallet['pallet_detail_id']);
@@ -47,6 +46,10 @@ class StoreManualMappingPallets extends FormRequest
                 $data['pallet_detail_id'] = $palletDetail->id;
                 $data['weight'] = $palletDetail->weight;
 
+                $orderItemPalletData->push($data);
+            } else if(array_key_exists('order_item_pallet_id', $orderItemPallet) && $orderItemPallet['is_updated'] == "false") {
+                $data = [];
+                $data['order_item_pallet_id'] = $orderItemPallet['order_item_pallet_id'];
                 $orderItemPalletData->push($data);
             }
         }

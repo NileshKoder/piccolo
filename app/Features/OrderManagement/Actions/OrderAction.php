@@ -14,6 +14,9 @@ use App\Features\Masters\Variants\Domains\Models\Variant;
 use App\Features\Masters\Locations\Domains\Models\Location;
 use App\Features\OrderManagement\Domains\Models\OrderItem;
 use App\Features\OrderManagement\Domains\Models\OrderItemPallet;
+use function array_key_exists;
+use function count;
+use function emptyTraversable;
 use function route;
 use function strtotime;
 
@@ -206,11 +209,42 @@ class OrderAction
     public function manualMapping(Collection $orderItemPallets, OrderItem $orderItem)
     {
         DB::beginTransaction();
+        $orderItemPalletIds = [];
+
         foreach ($orderItemPallets as $orderItemPallet) {
-            $orderItemPalletModel = OrderItemPallet::persistUpdateOrCreateOrderItemPallet($orderItem, $orderItemPallet);
+            if(!empty($orderItemPallet['order_item_pallet_id']) && !empty($orderItemPallet['pallet_id'])) {
+                $this->deleteOrderItemPallet($orderItemPallet['order_item_pallet_id']);
+            } else if(!empty($orderItemPallet['order_item_pallet_id']) && !array_key_exists('pallet_id', $orderItemPallet)) {
+                array_push($orderItemPalletIds, $orderItemPallet['order_item_pallet_id']);
+                continue;
+            }
+
+            $orderItemPalletModel = OrderItemPallet::persistOrderItemPallet($orderItem, $orderItemPallet);
             OrderItemPalletDetails::procressOrderItemPalletDetails($orderItemPalletModel, $orderItemPallet['weight']);
             $orderItem->reCalculateOrderItemState();
+            array_push($orderItemPalletIds, $orderItemPalletModel->id);
+        }
+
+        $orderItem->refresh();
+        $orderItemPalletIdsToBeDeleted = $orderItem->orderItemPallets->whereNotIn('id', $orderItemPalletIds)->pluck('id')->toArray();
+        if(count($orderItemPalletIdsToBeDeleted) > 0) {
+            foreach ($orderItemPalletIdsToBeDeleted as $orderItemPalletId) {
+                $this->deleteOrderItemPallet($orderItemPalletId);
+            }
         }
         DB::commit();
+    }
+
+    public function deleteOrderItemPallet(int $orderItemPalletId): void
+    {
+        $oldOrderItemPallet = OrderItemPallet::find($orderItemPalletId);
+        $orderItemPalletDetails = OrderItemPalletDetails::where('order_item_id', $oldOrderItemPallet->order_item_id)
+            ->where('pallet_name', $oldOrderItemPallet->pallet->masterPallet->name)
+            ->first();
+
+        $orderItemPalletDetails->delete();
+        $oldOrderItemPallet->delete();
+
+        return;
     }
 }

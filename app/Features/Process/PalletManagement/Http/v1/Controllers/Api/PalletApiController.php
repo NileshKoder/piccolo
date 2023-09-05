@@ -41,7 +41,7 @@ class PalletApiController extends ApiController
             $nonTransferredMastedPallets = MasterPallet::select('id', 'name')->isEmpty(false)
                 ->where('last_locationable_type', '!=', Warehouse::class)
                 ->get();
-            $masterData['masterPallets'] = $masterData['masterPallets']->merge($nonTransferredMastedPallets)->sortBy('id');
+            $masterData['masterPallets'] = $masterData['masterPallets']->merge($nonTransferredMastedPallets);
         } catch (Exception $ex) {
             return $this->errorResponse($ex->getMessage(), 500);
         }
@@ -79,7 +79,7 @@ class PalletApiController extends ApiController
             $nonTransferredMastedPallets = MasterPallet::select('id', 'name')->isEmpty(false)
                 ->where('last_locationable_type', '!=', Warehouse::class)
                 ->get();
-            $masterData['masterPallets'] = $masterData['masterPallets']->merge($nonTransferredMastedPallets)->sortBy('id');
+            $masterData['masterPallets'] = $masterData['masterPallets']->merge($nonTransferredMastedPallets);
         } catch (Exception $ex) {
             return $this->errorResponse($ex->getMessage(), 500);
         }

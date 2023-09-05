@@ -11,6 +11,7 @@ use App\Features\Process\PalletManagement\Actions\PalletAction;
 use App\Features\Process\PalletManagement\Domains\Models\Pallet;
 use App\Features\Process\PalletManagement\Domains\Models\PalletBoxDetails;
 use App\Features\Process\PalletManagement\Domains\Models\PalletDetails;
+use App\Features\Process\ReachTruck\Domains\Models\ReachTruck;
 use App\Http\Controllers\ApiController;
 use Exception;
 use Illuminate\Http\Request;
@@ -37,18 +38,10 @@ class PalletApiController extends ApiController
 
         try {
             $masterData = $this->palletAction->getMasterData();
-            $masterData['masterPallets'] = MasterPallet::select('id', 'name')
-                ->whereHas('pallet.reachTruck',function($q) {
-                    $q->where(function ($q) {
-                        $q->where('to_locationable_type', Location::class)
-                            ->where('to_locationable_id', '!=', Location::LOADING_LOCATION_ID);
-                    });
-                })
-                ->orWhere('is_empty', true)
-                ->where(function ($q) {
-                    $q->where('last_locationable_type', '!=', Warehouse::class)->orWhereNull('last_locationable_type');
-                })
+            $nonTransferredMastedPallets = MasterPallet::select('id', 'name')->isEmpty(false)
+                ->where('last_locationable_type', '!=', Warehouse::class)
                 ->get();
+            $masterData['masterPallets'] = $masterData['masterPallets']->merge($nonTransferredMastedPallets)->sortBy('id');
         } catch (Exception $ex) {
             return $this->errorResponse($ex->getMessage(), 500);
         }
@@ -83,18 +76,10 @@ class PalletApiController extends ApiController
 
         try {
             $masterData = $this->palletAction->getMastersForBoxDetails();
-            $masterData['masterPallets'] = MasterPallet::select('id', 'name')
-                ->whereHas('pallet.reachTruck',function($q) {
-                    $q->where(function ($q) {
-                        $q->where('to_locationable_type', Location::class)
-                            ->where('to_locationable_id', '!=', Location::LOADING_LOCATION_ID);
-                    });
-                })
-                ->orWhere('is_empty', true)
-                ->where(function ($q) {
-                    $q->where('last_locationable_type', '!=', Warehouse::class)->orWhereNull('last_locationable_type');
-                })
+            $nonTransferredMastedPallets = MasterPallet::select('id', 'name')->isEmpty(false)
+                ->where('last_locationable_type', '!=', Warehouse::class)
                 ->get();
+            $masterData['masterPallets'] = $masterData['masterPallets']->merge($nonTransferredMastedPallets)->sortBy('id');
         } catch (Exception $ex) {
             return $this->errorResponse($ex->getMessage(), 500);
         }

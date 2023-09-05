@@ -38,10 +38,14 @@ class PalletApiController extends ApiController
 
         try {
             $masterData = $this->palletAction->getMasterData();
-            $nonTransferredMastedPallets = MasterPallet::select('id', 'name')->isEmpty(false)
-                ->where('last_locationable_type', '!=', Warehouse::class)
-                ->get();
-            $masterData['masterPallets'] = $masterData['masterPallets']->merge($nonTransferredMastedPallets);
+            $masterData['masterPallets'] = MasterPallet::select('id', 'name')
+                ->where(function($q) {
+                    $q->isEmpty(false)
+                        ->where('last_locationable_type', '!=', Warehouse::class)
+                        ->get();
+                })->orWhere(function($q) {
+                    $q->isEmpty(true);
+                })->get();
         } catch (Exception $ex) {
             return $this->errorResponse($ex->getMessage(), 500);
         }

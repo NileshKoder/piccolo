@@ -221,7 +221,7 @@ class OrderAction
 
             $orderItemPalletModel = OrderItemPallet::persistOrderItemPallet($orderItem, $orderItemPallet);
             OrderItemPalletDetails::procressOrderItemPalletDetails($orderItemPalletModel, $orderItemPallet['weight']);
-            $orderItem->reCalculateOrderItemState();
+
             array_push($orderItemPalletIds, $orderItemPalletModel->id);
         }
 
@@ -232,6 +232,9 @@ class OrderAction
                 $this->deleteOrderItemPallet($orderItemPalletId);
             }
         }
+
+        $orderItem->reCalculateOrderItemState();
+
         DB::commit();
     }
 

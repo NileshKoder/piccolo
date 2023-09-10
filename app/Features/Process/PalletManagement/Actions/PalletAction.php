@@ -167,7 +167,7 @@ class PalletAction
 
         $data['locations'] = Location::select('id', 'name', 'abbr')->type(Location::LINES)->get();
         $data['masterPallets'] = MasterPallet::select('id', 'name')->isEmpty(true)->get();
-        $data['orders'] = Order::select(['id', 'order_number'])->StateIn([Order::TRANSFERRED, Order::COMPLETED])->get();
+        $data['orders'] = Order::select(['id', 'order_number'])->StateIn([Order::TRANSFERRED])->get();
 
         return $data;
     }

@@ -31,7 +31,7 @@ class HomeController extends Controller
     {
         $data['filled_pallets'] = MasterPallet::isEmpty(false)->count();
         $data['unfilled_pallets'] = MasterPallet::isEmpty(true)->count();
-        $data['filled_warehouses'] = Warehouse::isEmpty(false)->count();
+        $data['filled_warehouses'] = Warehouse::isNotEmpty(false)->count();
         $data['unfilled_warehouses'] = Warehouse::isEmpty(true)->count();
         $data['active_orders'] = Order::notInState([Order::COMPLETED, Order::CANCELLED])->count();
 

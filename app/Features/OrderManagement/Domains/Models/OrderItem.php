@@ -125,7 +125,7 @@ class OrderItem extends Model implements OrderItemConstants
                     });
             })
             ->skuCodeId($this->sku_code_id)
-            ->variantId($this->variant_id)
+//            ->variantId($this->variant_id)
             ->orderBy('batch_date', 'ASC')
             ->get();
     }

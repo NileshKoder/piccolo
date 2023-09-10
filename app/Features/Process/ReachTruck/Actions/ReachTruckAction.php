@@ -162,7 +162,11 @@ class ReachTruckAction
         $data['reachTrucks'] = $this->getNonTransfferedPalletsFromReachTruckFromLocationAbleType($locationType);
 
         if ($locationType == "WH TO ASSEMBLY LINE") {
-            $warehouseIds = ReachTruck::fromLocationableType(Warehouse::class)->nonTransfered()->pluck('from_locationable_id')->toArray();
+            $warehouseIds = ReachTruck::fromLocationableType(Warehouse::class)
+                ->nonTransfered()
+                ->toLocationableType(Location::class)
+                ->where('to_locationable_id', '!=', Location::LOADING_LOCATION_ID)
+                ->pluck('from_locationable_id')->toArray();
             $data['fromLocations'] = Warehouse::select(['id','name'])->idIn($warehouseIds)->get();
             $data['fromLocationType'] = Warehouse::class;
             $data['toLocationType'] = Location::class;

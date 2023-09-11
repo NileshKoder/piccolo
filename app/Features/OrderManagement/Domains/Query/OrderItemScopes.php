@@ -8,6 +8,14 @@ use function strtotime;
 
 trait OrderItemScopes
 {
+    public function scopeLimitBy(Builder $query, int $start, int $length): Builder
+    {
+        if ($length != -1) {
+            return $query->offset($start)->limit($length);
+        }
+        return $query;
+    }
+
     public function scopeStateIn(Builder $query, ?array $states): Builder
     {
         if (!empty($states)) {
@@ -54,6 +62,28 @@ trait OrderItemScopes
         if(!empty($pickUpDate)) {
             $pickUpDate = date('Y-m-d', strtotime($pickUpDate));
             return $query->whereDate('pick_up_date', $pickUpDate);
+        }
+
+        return $query;
+    }
+
+    public function scopeOrderId(Builder $query, ?int $orderId): Builder
+    {
+        if(!empty($orderId)) {
+            return $query->whereHas('order', function($q) use($orderId) {
+                return $q->id($orderId);
+            });
+        }
+
+        return $query;
+    }
+
+    public function scopeOrderState(Builder $query, ?string $state): Builder
+    {
+        if(!empty($state)) {
+            return $query->whereHas('order', function($q) use($state) {
+                return $q->state($state);
+            });
         }
 
         return $query;

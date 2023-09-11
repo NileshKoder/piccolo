@@ -21,3 +21,7 @@ Route::get('pallet-report/sku-details', 'App\Features\Reports\Routes\Controllers
 
 Route::post('pallet-report/get-box-pallet-report/ajax', '\App\Features\Reports\Routes\Controllers\PalletReportController@getBoxPalletReport')->name('box-pallet-report.getBoxPalletReport');
 Route::get('pallet-report/box-details', 'App\Features\Reports\Routes\Controllers\PalletReportController@boxDetailReport')->name('box-pallet-report.index');
+
+Route::get('order-reportP/get-order-report/excel-export', '\App\Features\Reports\Routes\Controllers\OrderReportController@getExcel')->name('order-report.getExcel');
+Route::post('order-report/get-order-report/ajax', '\App\Features\Reports\Routes\Controllers\OrderReportController@getOrderReport')->name('order-report.getOrderReport');
+Route::get('order-report', 'App\Features\Reports\Routes\Controllers\OrderReportController@index')->name('order-report.index');

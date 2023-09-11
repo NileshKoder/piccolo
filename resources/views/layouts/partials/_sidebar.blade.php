@@ -125,6 +125,12 @@
                                 </li>
                             </ul>
                         </li>
+                        <li class="nav-item">
+                            <a href="{{ route('order-report.index') }}" class="nav-link @if($urlName[1] == 'order-report') active @endif">
+                                <i class="fa fa-receipt nav-icon"></i>
+                                <p>Order</p>
+                            </a>
+                        </li>
                     </ul>
                 </li>
             </ul>

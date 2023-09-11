@@ -2,6 +2,7 @@
 
 namespace App\Features\Process\PalletManagement\Domains\Query;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 
 trait PalletDetailsScopes
@@ -34,6 +35,14 @@ trait PalletDetailsScopes
         return $query;
     }
 
+    public function scopeBatchDate(Builder $query, ?string $batchDate)
+    {
+        if (!empty($batchDate)) {
+            return $query->where('batch_date', Carbon::parse($batchDate)->format('Y-m-d'));
+        }
+        return $query;
+    }
+
     public function scopeSkuCodeId(Builder $query, ?int $skuCodeId)
     {
         if (!empty($skuCodeId)) {
@@ -47,6 +56,17 @@ trait PalletDetailsScopes
         if (!empty($varinatId)) {
             return $query->with('variant')->where('variant_id', $varinatId);
         }
+        return $query;
+    }
+
+    public function scopeOrderId(Builder $query, ?int $orderId)
+    {
+        if(!empty($orderId)) {
+            return $query->whereHas('orderItemPallet.orderItem.order', function($orderQuery) use($orderId) {
+               return $orderQuery->id($orderId);
+            });
+        }
+
         return $query;
     }
 }

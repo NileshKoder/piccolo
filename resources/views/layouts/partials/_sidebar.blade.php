@@ -102,11 +102,28 @@
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="{{ route('pallet-report.index') }}" class="nav-link @if($urlName[1] == 'pallet-report') active @endif">
-                                <i class="fa fa-dollar-sign nav-icon"></i>
-                                <p>Pallet </p>
+                        <li class="nav-item @if($urlName[1] == 'pallet-report') menu-is-opening menu-open @endif">
+                            <a href="#" class="nav-link @if($urlName[1] == 'pallet-report') active @endif">
+                                <i class="fas fa-pallet nav-icon"></i>
+                                <p>
+                                    Pallet
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
                             </a>
+                            <ul class="nav nav-treeview" @if($urlName[1] == 'pallet-report') style="display: block; @else style="display: none;@endif ">
+                                <li class="nav-item">
+                                    <a href="{{ route('pallet-report.index') }}" class="nav-link @if(!empty($urlName[2]) && $urlName[2] == 'sku-details') active @endif">
+                                        <i class="far fa-dot-circle nav-icon"></i>
+                                        <p>Sku Wise</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('box-pallet-report.index') }}" class="nav-link @if(!empty($urlName[2]) && $urlName[2] == 'box-details') active @endif">
+                                        <i class="far fa-dot-circle nav-icon"></i>
+                                        <p>Box Wise</p>
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
                     </ul>
                 </li>

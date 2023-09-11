@@ -109,4 +109,13 @@ trait OrderScopes
 
         return $query;
     }
+
+    public function scopeId(Builder $query, ?int $id): Builder
+    {
+        if(!empty($id)) {
+            $query->where('id', $id);
+        }
+
+        return $query;
+    }
 }

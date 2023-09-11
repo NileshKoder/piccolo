@@ -17,4 +17,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('pallet-reportP/get-pallet-report/ajax', '\App\Features\Reports\Routes\Controllers\PalletReportController@getExcel')->name('pallet-report.getExcel');
 Route::post('pallet-reportP/get-pallet-report/ajax', '\App\Features\Reports\Routes\Controllers\PalletReportController@getPalletReport')->name('pallet-report.getPalletReport');
-Route::get('pallet-report', 'App\Features\Reports\Routes\Controllers\PalletReportController@index')->name('pallet-report.index');
+Route::get('pallet-report/sku-details', 'App\Features\Reports\Routes\Controllers\PalletReportController@index')->name('pallet-report.index');
+
+Route::post('pallet-report/get-box-pallet-report/ajax', '\App\Features\Reports\Routes\Controllers\PalletReportController@getBoxPalletReport')->name('box-pallet-report.getBoxPalletReport');
+Route::get('pallet-report/box-details', 'App\Features\Reports\Routes\Controllers\PalletReportController@boxDetailReport')->name('box-pallet-report.index');

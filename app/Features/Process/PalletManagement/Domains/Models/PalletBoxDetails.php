@@ -2,11 +2,14 @@
 
 namespace App\Features\Process\PalletManagement\Domains\Models;
 
+use App\Features\Process\PalletManagement\Domains\Query\PalletBoxDetailsScopes;
 use Illuminate\Database\Eloquent\Model;
 use App\Features\Masters\Boxes\Domains\Models\Box;
 
 class PalletBoxDetails extends Model
 {
+    use PalletBoxDetailsScopes;
+
     protected $fillable = ['pallet_id', 'box_name'];
 
     public static function persistUpdateOrCreatePalletBoxDetails(Pallet $pallet, array $palletBoxDetails)

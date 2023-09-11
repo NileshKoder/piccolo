@@ -1,5 +1,5 @@
-var initPalletReportDataTable = function(route) {
-    var table = $('#palletReportDatatble').DataTable({
+var initBoxPalletReportDataTable = function(route) {
+    var table = $('#boxPalletReportDataTable').DataTable({
         processing: true,
         serverSide: true,
         responsive: true,
@@ -14,10 +14,7 @@ var initPalletReportDataTable = function(route) {
             },
             type: "POST",
             data: function (d) {
-                d.sku_code_id = $('#sku_code_id').val(),
-                d.variant_id = $('#variant_id').val(),
                 d.order_id = $('#order_id').val(),
-                d.batch_date = $('#batch_date').val(),
                 d.master_palle_id = $('#master_pallet_id').val()
             },
             error: function (e){
@@ -31,20 +28,8 @@ var initPalletReportDataTable = function(route) {
                 name: 'pallet.master_pallet.name',
             },
             {
-                data: 'sku_code.name',
-                name: 'sku_code.name',
-            },
-            {
-                data: 'variant.name',
-                name: 'variant.name',
-            },
-            {
-                data: 'weight',
-                name: 'weight',
-            },
-            {
-                data: 'batch',
-                name: 'batch',
+                data: 'box_name',
+                name: 'box_name',
             },
             {
                 data: 'pallet.reach_truck.from_locationable.name',
@@ -55,8 +40,8 @@ var initPalletReportDataTable = function(route) {
                 name: 'pallet.master_pallet.last_locationable.name',
             },
             {
-                data: 'order_item_pallet.order_item.order.order_number',
-                name: 'order_item_pallet.order_item.order.order_number',
+                data: 'pallet.order.order_number',
+                name: 'pallet.order.order_number',
             },
             {
                 data: 'pallet.updater.name',
@@ -79,11 +64,8 @@ var initPalletReportDataTable = function(route) {
     });
 
     $('#clear').on('click', function () {
-        $('#sku_code_id').val("").select2();
-        $('#variant_id').val("").select2();
         $('#master_pallet_id').val("").select2();
         $('#order_id').val("").select2();
-        $('#batch_date').val("");
         table.draw();
     });
 };

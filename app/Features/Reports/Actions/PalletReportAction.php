@@ -2,6 +2,8 @@
 
 namespace App\Features\Reports\Actions;
 
+use App\Features\OrderManagement\Domains\Models\Order;
+use App\Features\Process\PalletManagement\Domains\Models\PalletBoxDetails;
 use Carbon\Carbon;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Collection;
@@ -12,11 +14,20 @@ use App\Features\Process\PalletManagement\Domains\Models\PalletDetails;
 
 class PalletReportAction
 {
-    public function getMasterData()
+    public function getMasterData(): array
     {
         $data['masterPallets'] = MasterPallet::all();
         $data['skuCodes'] = SkuCode::all();
         $data['variants'] = Variant::all();
+        $data['orders'] = Order::stateNotIn([Order::TRANSFERRED, Order::CANCELLED, Order::COMPLETED])->get();
+
+        return $data;
+    }
+
+    public function getMasterDataForBoxDetails(): array
+    {
+        $data['masterPallets'] = MasterPallet::all();
+        $data['orders'] = Order::stateIn([Order::TRANSFERRED, Order::CANCELLED, Order::COMPLETED])->get();
 
         return $data;
     }
@@ -24,18 +35,22 @@ class PalletReportAction
     public function getPalletReport(array $filerData)
     {
         $palletDetails = PalletDetails::with(
-            'pallet.masterPallet',
+            'pallet.masterPallet.lastLocation',
             'pallet.updater',
             'skuCode',
-            'variant'
+            'variant',
+            'pallet.reachTruck.fromLocationable',
+            'orderItemPallet.orderItem.order'
         )
             ->skuCodeId($filerData['sku_code_id'])
             ->variantId($filerData['variant_id'])
-            ->masterPalletId($filerData['master_palle_id']);
+            ->masterPalletId($filerData['master_palle_id'])
+            ->batchDate($filerData['batch_date'])
+            ->orderId($filerData['order_id']);
 
         // Modifying total record count and filtered row count as data is manually filtered
         $numberOfTotalRows = PalletDetails::count('*');
-        if (empty($searchValue)) {
+        if (count($filerData) == 0) {
             $numberOfFilteredRows = $numberOfTotalRows;
         } else {
             $numberOfFilteredRows = $palletDetails->count();
@@ -49,12 +64,51 @@ class PalletReportAction
     private function yajraData(Collection $palletDetails, int $numberOfFilteredRows, int $numberOfTotalRows)
     {
         return DataTables::of($palletDetails)
-            ->skipPaging()
             ->editColumn('updated_at', function ($pallet) {
                 return Carbon::parse($pallet->updated_at)->format('d-m-Y h:i A');
             })
             ->setFilteredRecords($numberOfFilteredRows)
             ->setTotalRecords($numberOfTotalRows)
+            ->filter(function () {
+                // Implemented in scope
+            })
+            ->make(true);
+    }
+
+    public function getBoxPalletReport(array $filerData)
+    {
+        $palletDetails = PalletBoxDetails::with([
+            'pallet'=>function($q) {
+                $q->with(['masterPallet.lastLocation', 'updater', 'reachTruck.fromLocationable', 'order']);
+            }
+        ])
+            ->masterPalletId($filerData['master_palle_id'])
+            ->orderId($filerData['order_id']);
+
+        // Modifying total record count and filtered row count as data is manually filtered
+        $numberOfTotalRows = PalletBoxDetails::count('*');
+        if (count($filerData) == 0) {
+            $numberOfFilteredRows = $numberOfTotalRows;
+        } else {
+            $numberOfFilteredRows = $palletDetails->count();
+        }
+
+        $palletDetails = $palletDetails->orderBy('id', 'desc')->limitBy($filerData['start'], $filerData['length'])->get();
+
+        return $this->yajraDataForBoxPallet($palletDetails, $numberOfFilteredRows, $numberOfTotalRows);
+    }
+
+    private function yajraDataForBoxPallet(Collection $palletDetails, int $numberOfFilteredRows, int $numberOfTotalRows)
+    {
+        return DataTables::of($palletDetails)
+            ->editColumn('updated_at', function ($pallet) {
+                return Carbon::parse($pallet->updated_at)->format('d-m-Y h:i A');
+            })
+            ->setFilteredRecords($numberOfFilteredRows)
+            ->setTotalRecords($numberOfTotalRows)
+            ->filter(function () {
+                // Implemented in scope
+            })
             ->make(true);
     }
 }

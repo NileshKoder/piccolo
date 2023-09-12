@@ -2,6 +2,8 @@
 
 namespace App\Features\Masters\Variants\Domains\Models;
 
+use App\Features\OrderManagement\Domains\Models\OrderItem;
+use App\Features\Process\PalletManagement\Domains\Models\PalletDetails;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use App\Features\Masters\Variants\Domains\Query\VariantScopes;
@@ -34,5 +36,15 @@ class Variant extends Model
         });
 
         return $variant;
+    }
+
+    public function palletDetails()
+    {
+        return $this->hasMany(PalletDetails::class);
+    }
+
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItem::class);
     }
 }

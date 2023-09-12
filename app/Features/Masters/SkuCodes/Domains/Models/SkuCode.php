@@ -2,6 +2,8 @@
 
 namespace App\Features\Masters\SkuCodes\Domains\Models;
 
+use App\Features\OrderManagement\Domains\Models\OrderItem;
+use App\Features\Process\PalletManagement\Domains\Models\PalletDetails;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use App\Features\Masters\SkuCodes\Domains\Query\SkuCodeScopes;
@@ -38,5 +40,15 @@ class SkuCode extends Model
         });
 
         return $skuCode;
+    }
+
+    public function palletDetails()
+    {
+        return $this->hasMany(PalletDetails::class);
+    }
+
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItem::class);
     }
 }

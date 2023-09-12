@@ -131,6 +131,12 @@
                                 <p>Order</p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="{{ route('sku-report.index') }}" class="nav-link @if($urlName[1] == 'sku-report') active @endif">
+                                <i class="fa fa-receipt nav-icon"></i>
+                                <p>Sku</p>
+                            </a>
+                        </li>
                     </ul>
                 </li>
             </ul>

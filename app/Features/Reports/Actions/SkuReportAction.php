@@ -28,15 +28,36 @@ class SkuReportAction
     public function getSkuReport(array $filterData)
     {
         if(!empty($filterData['sku_code_id'])) {
-            $skuCodes = SkuCode::has('palletDetails')->has('orderItems')->where('id', $filterData['sku_code_id'])->get();
+            $skuCodes = SkuCode::has('palletDetails')->has('orderItems')
+                ->whereHas('orderItems', function ($orderItemQry) {
+                    $orderItemQry->whereHas('order', function($order) {
+                        $order->where('state', '!=', Order::CANCELLED);
+                    });
+                })
+                ->where('id', $filterData['sku_code_id'])->get();
         } else {
-            $skuCodes = SkuCode::has('palletDetails')->has('orderItems')->get();
+            $skuCodes = SkuCode::has('palletDetails')->has('orderItems')
+                ->whereHas('orderItems', function ($orderItemQry) {
+                    $orderItemQry->whereHas('order', function($order) {
+                        $order->where('state', '!=', Order::CANCELLED);
+                    });
+                })->get();
         }
 
         if(!empty($filterData['variant_id'])) {
-            $variants = Variant::has('palletDetails')->has('orderItems')->where('id', $filterData['variant_id'])->get();
+            $variants = Variant::has('palletDetails')->has('orderItems')
+                ->whereHas('orderItems', function ($orderItemQry) {
+                    $orderItemQry->whereHas('order', function($order) {
+                        $order->where('state', '!=', Order::CANCELLED);
+                    });
+                })->where('id', $filterData['variant_id'])->get();
         } else {
-            $variants = Variant::has('palletDetails')->has('orderItems')->get();
+            $variants = Variant::has('palletDetails')->has('orderItems')
+                ->whereHas('orderItems', function ($orderItemQry) {
+                    $orderItemQry->whereHas('order', function($order) {
+                        $order->where('state', '!=', Order::CANCELLED);
+                    });
+                })->get();
         }
 
         $numberOfTotalRows = SkuCode::count() * Variant::count();
@@ -62,7 +83,10 @@ class SkuReportAction
                     });
                 })->sum('mapped_weight');
 
-                $totalRequiredWeight = OrderItem::skuCodeId($skuCode->id)->variantId($variant->id)->sum('required_weight');
+                $totalRequiredWeight = OrderItem::skuCodeId($skuCode->id)->variantId($variant->id)
+                    ->whereHas('order', function($orderQry) {
+                        $orderQry->where('state', '!=', Order::CANCELLED);
+                    })->sum('required_weight');
 
                 $data['sku_code'] = $skuCode->name;
                 $data['variant'] = $variant->name;

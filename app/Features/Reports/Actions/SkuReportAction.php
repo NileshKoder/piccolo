@@ -82,7 +82,7 @@ class SkuReportAction
                         $orderQry->where('state', '!=', Order::CANCELLED);
                     })->get();
 
-                $totalMappedWeight = $totalMappedWeightData->pluck('orderItemPalletDetails')->sum('mapped_weight');
+                $totalMappedWeight = $totalMappedWeightData->pluck('orderItemPalletDetails')->collapse()->sum('mapped_weight');
 
                 $totalRequiredWeight = OrderItem::skuCodeId($skuCode->id)->variantId($variant->id)
                     ->where('state', '!=', OrderItem::CANCELLED)
@@ -101,7 +101,6 @@ class SkuReportAction
                 } else {
                     $collection->push($data);
                 }
-
             }
         }
 

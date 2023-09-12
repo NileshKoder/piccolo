@@ -4,7 +4,7 @@ namespace App\Features\Process\ReachTruck\Actions;
 
 use App\User;
 use Carbon\Carbon;
-use SebastianBergmann\Diff\Line;
+use Exception;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -289,6 +289,14 @@ class ReachTruckAction
 
     public function processTransferPallet(array $reachTruckData)
     {
+        if($reachTruckData['to_locationable_type'] == Warehouse::class) {
+            $warehouse = Warehouse::find($reachTruckData['to_locationable_id']);
+            if(!empty($warehouse)) {
+                if(!$warehouse->checkIsEmpty()) {
+                    throw new Exception("This Warehouse Location Is Already Filled. Please try another location");
+                }
+            }
+        }
         return ReachTruck::persitProcessPalletTransfer($reachTruckData);
     }
 

@@ -54,6 +54,13 @@ class SkuReportAction
                     })
                     ->sum('weight');
 
+                $totalWeightNotInWarehouse = PalletDetails::skuCodeId($skuCode->id)
+                    ->variantId($variant->id)
+                    ->whereHas('pallet.masterPallet', function($qry) {
+                        $qry->where('last_locationable_type', '!=', Warehouse::class);
+                    })
+                    ->sum('weight');
+
                 $totalMappedWeight = OrderItemPalletDetails::whereHas('orderItem', function ($qry) use($skuCode, $variant) {
                     $qry->skuCodeId($skuCode->id)->variantId($variant->id)
                     ->whereHas('order', function($orderQry) {
@@ -63,9 +70,10 @@ class SkuReportAction
 
                 $data['sku_code'] = $skuCode->name;
                 $data['variant'] = $variant->name;
+                $data['total_weight_not_in_wh'] = $totalWeightNotInWarehouse;
                 $data['total_weight_in_wh'] = $totalWeightInWarehouse;
                 $data['total_mapped_weight'] = $totalMappedWeight;
-                $data['total_unmapped_weight'] = $totalWeightInWarehouse - $totalMappedWeight;
+                $data['total_unmapped_weight'] = ($totalWeightNotInWarehouse + $totalWeightInWarehouse) - $totalMappedWeight;
 
                 $collection->push($data);
             }

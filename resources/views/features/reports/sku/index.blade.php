@@ -80,6 +80,7 @@
                                 <tr>
                                     <th>Sku Code</th>
                                     <th>Variant Code</th>
+                                    <th>Total Weight(not in warehouse)</th>
                                     <th>Total Weight(in warehouse)</th>
                                     <th>Mapped Weight</th>
                                     <th>Unmapped Weight</th>

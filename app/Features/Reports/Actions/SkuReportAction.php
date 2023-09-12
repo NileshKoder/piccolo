@@ -96,7 +96,7 @@ class SkuReportAction
                 $data['total_mapped_weight'] = $totalMappedWeight;
                 $data['total_unmapped_weight'] = $totalRequiredWeight - $totalMappedWeight;
 
-                if($data['total_weight_in_wh'] == 0 && $data['total_mapped_weight'] == 0 && $data['total_unmapped_weight'] == 0) {
+                if($data['total_weight_in_wh'] != 0 && $data['total_mapped_weight'] != 0 && $data['total_unmapped_weight'] != 0) {
                     $collection->push($data);
                 }
 

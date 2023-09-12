@@ -61,7 +61,7 @@ class ReachTruckController extends Controller
             $requestData = $request->toFormData();
             $this->reachTruckAction->processTransferPallet($requestData);
         } catch (Exception $ex) {
-            return redirect()->back()->with('error', "Something Went Wrong!");
+            return redirect()->back()->with('error', $ex->getMessage());
         }
 
         return redirect()->route('reach-trucks.index')->with('success', "Pallet Transfered Successfully");

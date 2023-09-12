@@ -28,7 +28,7 @@ class SkuReportAction
     public function getSkuReport(array $filterData)
     {
         if(!empty($filterData['sku_code_id'])) {
-            $skuCodes = SkuCode::has('palletDetails')->has('orderItems')
+            $skuCodes = SkuCode::has('palletDetails')->orHas('orderItems')
                 ->whereHas('orderItems', function ($orderItemQry) {
                     $orderItemQry->whereHas('order', function($order) {
                         $order->where('state', '!=', Order::CANCELLED);
@@ -36,7 +36,7 @@ class SkuReportAction
                 })
                 ->where('id', $filterData['sku_code_id'])->get();
         } else {
-            $skuCodes = SkuCode::has('palletDetails')->has('orderItems')
+            $skuCodes = SkuCode::has('palletDetails')->orHas('orderItems')
                 ->whereHas('orderItems', function ($orderItemQry) {
                     $orderItemQry->whereHas('order', function($order) {
                         $order->where('state', '!=', Order::CANCELLED);
@@ -45,14 +45,14 @@ class SkuReportAction
         }
 
         if(!empty($filterData['variant_id'])) {
-            $variants = Variant::has('palletDetails')->has('orderItems')
+            $variants = Variant::has('palletDetails')->orHas('orderItems')
                 ->whereHas('orderItems', function ($orderItemQry) {
                     $orderItemQry->whereHas('order', function($order) {
                         $order->where('state', '!=', Order::CANCELLED);
                     })->where('state', '!=', OrderItem::CANCELLED);
                 })->where('id', $filterData['variant_id'])->get();
         } else {
-            $variants = Variant::has('palletDetails')->has('orderItems')
+            $variants = Variant::has('palletDetails')->orHas('orderItems')
                 ->whereHas('orderItems', function ($orderItemQry) {
                     $orderItemQry->whereHas('order', function($order) {
                         $order->where('state', '!=', Order::CANCELLED);
@@ -76,13 +76,13 @@ class SkuReportAction
                     })
                     ->sum('weight');
 
-                $totalMappedWeight = OrderItemPalletDetails::whereHas('orderItem', function ($qry) use($skuCode, $variant) {
-                    $qry->skuCodeId($skuCode->id)->variantId($variant->id)
-                        ->where('state', '!=', OrderItem::CANCELLED)
-                        ->whereHas('order', function($orderQry) {
-                            $orderQry->where('state', '!=', Order::CANCELLED);
-                        });
-                })->sum('mapped_weight');
+                $totalMappedWeightData = OrderItem::with('orderItemPalletDetails')->skuCodeId($skuCode->id)->variantId($variant->id)
+                    ->where('state', '!=', OrderItem::CANCELLED)
+                    ->whereHas('order', function($orderQry) {
+                        $orderQry->where('state', '!=', Order::CANCELLED);
+                    })->get();
+
+                $totalMappedWeight = $totalMappedWeightData->pluck('orderItemPalletDetails')->sum('mapped_weight');
 
                 $totalRequiredWeight = OrderItem::skuCodeId($skuCode->id)->variantId($variant->id)
                     ->where('state', '!=', OrderItem::CANCELLED)

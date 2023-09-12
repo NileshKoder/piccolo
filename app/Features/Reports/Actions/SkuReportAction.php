@@ -5,6 +5,7 @@ namespace App\Features\Reports\Actions;
 use App\Features\Masters\SkuCodes\Domains\Models\SkuCode;
 use App\Features\Masters\Variants\Domains\Models\Variant;
 use App\Features\Masters\Warehouses\Domains\Models\Warehouse;
+use App\Features\OrderManagement\Domains\Models\Order;
 use App\Features\OrderManagement\Domains\Models\OrderItemPalletDetails;
 use App\Features\Process\PalletManagement\Domains\Models\PalletDetails;
 use Carbon\Carbon;
@@ -54,7 +55,10 @@ class SkuReportAction
                     ->sum('weight');
 
                 $totalMappedWeight = OrderItemPalletDetails::whereHas('orderItem', function ($qry) use($skuCode, $variant) {
-                    $qry->skuCodeId($skuCode->id)->variantId($variant->id);
+                    $qry->skuCodeId($skuCode->id)->variantId($variant->id)
+                    ->whereHas('order', function($orderQry) {
+                        $orderQry->where('state', '!=', Order::CANCELLED);
+                    });
                 })->sum('mapped_weight');
 
                 $data['sku_code'] = $skuCode->name;

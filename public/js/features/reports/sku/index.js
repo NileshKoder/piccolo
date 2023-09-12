@@ -32,10 +32,6 @@ var initSkuReportDataTable = function(route) {
                 name: 'variant',
             },
             {
-                data: 'total_weight_not_in_wh',
-                name: 'total_weight_not_in_wh',
-            },
-            {
                 data: 'total_weight_in_wh',
                 name: 'total_weight_in_wh',
             },

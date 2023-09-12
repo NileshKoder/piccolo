@@ -6,6 +6,7 @@ use App\Features\Masters\SkuCodes\Domains\Models\SkuCode;
 use App\Features\Masters\Variants\Domains\Models\Variant;
 use App\Features\Masters\Warehouses\Domains\Models\Warehouse;
 use App\Features\OrderManagement\Domains\Models\Order;
+use App\Features\OrderManagement\Domains\Models\OrderItem;
 use App\Features\OrderManagement\Domains\Models\OrderItemPalletDetails;
 use App\Features\Process\PalletManagement\Domains\Models\PalletDetails;
 use Carbon\Carbon;
@@ -54,13 +55,6 @@ class SkuReportAction
                     })
                     ->sum('weight');
 
-                $totalWeightNotInWarehouse = PalletDetails::skuCodeId($skuCode->id)
-                    ->variantId($variant->id)
-                    ->whereHas('pallet.masterPallet', function($qry) {
-                        $qry->where('last_locationable_type', '!=', Warehouse::class);
-                    })
-                    ->sum('weight');
-
                 $totalMappedWeight = OrderItemPalletDetails::whereHas('orderItem', function ($qry) use($skuCode, $variant) {
                     $qry->skuCodeId($skuCode->id)->variantId($variant->id)
                     ->whereHas('order', function($orderQry) {
@@ -68,12 +62,13 @@ class SkuReportAction
                     });
                 })->sum('mapped_weight');
 
+                $totalRequiredWeight = OrderItem::skuCodeId($skuCode->id)->variantId($variant->id)->sum('required_weight');
+
                 $data['sku_code'] = $skuCode->name;
                 $data['variant'] = $variant->name;
-                $data['total_weight_not_in_wh'] = $totalWeightNotInWarehouse;
                 $data['total_weight_in_wh'] = $totalWeightInWarehouse;
                 $data['total_mapped_weight'] = $totalMappedWeight;
-                $data['total_unmapped_weight'] = ($totalWeightNotInWarehouse + $totalWeightInWarehouse) - $totalMappedWeight;
+                $data['total_unmapped_weight'] = $totalRequiredWeight - $totalMappedWeight;
 
                 $collection->push($data);
             }

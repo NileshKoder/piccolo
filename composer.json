@@ -16,6 +16,7 @@
         "laravel/framework": "^7.29",
         "laravel/tinker": "^2.5",
         "laravel/ui": "^2.4",
+        "maatwebsite/excel": "*",
         "yajra/laravel-datatables-oracle": "~9.0"
     },
     "require-dev": {

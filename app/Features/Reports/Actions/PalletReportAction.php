@@ -111,4 +111,133 @@ class PalletReportAction
             })
             ->make(true);
     }
+
+    public function getPalletSkuCollectionForExport(array $filerData): Collection
+    {
+        $palletDetails = PalletDetails::with(
+            'pallet.masterPallet.lastLocation',
+            'pallet.updater',
+            'skuCode',
+            'variant',
+            'pallet.reachTruck.fromLocationable',
+            'orderItemPallet.orderItem.order'
+        )
+            ->skuCodeId($filerData['sku_code_id'])
+            ->variantId($filerData['variant_id'])
+            ->masterPalletId($filerData['master_pallet_id'])
+            ->batchDate($filerData['batch_date'])
+            ->orderId($filerData['order_id'])
+            ->get();
+
+        $collection = collect();
+
+        foreach ($palletDetails as $palletDetail) {
+            $data = [];
+
+            $data['pallet'] = $palletDetail->pallet->masterPallet->name;
+            $data['sku_code'] = $palletDetail->skuCode->name;
+            $data['variant'] = $palletDetail->variant->name;
+            $data['weight'] = $palletDetail->weight;
+            $data['batch'] = $palletDetail->batch;
+            $data['last_pickup_location'] = $palletDetail->pallet->reachTruck->fromLocationable->name;
+            $data['current_location'] = $palletDetail->pallet->masterPallet->last_locationable->name;
+            $data['mapped_order'] = !empty($palletDetail->orderItemPallet) ? $palletDetail->orderItemPallet->orderItem->order->order_number : "";
+            $data['last_modified_by'] = $palletDetail->pallet->updater->name;
+            $data['last_modified_at'] =  Carbon::parse($palletDetail->pallet->updated_at)->format('d-m-Y h:i A') ;
+
+            $collection->push($data);
+        }
+
+        return $collection;
+    }
+
+    public function getPalletBoxCollectionForExport(array $filerData): Collection
+    {
+        $palletDetails = PalletBoxDetails::with([
+            'pallet'=>function($q) {
+                $q->with(['masterPallet.lastLocation', 'updater', 'reachTruck.fromLocationable', 'order']);
+            }
+        ])
+            ->masterPalletId($filerData['master_pallet_id'])
+            ->orderId($filerData['order_id'])
+            ->get();
+
+        $collection = collect();
+
+        foreach ($palletDetails as $palletDetail) {
+            $data = [];
+
+            $data['pallet'] = $palletDetail->pallet->masterPallet->name;
+            $data['box_name'] = $palletDetail->name;
+            $data['last_pickup_location'] = $palletDetail->pallet->reachTruck->fromLocationable->name;
+            $data['current_location'] = $palletDetail->pallet->masterPallet->last_locationable->name;
+            $data['mapped_order'] = !empty($palletDetail->orderItemPallet) ? $palletDetail->orderItemPallet->orderItem->order->order_number : "";
+            $data['last_modified_by'] = $palletDetail->pallet->updater->name;
+            $data['last_modified_at'] =  Carbon::parse($palletDetail->pallet->updated_at)->format('d-m-Y h:i A') ;
+
+            $collection->push($data);
+        }
+
+        return $collection;
+    }
+
+    public function getHeaderForSkuExport(): array
+    {
+        return [
+            'Pallet Code',
+            'Sku Code',
+            'Variant',
+            'Weight',
+            'Batch',
+            'Last PickUp Location',
+            'Current Location',
+            'Mapped Order',
+            'Last Modified By',
+            'Last Modified At',
+        ];
+    }
+
+    public function getHeaderForBoxExport(): array
+    {
+        return [
+            'Pallet Code',
+            'Box Name',
+            'Last PickUp Location',
+            'Current Location',
+            'Mapped Order',
+            'Last Modified By',
+            'Last Modified At',
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function getColumnSizesForExport(): array
+    {
+        return [
+            0 => 'auto',
+            1 => 'auto',
+            2 => 'auto',
+            3 => 'auto',
+            4 => 'auto',
+            5 => 'auto',
+            6 => 'auto',
+            7 => 'auto',
+            8 => 'auto',
+            9 => 'auto',
+            10 => 'auto',
+            11 => 'auto',
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function getRowStylesForExport(): array
+    {
+        return [
+            1 => ['font' => ['bold' => true]],
+        ];
+    }
 }

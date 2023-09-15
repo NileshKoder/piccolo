@@ -41,36 +41,37 @@
                                 </div>
                                 <div id="collapseOne" class="collapse" data-parent="#accordion">
                                     <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label>Master Pallets</label>
-                                                    <select name="master_pallet_id" id="master_pallet_id" class="form-control select2">
-                                                        <option value="">Select Master Pallet</option>
-                                                        @foreach ($data['masterPallets'] as $masterPallet)
-                                                            <option value="{{ $masterPallet->id }}" @if(!empty($pallet) && $pallet->master_pallet_id == $masterPallet->id) selected @endif>{{ $masterPallet->name }}</option>
-                                                        @endforeach
-                                                    </select>
+                                        <form id="palletFilter">
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label>Master Pallets</label>
+                                                        <select name="master_pallet_id" id="master_pallet_id" class="form-control select2">
+                                                            <option value="">Select Master Pallet</option>
+                                                            @foreach ($data['masterPallets'] as $masterPallet)
+                                                                <option value="{{ $masterPallet->id }}" @if(!empty($pallet) && $pallet->master_pallet_id == $masterPallet->id) selected @endif>{{ $masterPallet->name }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="email">Order</label>
+                                                        <select name="order_id" id="order_id" class="form-control select2">
+                                                            <option value="">Select Order</option>
+                                                            @foreach ($data['orders'] as $order)
+                                                                <option value="{{ $order->id }}">{{ $order->order_number }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="email">Order</label>
-                                                    <select id="order_id" class="form-control select2">
-                                                        <option value="">Select Order</option>
-                                                        @foreach ($data['orders'] as $order)
-                                                            <option value="{{ $order->id }}">{{ $order->order_number }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row mb-3">
-                                            <div class="col-md-3">
+                                            <div class="row mb-3">
                                                 <button type="button" class="btn btn-primary" id="filter">Search</button>
                                                 <button type="button" class="btn btn-default" id="clear">Clear</button>
+                                                <button type="button" class="btn btn-warning ml-2" id="getExcel" data-route="{{ route('box-pallet-report.getExcel') }}">Excel Export</button>
                                             </div>
-                                        </div>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
@@ -101,6 +102,12 @@
     <script>
         $(document).ready(function() {
             $('.select2').select2();
+            $(document).on('click', '#getExcel', function() {
+                var formData = $('#palletFilter').serialize();
+
+                window.location.href = $(this).attr('data-route') + "?" + formData;
+            });
+
         });
         initBoxPalletReportDataTable("{{ route('box-pallet-report.getBoxPalletReport') }}");
     </script>

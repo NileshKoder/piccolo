@@ -2,10 +2,13 @@
 
 namespace App\Features\Reports\Routes\Controllers;
 
+use App\Exports\BaseExport;
 use Exception;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Features\Reports\Actions\PalletReportAction;
+use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class PalletReportController extends Controller
 {
@@ -37,9 +40,14 @@ class PalletReportController extends Controller
 
         return $data;
     }
-    public function getExcel(Request $request)
+    public function getExcel(Request $request): BinaryFileResponse
     {
-        # code...
+        return Excel::download(new BaseExport(
+            $this->palletReportAction->getPalletSkuCollectionForExport($request->all()),
+            $this->palletReportAction->getHeaderForSkuExport(),
+            $this->palletReportAction->getColumnSizesForExport(),
+            $this->palletReportAction->getRowStylesForExport()
+        ), 'Pallet-Sku-Report-As-On-'. date('d-m-Y-h-i-s') .'.xlsx');
     }
 
     public function getBoxPalletReport(Request $request)
@@ -51,5 +59,15 @@ class PalletReportController extends Controller
         }
 
         return $data;
+    }
+
+    public function getExcelForBox(Request $request): BinaryFileResponse
+    {
+        return Excel::download(new BaseExport(
+            $this->palletReportAction->getPalletBoxCollectionForExport($request->all()),
+            $this->palletReportAction->getHeaderForBoxExport(),
+            $this->palletReportAction->getColumnSizesForExport(),
+            $this->palletReportAction->getRowStylesForExport()
+        ), 'Pallet-Box-Report-As-On-'. date('d-m-Y-h-i-s') .'.xlsx');
     }
 }

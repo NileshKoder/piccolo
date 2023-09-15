@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use Exception;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class SkuReportController extends Controller
 {
@@ -36,13 +37,13 @@ class SkuReportController extends Controller
         return $data;
     }
 
-    public function getExcel(Request $request)
+    public function getExcel(Request $request): BinaryFileResponse
     {
         return Excel::download(new BaseExport(
             $this->skuReportAction->getSkuCollectionForExport($request->all()),
             $this->skuReportAction->getHeaderForExport(),
             $this->skuReportAction->getColumnSizesForExport(),
-            $this->skuReportAction->getRowStylesForExport(),
+            $this->skuReportAction->getRowStylesForExport()
         ), 'Sku-Report-As-On-'. date('d-m-Y-h-i-s') .'.xlsx');
     }
 }

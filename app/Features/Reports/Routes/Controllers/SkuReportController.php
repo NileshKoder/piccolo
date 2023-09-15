@@ -2,11 +2,12 @@
 
 namespace App\Features\Reports\Routes\Controllers;
 
-use App\Features\Reports\Actions\OrderReportAction;
+use App\Exports\BaseExport;
 use App\Features\Reports\Actions\SkuReportAction;
 use App\Http\Controllers\Controller;
 use Exception;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class SkuReportController extends Controller
 {
@@ -33,5 +34,15 @@ class SkuReportController extends Controller
         }
 
         return $data;
+    }
+
+    public function getExcel(Request $request)
+    {
+        return Excel::download(new BaseExport(
+            $this->skuReportAction->getSkuCollectionForExport($request->all()),
+            $this->skuReportAction->getHeaderForExport(),
+            $this->skuReportAction->getColumnSizesForExport(),
+            $this->skuReportAction->getRowStylesForExport(),
+        ), 'Sku-Report-As-On-'. date('d-m-Y-h-i-s') .'.xlsx');
     }
 }

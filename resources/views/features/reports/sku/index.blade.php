@@ -20,13 +20,9 @@
                             <i class="fas fa-users mr-1"></i>
                             Sku Report
                         </h3>
-                        <!-- <div class="card-tools">
-                        <a href="#" data-href="{{ route('sku-report.getExcel') }}">
-                            <button type="button" class="btn btn-primary float-right">
-                                <i class="fas fa-excel"></i> Excel Export
-                            </button>
-                        </a>
-                    </div> -->
+                        <div class="card-tools">
+
+                        </div>
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body">
@@ -41,36 +37,39 @@
                                 </div>
                                 <div id="collapseOne" class="collapse show" data-parent="#accordion">
                                     <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="email">Sku Codes</label>
-                                                    <select id="sku_code_id" class="form-control select2">
-                                                        <option value="">Select Sku Code</option>
-                                                        @foreach ($data['skuCodes'] as $skuCode)
-                                                            <option value="{{ $skuCode->id }}">{{ $skuCode->name }}</option>
-                                                        @endforeach
-                                                    </select>
+                                        <form id="skuFilter">
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="email">Sku Codes</label>
+                                                        <select id="sku_code_id" name="sku_code_id" class="form-control select2">
+                                                            <option value="">Select Sku Code</option>
+                                                            @foreach ($data['skuCodes'] as $skuCode)
+                                                                <option value="{{ $skuCode->id }}">{{ $skuCode->name }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="email">Variant</label>
+                                                        <select id="variant_id" name="variant_id" class="form-control select2">
+                                                            <option value="">Select Variant</option>
+                                                            @foreach ($data['variants'] as $variant)
+                                                                <option value="{{ $variant->id }}">{{ $variant->name }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="email">Variant</label>
-                                                    <select id="variant_id" class="form-control select2">
-                                                        <option value="">Select Variant</option>
-                                                        @foreach ($data['variants'] as $variant)
-                                                            <option value="{{ $variant->id }}">{{ $variant->name }}</option>
-                                                        @endforeach
-                                                    </select>
+                                            <div class="row mb-3">
+                                                <div class="col-md-3">
+                                                    <button type="button" class="btn btn-primary" id="filter">Search</button>
+                                                    <button type="button" class="btn btn-default" id="clear">Clear</button>
+                                                    <button type="button" class="btn btn-warning" id="getExcel" data-route="{{ route('sku-report.getExcel') }}">Excel Export</button>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="row mb-3">
-                                            <div class="col-md-3">
-                                                <button type="button" class="btn btn-primary" id="filter">Search</button>
-                                                <button type="button" class="btn btn-default" id="clear">Clear</button>
-                                            </div>
-                                        </div>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
@@ -85,7 +84,7 @@
                                     <th>Total Weight(in Assembly Line)</th>
                                     <th>Total Weight(in Pallet Management)</th>
                                     <th>Mapped Weight</th>
-                                    <th>Unmapped Weight</th>
+                                    <th>Required Weight</th>
                                 </tr>
                             </thead>
                         </table>
@@ -109,6 +108,16 @@
                 return false;
             }
             initSkuReportDataTable("{{ route('sku-report.getSkuReport') }}")
+        });
+
+        $(document).on('click', '#getExcel', function() {
+            if($('#sku_code_id').val() === '' || $('#sku_code_id').val() === undefined) {
+                toastr.warning("Please select SKU Code");
+                return false;
+            }
+            var formData = $('#skuFilter').serialize();
+
+            window.location.href = $(this).attr('data-route') + "?" + formData;
         });
     </script>
 @endsection

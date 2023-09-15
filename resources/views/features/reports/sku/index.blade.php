@@ -39,7 +39,7 @@
                                         </a>
                                     </h4>
                                 </div>
-                                <div id="collapseOne" class="collapse" data-parent="#accordion">
+                                <div id="collapseOne" class="collapse show" data-parent="#accordion">
                                     <div class="card-body">
                                         <div class="row">
                                             <div class="col-md-4">
@@ -80,7 +80,10 @@
                                 <tr>
                                     <th>Sku Code</th>
                                     <th>Variant Code</th>
+                                    <th>Total Weight</th>
                                     <th>Total Weight(in warehouse)</th>
+                                    <th>Total Weight(in Assembly Line)</th>
+                                    <th>Total Weight(in Pallet Management)</th>
                                     <th>Mapped Weight</th>
                                     <th>Unmapped Weight</th>
                                 </tr>
@@ -100,6 +103,12 @@
         $(document).ready(function() {
             $('.select2').select2();
         });
-        initSkuReportDataTable("{{ route('sku-report.getSkuReport') }}");
+        $('#filter').on('click', function () {
+            if($('#sku_code_id').val() === '' || $('#sku_code_id').val() === undefined) {
+                toastr.warning("Please select SKU Code");
+                return false;
+            }
+            initSkuReportDataTable("{{ route('sku-report.getSkuReport') }}")
+        });
     </script>
 @endsection

@@ -32,8 +32,20 @@ var initSkuReportDataTable = function(route) {
                 name: 'variant',
             },
             {
+                data: 'total_weight',
+                name: 'total_weight',
+            },
+            {
                 data: 'total_weight_in_wh',
                 name: 'total_weight_in_wh',
+            },
+            {
+                data: 'total_weight_in_line',
+                name: 'total_weight_in_line',
+            },
+            {
+                data: 'total_weight_in_location',
+                name: 'total_weight_in_location',
             },
             {
                 data: 'total_mapped_weight',
@@ -52,6 +64,9 @@ var initSkuReportDataTable = function(route) {
     });
 
     $('#filter').on('click', function () {
+        if($('#sku_code_id').val() === '' || $('#sku_code_id').val() === undefined) {
+            toastr.warning("Please select SKU Code")
+        }
         table.draw();
     });
 

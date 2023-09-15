@@ -2,6 +2,7 @@
 
 namespace App\Features\Reports\Actions;
 
+use App\Features\Masters\Locations\Domains\Models\Location;
 use App\Features\Masters\SkuCodes\Domains\Models\SkuCode;
 use App\Features\Masters\Variants\Domains\Models\Variant;
 use App\Features\Masters\Warehouses\Domains\Models\Warehouse;
@@ -27,23 +28,7 @@ class SkuReportAction
 
     public function getSkuReport(array $filterData)
     {
-        if(!empty($filterData['sku_code_id'])) {
-            $skuCodes = SkuCode::has('palletDetails')->orHas('orderItems')
-                ->whereHas('orderItems', function ($orderItemQry) {
-                    $orderItemQry->whereHas('order', function($order) {
-                        $order->where('state', '!=', Order::CANCELLED);
-                    })->where('state', '!=', OrderItem::CANCELLED);
-                })
-                ->where('id', $filterData['sku_code_id'])->get();
-        } else {
-            $skuCodes = SkuCode::has('palletDetails')->orHas('orderItems')
-                ->whereHas('orderItems', function ($orderItemQry) {
-                    $orderItemQry->whereHas('order', function($order) {
-                        $order->where('state', '!=', Order::CANCELLED);
-                    })->where('state', '!=', OrderItem::CANCELLED);
-                })->get();
-        }
-
+        $skuCode = SkuCode::find( $filterData['sku_code_id']);
         if(!empty($filterData['variant_id'])) {
             $variants = Variant::has('palletDetails')->orHas('orderItems')
                 ->whereHas('orderItems', function ($orderItemQry) {
@@ -60,49 +45,79 @@ class SkuReportAction
                 })->get();
         }
 
-        $numberOfTotalRows = SkuCode::count() * Variant::count();
-        $numberOfFilteredRows = $skuCodes->count() * $variants->count();
-
+        $numberOfTotalRows = $numberOfFilteredRows = $variants->count();
         $collection = collect();
 
-        foreach ($skuCodes as $skuCode) {
-            foreach ($variants as $variant) {
-                $data = [];
+        foreach ($variants as $variant) {
+            $data = [];
 
-                $totalWeightInWarehouse = PalletDetails::skuCodeId($skuCode->id)
-                    ->variantId($variant->id)
-                    ->whereHas('pallet.masterPallet', function($qry) {
-                        $qry->where('last_locationable_type', Warehouse::class);
-                    })
-                    ->sum('weight');
+            // total weight
+            $totalWeight = PalletDetails::doesntHave('orderItemPallet')->skuCodeId($skuCode->id)->variantId($variant->id)->sum('weight');
 
-                $totalMappedWeightData = OrderItem::with('orderItemPalletDetails')->skuCodeId($skuCode->id)->variantId($variant->id)
-                    ->where('state', '!=', OrderItem::CANCELLED)
-                    ->whereHas('order', function($orderQry) {
-                        $orderQry->where('state', '!=', Order::CANCELLED);
-                    })->get();
+            // total weight in warehouse which are not mapped
+            $totalWeightInWarehouse = PalletDetails::doesntHave('orderItemPallet')
+                ->skuCodeId($skuCode->id)
+                ->variantId($variant->id)
+                ->whereHas('pallet.masterPallet', function($qry) {
+                    $qry->where('last_locationable_type', Warehouse::class);
+                })
+                ->sum('weight');
 
-                $totalMappedWeight = $totalMappedWeightData->pluck('orderItemPalletDetails')->collapse()->sum('mapped_weight');
+            // total weight in line which are not mapped
+            $totalWeightInLine = PalletDetails::doesntHave('orderItemPallet')
+                ->skuCodeId($skuCode->id)
+                ->variantId($variant->id)
+                ->whereHas('pallet.masterPallet', function($qry) {
+                    $qry->where('last_locationable_type', Location::class)
+                    ->where('last_locationable_id', Location::LOADING_LOCATION_ID);
+                })
+                ->sum('weight');
 
-                $totalRequiredWeight = OrderItem::skuCodeId($skuCode->id)->variantId($variant->id)
-                    ->where('state', '!=', OrderItem::CANCELLED)
-                    ->whereHas('order', function($orderQry) {
-                        $orderQry->where('state', '!=', Order::CANCELLED);
-                    })->sum('required_weight');
+            // total weight in locations which are not mapped
+            $totalWeightInLocations = PalletDetails::doesntHave('orderItemPallet')
+                ->skuCodeId($skuCode->id)
+                ->variantId($variant->id)
+                ->whereHas('pallet.masterPallet', function($qry) {
+                    $qry->where('last_locationable_type', Location::class)
+                    ->where('last_locationable_id', '!=', Location::LOADING_LOCATION_ID);
+                })
+                ->sum('weight');
 
-                $data['sku_code'] = $skuCode->name;
-                $data['variant'] = $variant->name;
-                $data['total_weight_in_wh'] = $totalWeightInWarehouse;
-                $data['total_mapped_weight'] = $totalMappedWeight;
-                $data['total_unmapped_weight'] = $totalRequiredWeight - $totalMappedWeight;
+            // total mapped weight
+            $totalMappedWeightData = OrderItem::with('orderItemPalletDetails')->skuCodeId($skuCode->id)->variantId($variant->id)
+                ->whereIn('state', [OrderItem::TRANSFERRED, OrderItem::CANCELLED])
+                ->whereHas('order', function($orderQry) {
+                    $orderQry->whereIn('state', [Order::COMPLETED, Order::CANCELLED]);
+                })->get();
 
-                if ($data['total_weight_in_wh'] == 0 && $data['total_mapped_weight'] == 0 && $data['total_unmapped_weight'] == 0) {
-                    //
-                } else {
-                    $collection->push($data);
-                }
+            $totalMappedWeight = $totalMappedWeightData->pluck('orderItemPalletDetails')->collapse()->sum('mapped_weight');
+
+            $totalRequiredWeight = OrderItem::skuCodeId($skuCode->id)->variantId($variant->id)
+                ->whereIn('state', [OrderItem::TRANSFERRED, OrderItem::CANCELLED])
+                ->whereHas('order', function($orderQry) {
+                    $orderQry->whereIn('state', [Order::COMPLETED, Order::CANCELLED]);
+                })->sum('required_weight');
+
+            $data['sku_code'] = $skuCode->name;
+            $data['variant'] = $variant->name;
+            $data['total_weight'] = $totalWeight;
+            $data['total_weight_in_wh'] = $totalWeightInWarehouse;
+            $data['total_weight_in_line'] = $totalWeightInLine;
+            $data['total_weight_in_locations'] = $totalWeightInLocations;
+            $data['total_mapped_weight'] = $totalMappedWeight;
+            $data['total_unmapped_weight'] = $totalRequiredWeight - $totalMappedWeight;
+
+            if (
+                $data['total_weight'] == 0 && $data['total_weight_in_wh'] == 0 &&
+                $data['total_weight_in_line'] == 0 && $data['total_weight_in_locations'] == 0 &&
+                $data['total_mapped_weight'] == 0 && $data['total_unmapped_weight'] == 0
+            ) {
+                //
+            } else {
+                $collection->push($data);
             }
         }
+
 
         return $this->yajraData($collection, $numberOfFilteredRows, $numberOfTotalRows);
     }
@@ -116,8 +131,17 @@ class SkuReportAction
             ->addColumn('variant', function ($skuCode) {
                 return $skuCode['variant'];
             })
+            ->addColumn('total_weight', function ($skuCode) {
+                return $skuCode['total_weight'];
+            })
             ->addColumn('total_weight_in_wh', function ($skuCode) {
                 return $skuCode['total_weight_in_wh'];
+            })
+            ->addColumn('total_weight_in_line', function ($skuCode) {
+                return $skuCode['total_weight_in_line'];
+            })
+            ->addColumn('total_weight_in_location', function ($skuCode) {
+                return $skuCode['total_weight_in_locations'];
             })
             ->addColumn('total_mapped_weight', function ($skuCode) {
                 return $skuCode['total_mapped_weight'];

@@ -24,6 +24,9 @@ class SkuReportController extends Controller
     public function getSkuReport(Request $request)
     {
         try {
+            if(empty($request->sku_code_id)) {
+                throw new Exception("Sku code is required");
+            }
             $data = $this->skuReportAction->getSkuReport($request->all());
         } catch (Exception $ex) {
             return response()->json(['message' => $ex->getMessage()], 500);

@@ -25,8 +25,8 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('inspire')->hourly();
-        $schedule->command('command:orderPalletMappingCommand')->everyTenMinutes();
-        $schedule->command('command:update-reach-truck-for-wh-loading')->everyTenMinutes();
+        $schedule->command('command:orderPalletMappingCommand')->everyTwoMinutes();
+        $schedule->command('command:update-reach-truck-for-wh-loading')->everyTwoMinutes();
     }
 
     /**

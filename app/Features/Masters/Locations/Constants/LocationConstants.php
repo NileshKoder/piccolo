@@ -9,6 +9,7 @@ interface LocationConstants
     public const RECYCLE = "RECYCLE";
     public const LINES = "LINES";
     public const LOADING = "LOADING";
+    public const WAREHOUSE = "WAREHOUSE";
     public const FG_PALLET = "FG_PALLET";
     public const LINE_TO_LOADING = "LINE_TO_LOADING";
     public const WH_TO_LINE = "WH_TO_LINE";

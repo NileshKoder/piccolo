@@ -24,7 +24,7 @@ class PalletAction
         $data['skuCodes'] = SkuCode::select('id', 'name')->get();
         $data['variants'] = Variant::select('id', 'name')->get();
         $data['locations'] = Location::select('id', 'name', 'abbr')
-            ->typeIn([Location::GLASS, Location::CERAMIC, Location::RECYCLE])
+            ->typeIn([Location::GLASS, Location::CERAMIC, Location::RECYCLE, Location::WAREHOUSE])
             ->orderBy('id', 'ASC')->get();
         $data['maxWeightForPallet'] = Pallet::MAX_WEIGHT_FOR_PALLET;
         $data['maxWeightForContainer'] = Pallet::MAX_WEIGHT_FOR_CONTAINER;

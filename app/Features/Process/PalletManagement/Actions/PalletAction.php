@@ -125,7 +125,7 @@ class PalletAction
             ->skipPaging()
             ->addColumn('action', function ($pallet) {
                 $action = "";
-                if ($pallet->masterPallet->last_locationable_type != Warehouse::class) {
+//                if ($pallet->masterPallet->last_locationable_type != Warehouse::class) {
                     $routeName = '#';
                     if($pallet->palletDetails->count() > 0)
                     {
@@ -139,7 +139,7 @@ class PalletAction
                         </a>";
 
 
-                } else {
+//                } else {
                     if($pallet->isPalletIsWithBoxDetailsAndPresentAtWarehouse()) {
                         $loadingTransferDate = !empty($pallet->loading_transfer_date) ? date('d-m-Y', strtotime($pallet->loading_transfer_date)) : "Not Set";
                         $action .= "<a href='javascript:void(0);' class='setDateForLoading' title='Set Date For Loading'
@@ -149,7 +149,7 @@ class PalletAction
                             <i class='fas fa-calendar-times text-danger'></i>
                         </a>";
                     }
-                }
+//                }
                 return $action;
             })
             ->editColumn('updated_at', function ($pallet) {

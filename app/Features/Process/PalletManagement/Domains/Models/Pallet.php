@@ -93,7 +93,8 @@ class Pallet extends Model implements PalletContants
 
     public static function updateMasterPalletLastLocation(Pallet $pallet, int $locationId)
     {
-        return $pallet->masterPallet->updateLastLocationable(Location::class, $locationId);
+        $lastLocationType = ($pallet->masterPallet->last_locationable_type == Warehouse::class) ? Warehouse::class : Location::class;
+        return $pallet->masterPallet->updateLastLocationable($lastLocationType, $locationId);
     }
 
     public static function updateOrCreatePalletDetails(Pallet $pallet, ?array $palletDetails)

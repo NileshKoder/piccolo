@@ -214,12 +214,14 @@ class Pallet extends Model implements PalletContants
 
     public function isPalletIsWithBoxDetailsAndPresentAtWarehouse(): bool
     {
-        if($this->reachTruck->from_locationable_type == Location::class) {
-            return $this->reachTruck->from_locationable_type == Location::class &&
-                $this->reachTruck->to_locationable_type == Warehouse::class &&
-                $this->reachTruck->is_transfered == true &&
-                $this->palletBoxDetails->count() > 0 &&
-                $this->palletDetails->count() == 0;
+        if($this->reachTruck) {
+            if($this->reachTruck->from_locationable_type == Location::class) {
+                return $this->reachTruck->from_locationable_type == Location::class &&
+                    $this->reachTruck->to_locationable_type == Warehouse::class &&
+                    $this->reachTruck->is_transfered == true &&
+                    $this->palletBoxDetails->count() > 0 &&
+                    $this->palletDetails->count() == 0;
+            }
         }
         return false;
     }

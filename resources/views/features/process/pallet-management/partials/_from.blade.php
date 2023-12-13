@@ -2,12 +2,26 @@
     <div class="col-md-4">
         <div class="form-group">
             <label>Location <span class="text-danger">*</span></label>
+            @if(empty($pallet))
             <select name="location_id" id="location_id" class="form-control select2">
                 <option value="">Select Locations</option>
                 @foreach ($data['locations'] as $location)
-                <option value="{{ $location->id }}" data-abbr="{{ $location->abbr }}" @if(!empty($pallet) && $pallet->masterPallet->last_locationable_type == "App\Features\Masters\Locations\Domains\Models\Location" && $pallet->masterPallet->last_locationable_id == $location->id) selected @endif>{{ $location->name }}</option>
+                <option value="{{ $location->id }}" data-abbr="{{ $location->abbr }}">{{ $location->name }}</option>
                 @endforeach
             </select>
+            @elseif(!empty($pallet))
+                @if($pallet->masterPallet->last_locationable_type == "App\Features\Masters\Locations\Domains\Models\Location")
+                <select name="location_id" id="location_id" class="form-control select2">
+                    <option value="">Select Locations</option>
+                    @foreach ($data['locations'] as $location)
+                        <option value="{{ $location->id }}" data-abbr="{{ $location->abbr }}" @if(!empty($pallet) && $pallet->masterPallet->last_locationable_id == $location->id) selected @endif>{{ $location->name }}</option>
+                    @endforeach
+                </select>
+                @elseif($pallet->masterPallet->last_locationable_type == "App\Features\Masters\Warehouses\Domains\Models\Warehouse")
+                    <input type="hidden" name="location_id" value="{{ $pallet->masterPallet->last_locationable_id }}">
+                    <input type="text" value="{{ $pallet->masterPallet->lastLocation->name }}" readonly>
+                @endif
+            @endif
         </div>
     </div>
     <div class="col-md-4">

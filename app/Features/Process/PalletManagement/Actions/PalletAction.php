@@ -132,6 +132,8 @@ class PalletAction
                         $routeName = route('pallets.edit', $pallet->id);
                     } elseif ($pallet->palletBoxDetails->count() > 0) {
                         $routeName = route('pallets.edit.box-details', $pallet->id);
+                    } else {
+                        $routeName = route('pallets.edit', $pallet->id);
                     }
 
                     $action .= "<a href='" . $routeName . "' class='editPallet' title='Edit Pallet'>

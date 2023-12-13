@@ -230,7 +230,7 @@ class Pallet extends Model implements PalletContants
     public static function getCreateValidationRules()
     {
         return [
-            "location_id" => 'required|exists:locations,id',
+            "location_id" => 'required',
             "master_pallet_id" => 'required|exists:master_pallets,id',
             "pallet_details.*.sku_code_id" => 'required|exists:sku_codes,id',
             "pallet_details.*.variant_id" => 'required|exists:variants,id',

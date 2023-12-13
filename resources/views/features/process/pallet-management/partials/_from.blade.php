@@ -18,7 +18,7 @@
                     @endforeach
                 </select>
                 @elseif($pallet->masterPallet->last_locationable_type == "App\Features\Masters\Warehouses\Domains\Models\Warehouse")
-                    <input type="hidden" name="location_id" value="{{ $pallet->masterPallet->last_locationable_id }}">
+                    <input type="hidden" name="location_id" id="location_id" value="{{ $pallet->masterPallet->last_locationable_id }}">
                     <input type="text" value="{{ $pallet->masterPallet->lastLocation->name }}" class="form-control" readonly>
                 @endif
             @endif

@@ -39,7 +39,9 @@
                     </div>
                     <div class="card-footer clearfix">
                         <button type="sumbit" class="btn btn-primary"><i class="fas fa-disk"></i> Submit</button>
+                        @if($pallet->masterPallet->last_locationable_type != "App\Features\Masters\Warehouses\Domains\Models\Warehouse")
                         <button type="sumbit" name="request_for_warehouse" value="true" class="btn btn-warning"><i class="fas fa-disk"></i> Request for Warehouse</button>
+                        @endif
                     </div>
                 </form>
             </div>

@@ -25,7 +25,7 @@
                         All Pallets
                     </h3>
                 </div>
-                <form action="{{ route('pallets.update', $pallet->id) }}" method="post" id="createFillPallets">
+                <form action="{{ route('pallets.update', $pallet->id) }}" method="post" id="createFillPallets" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
                     <div class="card-body">

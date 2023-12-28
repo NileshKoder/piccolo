@@ -125,22 +125,28 @@ $(document).ready(function() {
 
     $(document).on('click', '.deleteSku', function() {
         swal({
-                title: "Are you sure?",
-                text: "You won't revert this record?",
-                icon: "warning",
-                buttons: true,
-                dangerMode: true,
-            })
-            .then((changeStatus) => {
-                if (changeStatus) {
-                    $(this).parent().parent().remove();
-                    calculateTotalWeight();
-                } else {
-                    toastr.warning('Sku code is safe');
-                }
+            title: "Are you sure?",
+            text: "You won't revert this record?",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+        .then((changeStatus) => {
+            if (changeStatus) {
+                $(this).parent().parent().remove();
+                calculateTotalWeight();
+            } else {
+                toastr.warning('Sku code is safe');
+            }
 
-                changeStatusOfIsRequestWarehouse();
-            });
+            changeStatusOfIsRequestWarehouse();
+        });
+    })
+
+    $(document).on('change keyup keydown blur', '.weight', function() {
+        calculateTotalWeight();
+        updateMaxWight();
+        changeStatusOfIsRequestWarehouse();
     })
 });
 

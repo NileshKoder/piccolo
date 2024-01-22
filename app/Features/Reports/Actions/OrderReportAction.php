@@ -53,6 +53,7 @@ class OrderReportAction
     private function yajraData(Collection $orderItems, int $numberOfFilteredRows, int $numberOfTotalRows)
     {
         return DataTables::of($orderItems)
+            ->skipPaging()
             ->editColumn('order.updated_at', function ($orderItem) {
                 return Carbon::parse($orderItem->updated_at)->format('d-m-Y h:i A');
             })

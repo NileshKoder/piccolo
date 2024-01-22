@@ -64,6 +64,7 @@ class PalletReportAction
     private function yajraData(Collection $palletDetails, int $numberOfFilteredRows, int $numberOfTotalRows)
     {
         return DataTables::of($palletDetails)
+            ->skipPaging()
             ->editColumn('updated_at', function ($pallet) {
                 return Carbon::parse($pallet->updated_at)->format('d-m-Y h:i A');
             })
@@ -101,6 +102,7 @@ class PalletReportAction
     private function yajraDataForBoxPallet(Collection $palletDetails, int $numberOfFilteredRows, int $numberOfTotalRows)
     {
         return DataTables::of($palletDetails)
+            ->skipPaging()
             ->editColumn('updated_at', function ($pallet) {
                 return Carbon::parse($pallet->updated_at)->format('d-m-Y h:i A');
             })

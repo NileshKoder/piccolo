@@ -128,6 +128,7 @@ class SkuReportAction
     private function yajraData(Collection $skuCodes, int $numberOfFilteredRows, int $numberOfTotalRows)
     {
         return DataTables::of($skuCodes)
+            ->skipPaging()
             ->addColumn('sku_code', function ($skuCode) {
                 return $skuCode['sku_code'];
             })

@@ -54,5 +54,14 @@
 <script src="{{asset('js/features/process/pallet-management/form.js')}}"></script>
 <script src="{{asset('js/sweetalert.min.js')}}"></script>
 <script>
+    $('.dateinputpicker').on('change', function () {
+        let date = $(this).find("input").val();
+        let warehouse = $(this).parent().find('.batch_prefix').text();
+
+        date = date.replace("-", '');
+        date = date.replace("-", '');
+
+        $(this).parent().parent().parent().find('.batchName').val(warehouse+date);
+    })
 </script>
 @endsection

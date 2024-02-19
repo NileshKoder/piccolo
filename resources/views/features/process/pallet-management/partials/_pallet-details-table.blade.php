@@ -25,9 +25,30 @@
                         <input type="text" class="form-control" value="{{ $palletDetail->variant->name }}" disabled>
                     </td>
                     <td>
-                        <input type="hidden" name="pallet_details[{{ $key }}][batch]" value="{{ $palletDetail->batch }}">
-                        <input type="hidden" name="pallet_details[{{ $key }}][batch_date]" value="{{ $palletDetail->batch_date }}">
-                        <input type="text" class="form-control" value="{{ $palletDetail->batch }}" disabled>
+                        @php
+                            if (preg_match('/^([A-Za-z]+)([0-9]+)$/', $palletDetail->batch, $matches)) {
+                                $alphabets = $matches[1];
+                                $numbers = $matches[2];
+                            } else {
+                                $alphabets = "";
+                                $numbers = date('dmY',strtotime($palletDetail->batch_date));
+                            }
+                        @endphp
+                        <input type="hidden" class="batchName" name="pallet_details[{{ $key }}][batch]" value="{{ $palletDetail->batch }}">
+                        <input type="hidden"  value="{{ $palletDetail->batch_date }}">
+{{--                        <input type="text" class="form-control" value="{{ $palletDetail->batch }}" disabled>--}}
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text batch_prefix" id="batch_prefix_{{$key}}">{{ $alphabets }}</span>
+                                <div class="input-group dateinputpicker" id="reservationdate{{$key}}" data-target-input="nearest">
+                                    <input type="text" name="pallet_details[{{ $key }}][batch_date]"
+                                           class="form-control datetimepicker-input datechange" required
+                                           data-target="#reservationdate{{$key}}"placeholder="dd-mm-yyyy"
+                                           value="{{ date('d-m-Y',strtotime($palletDetail->batch_date)) }}"
+                                           id="batch_date_{{$key}}">
+                                </div>
+                            </div>
+                        </div>
                     </td>
                     <td>
                         @if(!empty($palletDetail->orderItemPallet))

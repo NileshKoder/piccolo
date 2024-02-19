@@ -1,7 +1,7 @@
 $(document).ready(function() {
     $('.select2').select2();
 
-    $('#reservationdate').datetimepicker({
+    $('.dateinputpicker').datetimepicker({
         format: 'DD-MM-YYYY'
     });
 

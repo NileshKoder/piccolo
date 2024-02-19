@@ -70,7 +70,7 @@
             <div class="input-group">
                 <div class="input-group-prepend">
                     <span class="input-group-text" id="batch_prefix">#</span>
-                    <div class="input-group date" id="reservationdate" data-target-input="nearest">
+                    <div class="input-group dateinputpicker" id="reservationdate" data-target-input="nearest">
                         <input type="text" class="form-control datetimepicker-input" data-target="#reservationdate" value="{{ date('dmY') }}" id="batch_date">
                         <div class="input-group-append" data-target="#reservationdate" data-toggle="datetimepicker">
                             <div class="input-group-text"><i class="fa fa-calendar"></i></div>

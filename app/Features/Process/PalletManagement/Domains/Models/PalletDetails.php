@@ -10,6 +10,7 @@ use App\Features\Masters\Variants\Domains\Models\Variant;
 use App\Features\OrderManagement\Domains\Models\OrderItemPallet;
 use App\Features\Process\PalletManagement\Domains\Models\Pallet;
 use App\Features\Process\PalletManagement\Domains\Query\PalletDetailsScopes;
+use function strtotime;
 
 class PalletDetails extends Model
 {
@@ -19,6 +20,10 @@ class PalletDetails extends Model
     public static function persistUpdateOrCreatePalletDetails(Pallet $pallet, array $palletDetails)
     {
         $palletDetails['batch_date'] = Carbon::parse($palletDetails['batch_date'])->format('Y-m-d');
+        if(!empty($palletDetails['batch_prefix'])) {
+            $palletDetails['batch'] = $palletDetails['batch_prefix']. date('dmY', strtotime($palletDetails['batch_date']));
+        }
+
         return $pallet->palletDetails()->updateOrcreate(
             [
                 'id' => $palletDetails['id']

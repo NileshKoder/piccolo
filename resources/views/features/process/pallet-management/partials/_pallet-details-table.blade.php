@@ -40,12 +40,16 @@
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text batch_prefix" id="batch_prefix_{{$key}}">{{ $alphabets }}</span>
+                                <input type="hidden" name="pallet_details[{{ $key }}][batch_prefix]" value="{{ $alphabets }}">
                                 <div class="input-group dateinputpicker" id="reservationdate{{$key}}" data-target-input="nearest">
                                     <input type="text" name="pallet_details[{{ $key }}][batch_date]"
                                            class="form-control datetimepicker-input datechange" required
                                            data-target="#reservationdate{{$key}}"placeholder="dd-mm-yyyy"
                                            value="{{ date('d-m-Y',strtotime($palletDetail->batch_date)) }}"
                                            id="batch_date_{{$key}}">
+                                    <div class="input-group-append" data-target="#reservationdate{{$key}}" data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

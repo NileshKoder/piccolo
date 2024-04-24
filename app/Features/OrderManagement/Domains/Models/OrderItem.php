@@ -2,19 +2,21 @@
 
 namespace App\Features\OrderManagement\Domains\Models;
 
-use App\Features\OrderManagement\Observers\OrderItemObserver;
 use Illuminate\Database\Eloquent\Model;
+use OwenIt\Auditing\Contracts\Auditable;
 use App\Features\OrderManagement\Domains\Models\Order;
 use App\Features\Masters\SkuCodes\Domains\Models\SkuCode;
 use App\Features\Masters\Variants\Domains\Models\Variant;
 use App\Features\Masters\Locations\Domains\Models\Location;
+use App\Features\OrderManagement\Observers\OrderItemObserver;
 use App\Features\OrderManagement\Constants\OrderItemConstants;
 use App\Features\OrderManagement\Domains\Query\OrderItemScopes;
 use App\Features\OrderManagement\Domains\Models\OrderItemPallet;
 
-class OrderItem extends Model implements OrderItemConstants
+class OrderItem extends Model implements OrderItemConstants, Auditable
 {
     use OrderItemScopes;
+    use \OwenIt\Auditing\Auditable;
 
     protected $fillable = ['order_id', 'sku_code_id', 'variant_id', 'location_id', 'required_weight', 'pick_up_date', 'state'];
 

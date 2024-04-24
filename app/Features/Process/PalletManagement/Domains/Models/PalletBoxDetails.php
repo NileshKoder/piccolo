@@ -2,13 +2,15 @@
 
 namespace App\Features\Process\PalletManagement\Domains\Models;
 
-use App\Features\Process\PalletManagement\Domains\Query\PalletBoxDetailsScopes;
 use Illuminate\Database\Eloquent\Model;
+use OwenIt\Auditing\Contracts\Auditable;
 use App\Features\Masters\Boxes\Domains\Models\Box;
+use App\Features\Process\PalletManagement\Domains\Query\PalletBoxDetailsScopes;
 
-class PalletBoxDetails extends Model
+class PalletBoxDetails extends Model implements Auditable
 {
     use PalletBoxDetailsScopes;
+    use \OwenIt\Auditing\Auditable;
 
     protected $fillable = ['pallet_id', 'box_name'];
 

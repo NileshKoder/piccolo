@@ -2,19 +2,21 @@
 
 namespace App\Features\OrderManagement\Domains\Models;
 
-use App\Features\Process\PalletManagement\Domains\Models\Pallet;
 use App\User;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
+use OwenIt\Auditing\Contracts\Auditable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Features\OrderManagement\Constants\OrderConstants;
 use App\Features\OrderManagement\Domains\Models\OrderItem;
 use App\Features\OrderManagement\Domains\Query\OrderScopes;
+use App\Features\Process\PalletManagement\Domains\Models\Pallet;
 
-class Order extends Model implements OrderConstants
+class Order extends Model implements OrderConstants, Auditable
 {
     use OrderScopes;
+    use \OwenIt\Auditing\Auditable;
 
     protected $fillable = ['order_number', 'state', 'created_by', 'updated_by'];
 

@@ -2,17 +2,19 @@
 
 namespace App\Features\Masters\Warehouses\Domains\Models;
 
-use App\Features\Masters\MasterPallet\Domains\Models\MasterPallet;
-use App\Features\Process\PalletManagement\Domains\Models\Pallet;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
-use App\Features\Masters\Warehouses\Constants\WarehouseConstants;
-use App\Features\Masters\Warehouses\Domains\Query\WarehouseScopes;
+use OwenIt\Auditing\Contracts\Auditable;
 use App\Features\Process\ReachTruck\Domains\Models\ReachTruck;
+use App\Features\Process\PalletManagement\Domains\Models\Pallet;
+use App\Features\Masters\Warehouses\Constants\WarehouseConstants;
+use App\Features\Masters\MasterPallet\Domains\Models\MasterPallet;
+use App\Features\Masters\Warehouses\Domains\Query\WarehouseScopes;
 
-class Warehouse extends Model implements WarehouseConstants
+class Warehouse extends Model implements WarehouseConstants, Auditable
 {
     use WarehouseScopes;
+    use \OwenIt\Auditing\Auditable;
 
     protected $fillable = ['name', 'type', 'is_empty'];
     protected $hidden = ['created_at', 'upated_at'];

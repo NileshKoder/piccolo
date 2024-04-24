@@ -4,11 +4,13 @@ namespace App\Features\Masters\Boxes\Domains\Models;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
+use OwenIt\Auditing\Contracts\Auditable;
 use App\Features\Masters\Boxes\Domains\Query\BoxScopes;
 
-class Box extends Model
+class Box extends Model implements Auditable
 {
     use BoxScopes;
+    use \OwenIt\Auditing\Auditable;
 
     // set fillable
     protected $fillable = ['name', 'is_empty'];

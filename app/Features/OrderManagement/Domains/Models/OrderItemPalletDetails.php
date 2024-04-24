@@ -2,12 +2,15 @@
 
 namespace App\Features\OrderManagement\Domains\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use App\Features\OrderManagement\Domains\Models\OrderItemPallet;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
+use OwenIt\Auditing\Contracts\Auditable;
+use App\Features\OrderManagement\Domains\Models\OrderItemPallet;
 
-class OrderItemPalletDetails extends Model
+class OrderItemPalletDetails extends Model implements Auditable
 {
+    use \OwenIt\Auditing\Auditable;
+
     protected $fillable = ['order_item_id', 'pallet_name', 'weight_in_pallet', 'mapped_weight', 'transfered_by', 'transfered_at'];
 
     public static function procressOrderItemPalletDetails(OrderItemPallet $orderItemPallet, $mappingWeight)

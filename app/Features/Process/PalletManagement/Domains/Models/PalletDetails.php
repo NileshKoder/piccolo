@@ -2,19 +2,23 @@
 
 namespace App\Features\Process\PalletManagement\Domains\Models;
 
-use App\Features\Process\PalletManagement\Observers\PalletDetailsObserver;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use OwenIt\Auditing\Contracts\Auditable;
 use App\Features\Masters\SkuCodes\Domains\Models\SkuCode;
 use App\Features\Masters\Variants\Domains\Models\Variant;
 use App\Features\OrderManagement\Domains\Models\OrderItemPallet;
 use App\Features\Process\PalletManagement\Domains\Models\Pallet;
+use App\Features\Process\PalletManagement\Observers\PalletDetailsObserver;
 use App\Features\Process\PalletManagement\Domains\Query\PalletDetailsScopes;
+
 use function strtotime;
 
-class PalletDetails extends Model
+class PalletDetails extends Model implements Auditable
 {
     use PalletDetailsScopes;
+    use \OwenIt\Auditing\Auditable;
+
     protected $fillable = ['pallet_id', 'sku_code_id', 'variant_id', 'weight', 'batch', 'batch_date'];
 
     public static function persistUpdateOrCreatePalletDetails(Pallet $pallet, array $palletDetails)

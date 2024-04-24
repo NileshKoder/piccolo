@@ -4,12 +4,14 @@ namespace App\Features\Masters\MasterPallet\Domains\Models;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
-use App\Features\Masters\MasterPallet\Domains\Query\MasterPalletScopes;
+use OwenIt\Auditing\Contracts\Auditable;
 use App\Features\Process\PalletManagement\Domains\Models\Pallet;
+use App\Features\Masters\MasterPallet\Domains\Query\MasterPalletScopes;
 
-class MasterPallet extends Model
+class MasterPallet extends Model implements Auditable
 {
     use MasterPalletScopes;
+    use \OwenIt\Auditing\Auditable;
 
     // set fillable
     protected $fillable = ['name', 'is_empty', 'last_locationable_type', 'last_locationable_id'];

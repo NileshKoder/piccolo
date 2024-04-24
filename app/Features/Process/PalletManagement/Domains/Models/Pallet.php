@@ -2,13 +2,15 @@
 
 namespace App\Features\Process\PalletManagement\Domains\Models;
 
-use App\Features\OrderManagement\Domains\Models\Order;
-use App\Helpers\Traits\BelongsTo;
 use Exception;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use SebastianBergmann\Diff\Line;
+use App\Helpers\Traits\BelongsTo;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
+use OwenIt\Auditing\Contracts\Auditable;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Features\OrderManagement\Domains\Models\Order;
 use App\Features\Masters\Locations\Domains\Models\Location;
 use App\Features\Masters\Warehouses\Domains\Models\Warehouse;
 use App\Features\Process\ReachTruck\Actions\ReachTruckAction;
@@ -21,11 +23,12 @@ use App\Features\Process\PalletManagement\Domains\Query\PalletScopes;
 use App\Features\Process\PalletManagement\Domains\Models\PalletDetails;
 use App\Features\Process\PalletManagement\Domains\Models\PalletBoxDetails;
 use App\Features\Process\PalletManagement\Domains\Models\PalletLocationLogs;
-use SebastianBergmann\Diff\Line;
 
-class Pallet extends Model implements PalletContants
+class Pallet extends Model implements PalletContants, Auditable
 {
-    use PalletScopes, BelongsTo;
+    use PalletScopes;
+    use BelongsTo;
+    use \OwenIt\Auditing\Auditable;
 
     protected $fillable = ['master_pallet_id', 'loading_transfer_date','order_id', 'warehouse_id', 'created_by', 'updated_by'];
 
@@ -40,9 +43,9 @@ class Pallet extends Model implements PalletContants
                 self::updateOrCreatePalletDetails($pallet, $palletData['pallet_details']);
             }
 
-             if (array_key_exists('pallet_box_details', $palletData)) {
-                 self::updateOrCreatePalletBoxDetails($pallet, $palletData['pallet_box_details']);
-             }
+            if (array_key_exists('pallet_box_details', $palletData)) {
+                self::updateOrCreatePalletBoxDetails($pallet, $palletData['pallet_box_details']);
+            }
 
             if ($palletData['is_request_for_warehouse']) {
                 $reachTruckAction = new ReachTruckAction();
@@ -69,9 +72,9 @@ class Pallet extends Model implements PalletContants
                 self::updateOrCreatePalletDetails($pallet, $palletData['pallet_details']);
             }
 
-             if (array_key_exists('pallet_box_details', $palletData)) {
-                 self::updateOrCreatePalletBoxDetails($pallet, $palletData['pallet_box_details']);
-             }
+            if (array_key_exists('pallet_box_details', $palletData)) {
+                self::updateOrCreatePalletBoxDetails($pallet, $palletData['pallet_box_details']);
+            }
 
             if ($palletData['is_request_for_warehouse']) {
                 $reachTruckAction = new ReachTruckAction();

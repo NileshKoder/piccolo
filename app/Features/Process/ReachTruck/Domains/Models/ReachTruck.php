@@ -2,18 +2,20 @@
 
 namespace App\Features\Process\ReachTruck\Domains\Models;
 
-use App\Features\Masters\Locations\Domains\Models\Location;
 use App\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
+use OwenIt\Auditing\Contracts\Auditable;
+use App\Features\Masters\Locations\Domains\Models\Location;
 use App\Features\Process\PalletManagement\Domains\Models\Pallet;
-use App\Features\Process\ReachTruck\Constants\ReachTruckConstants;
 use App\Features\Process\ReachTruck\Observers\ReachTruckObserver;
+use App\Features\Process\ReachTruck\Constants\ReachTruckConstants;
 use App\Features\Process\ReachTruck\Domains\Query\ReachTruckScopes;
 
-class ReachTruck extends Model implements ReachTruckConstants
+class ReachTruck extends Model implements ReachTruckConstants, Auditable
 {
     use ReachTruckScopes;
+    use \OwenIt\Auditing\Auditable;
 
     protected $fillable = [
         'pallet_id', 'from_locationable_type', 'from_locationable_id', 'to_locationable_type', 'to_locationable_id',

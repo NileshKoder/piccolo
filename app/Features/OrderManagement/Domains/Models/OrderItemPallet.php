@@ -2,19 +2,21 @@
 
 namespace App\Features\OrderManagement\Domains\Models;
 
-use App\Features\Masters\Locations\Domains\Models\Location;
-use App\Features\OrderManagement\Observers\OrderItemPalletObserver;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
+use OwenIt\Auditing\Contracts\Auditable;
+use App\Features\Masters\Locations\Domains\Models\Location;
 use App\Features\Masters\Warehouses\Domains\Models\Warehouse;
-use App\Features\OrderManagement\Domains\Query\OrderItemPalletScopes;
 use App\Features\Process\ReachTruck\Actions\ReachTruckAction;
 use App\Features\Process\PalletManagement\Domains\Models\Pallet;
+use App\Features\OrderManagement\Observers\OrderItemPalletObserver;
+use App\Features\OrderManagement\Domains\Query\OrderItemPalletScopes;
 use App\Features\Process\PalletManagement\Domains\Models\PalletDetails;
 
-class OrderItemPallet extends Model
+class OrderItemPallet extends Model implements Auditable
 {
     use OrderItemPalletScopes;
+    use \OwenIt\Auditing\Auditable;
 
     protected $fillable = ['order_item_id', 'pallet_id', 'pallet_detail_id', 'weight'];
 
@@ -49,7 +51,7 @@ class OrderItemPallet extends Model
 
                 if ($remainingWeight >= $palletDetail->weight) {
                     $mappingWeight = $palletDetail->weight;
-                } else if ($remainingWeight <= $palletDetail->weight) {
+                } elseif ($remainingWeight <= $palletDetail->weight) {
                     $mappingWeight = $remainingWeight;
                 } else {
                     $mappingWeight = $palletDetail->weight;
@@ -69,7 +71,7 @@ class OrderItemPallet extends Model
                 if ($mappedWeight >= $maxWeight) {
                     $orderItem->updateState(OrderItem::MAPPED);
                     break;
-                } else if ($mappedWeight < $maxWeight) {
+                } elseif ($mappedWeight < $maxWeight) {
                     $orderItem->updateState(OrderItem::PARTIAL_MAPPED);
                 }
             }
